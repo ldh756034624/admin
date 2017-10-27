@@ -116,6 +116,7 @@ import { parseTime } from '@/utils/index'
       methods: {
         getInit() {
           getDashboard().then(res => {
+            console.log('dashbord', res)
             const data = res.data;
             this.info = data;
           })

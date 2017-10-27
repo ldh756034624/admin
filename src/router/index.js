@@ -28,17 +28,10 @@ const BusinessLayout = _import('systems/index')
 
 Vue.use(Router)
 
- /**
-  * icon : the icon show in the sidebar
-  * hidden : if `hidden:true` will not show in the sidebar
-  * redirect : if `redirect:noredirect` will not redirct in the levelbar
-  * noDropdown : if `noDropdown:true` will not has submenu in the sidebar
-  * meta_name :   用来控制路由表的动态显示 对应菜单管理的route_name
-  **/
 export const constantRouterMap = [
   { path: '/login', component: Login, hidden: true },
   { path: '/404', component: Err404, hidden: true },
-  {
+  {   // 默认打开工作台
     path: '',
     component: Layout,
     redirect: '/work',
@@ -54,6 +47,14 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+
+ /**
+  * icon : the icon show in the sidebar
+  * hidden : if `hidden:true` will not show in the sidebar
+  * redirect : if `redirect:noredirect` will not redirct in the levelbar
+  * noDropdown : if `noDropdown:true` will not has submenu in the sidebar
+  * meta_name :   用来控制路由表的动态显示 对应菜单管理的route_name
+  **/
 
 export const asyncRouterMap = [
   {
