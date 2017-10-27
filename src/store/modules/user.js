@@ -1,5 +1,5 @@
-import { login, logout, getRouterInfo } from '@/api/login';
-import { getToken, setToken, removeToken } from '@/utils/auth';
+import {login, logout, getRouterInfo} from '@/api/login';
+import {getToken, setToken, removeToken} from '@/utils/auth';
 
 const user = {
   state: {
@@ -26,9 +26,10 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    Login({commit}, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo.phone, userInfo.password).then(response => {
+          console.log('login', response)
           const data = response.data;
           setToken(data.token);
           commit('SET_TOKEN', data.token);
@@ -42,7 +43,7 @@ const user = {
 
 
     // 获取用户路由信息
-    GetRouterInfo({ commit, state }) {
+    GetRouterInfo({commit, state}) {
       return new Promise((resolve, reject) => {
         getRouterInfo(state.token).then(response => {
           const data = response.data[0].child;
@@ -57,7 +58,7 @@ const user = {
     },
 
     // 登出
-    LogOut({ commit, state }) {
+    LogOut({commit, state}) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '');
@@ -71,7 +72,7 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut({commit}) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '');
         removeToken();
