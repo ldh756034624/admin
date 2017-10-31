@@ -29,19 +29,23 @@ const whiteList = ['/login']
 
 
 router.beforeEach((to, from, next) => {
-  console.log(to.path)
-  console.log(from.path)
   NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {
       next({path: '/'})
     } else {
-      store.dispatch('GetRouterInfo').then(res => {
-        const routers = res.data
-        store.dispatch('SetAdminMenus', {routers}).then(() => {
-          router.addRoutes(store.getters.addRouters)
-          next({...to})
-        })
+      // store.dispatch('GetRouterInfo').then(res => {
+      //   const routers = res.data
+      //   store.dispatch('SetAdminMenus', {routers}).then(() => {
+      //     router.addRoutes(store.getters.addRouters)
+      //     next({...to})
+      //   })
+      // })
+
+      // 去除权限，上面需要权限
+      store.dispatch('SetAdminMenus').then(() => {
+        router.addRoutes(store.getters.addRouters)
+        next({...to})
       })
       next()
     }

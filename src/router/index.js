@@ -54,6 +54,7 @@ export default new Router({
   * redirect : if `redirect:noredirect` will not redirct in the levelbar
   * noDropdown : if `noDropdown:true` will not has submenu in the sidebar
   * meta_name :   用来控制路由表的动态显示 对应菜单管理的route_name
+  * 当前版本没有权限设置
   **/
 
 export const asyncRouterMap = [
@@ -71,6 +72,5 @@ export const asyncRouterMap = [
       { path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment' },
       { path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction' }
     ]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
