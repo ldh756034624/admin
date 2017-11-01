@@ -15,6 +15,8 @@ const dashboard = _import('dashboard/index')
 /* error page */
 const Err404 = _import('404')
 
+/*社区管理*/
+const functionAssort = _import('community/content/function_assort')
 
 /* 系统设置*/
 const systemMenus = _import('systems/menus')
@@ -58,6 +60,17 @@ export default new Router({
   **/
 
 export const asyncRouterMap = [
+   {
+     path: '/community',
+     component: Layout,
+     redirect: 'noredirect',
+     name: '社区管理',
+     meta_name: 'Community',
+     icon: 'zujian',
+     children: [
+       { path: 'fnassort', component: functionAssort, name: '功能分类', meta_name: 'functionAssort' },
+     ]
+   },
   {
     path: '/systems',
     component: Layout,
@@ -66,8 +79,8 @@ export const asyncRouterMap = [
     meta_name: 'Systems',
     icon: 'zujian',
     children: [
-      { path: 'menus', component: systemMenus, name: '菜单管理', meta_name: 'systemMenus' },
-      { path: 'roles', component: systemRoles, name: '角色管理', meta_name: 'systemRoles' },
+      { path: 'menus', title:'真的帅', component: systemMenus, name: '菜单管理', meta_name: 'systemMenus' },
+      { path: 'roles', title:'真的帅', component: systemRoles, name: '角色管理', meta_name: 'systemRoles' },
       { path: 'users', component: systemUsers, name: '系统用户', meta_name: 'systemUsers' },
       { path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment' },
       { path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction' }

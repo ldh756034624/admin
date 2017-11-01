@@ -1,11 +1,11 @@
 import fetch from '@/utils/fetch'
 
-export function login(phone, password) {    // 登录
+export function login(name, password) {    // 登录
   return fetch({
-    url: '/admin/login',
+    url: '/h9/admin/user/login',
     method: 'post',
     data: {
-      phone,
+      name,
       password
     }
   })

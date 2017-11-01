@@ -28,7 +28,7 @@ const user = {
     // 登录
     Login({commit}, userInfo) {
       return new Promise((resolve, reject) => {
-        login(userInfo.phone, userInfo.password).then(response => {
+        login(userInfo.name, userInfo.password).then(response => {
           const data = response.data
           setToken(data.token)
           commit('SET_TOKEN', data.token)

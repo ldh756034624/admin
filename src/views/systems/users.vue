@@ -74,7 +74,7 @@
 
     <!-- 弹出窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible"  size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
+      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px  ">
         <el-form-item label="手机号" prop="phone" >
           <el-input v-model="temp.phone"></el-input>
         </el-form-item>

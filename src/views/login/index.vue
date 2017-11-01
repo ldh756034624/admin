@@ -3,11 +3,11 @@
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
       class="card-box login-form">
       <h3 class="title">系统登录</h3>
-      <el-form-item prop="phone">
+      <el-form-item prop="name">
         <span class="svg-container">
                   <icon-svg icon-class="jiedianyoujian"></icon-svg>
                 </span>
-        <el-input name="phone" type="text" v-model="loginForm.phone" autoComplete="on" placeholder="手机号码"></el-input>
+        <el-input name="name" type="text" v-model="loginForm.name" autoComplete="on" placeholder="帐号"></el-input>
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
@@ -47,8 +47,8 @@
         };
         return {
           loginForm: {
-            phone: '15712139076',
-            password: '139076'
+            name: '13580797769',
+            password: '123321'
           },
           loginRules: {
             phone: [
