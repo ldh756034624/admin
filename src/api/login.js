@@ -2,7 +2,7 @@ import fetch from '@/utils/fetch'
 
 export function login(name, password) {    // 登录
   return fetch({
-    url: '/h9/admin/user/login',
+    url: '/user/login',
     method: 'post',
     data: {
       name,
@@ -21,7 +21,7 @@ export function getRouterInfo(token) {
 
 export function logout() {
   return fetch({
-    url: '/admin/logout',
+    url: '/user/logout',
     method: 'get'
   })
 }

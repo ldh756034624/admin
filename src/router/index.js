@@ -17,16 +17,15 @@ const Err404 = _import('404')
 
 /*社区管理*/
 const functionAssort = _import('community/content/function_assort')
+const functionList = _import('community/content/function_list')
+
 
 /* 系统设置*/
 const systemMenus = _import('systems/menus')
 const systemRoles = _import('systems/roles')
 const systemUsers = _import('systems/users')
 const systemDepartment = _import('systems/department')
-const systemLogs = _import('systems/logs')
 const systemAction = _import('systems/action')
-const systemBusiness = _import('systems/node')
-const BusinessLayout = _import('systems/index')
 
 Vue.use(Router)
 
@@ -69,6 +68,7 @@ export const asyncRouterMap = [
      icon: 'zujian',
      children: [
        { path: 'fnassort', component: functionAssort, name: '功能分类', meta_name: 'functionAssort' },
+       { path: 'fnlist', component: functionList, name: '功能列表', meta_name: 'functionList',hidden: true },
      ]
    },
   {
