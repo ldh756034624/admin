@@ -4,8 +4,13 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCkeditor" icon="edit">获取值
+      </el-button>
     </div>
-    <el-table :data="tableData" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+
+    <textarea id="editor" rows="10" cols="80"></textarea>
+
+    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -63,7 +68,7 @@
     </el-table>
     <div class="pagination-container" v-show="!listLoading">
       <el-pagination
-        @current-change="getTableData"
+        @current-change="getList"
         :current-page.sync="listQuery.page"
         :page-size="listQuery.limit"
         layout="total, prev, pager, next"
@@ -77,8 +82,8 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="id">
-          <el-input v-model="temp.id"></el-input>
+        <el-form-item label="标识" prop="identify">
+          <el-input v-model="temp.identify"></el-input>
         </el-form-item>
         <el-form-item label="上线时间">
           <el-date-picker
@@ -90,8 +95,8 @@
         </el-form-item>
         <el-form-item label="状态">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
-            <el-radio class="radio" v-model="enable" label="2">禁用</el-radio>
+            <el-radio class="radio" v-model="radio" label="1">启用</el-radio>
+            <el-radio class="radio" v-model="radio" label="2">禁用</el-radio>
           </div>
         </el-form-item>
       </el-form>
@@ -106,62 +111,104 @@
 </template>
 
 <script>
-  import {addFn, getTableData} from '@/api/community_content'
+  import CKEDITOR from "CKEDITOR"
+  import {getUserList, addUser, modifyStatus, getDatas, updateUser} from '@/api/system'
   import {isPhone} from '@/utils/validate'
 
   export default {
     data() {
+      const validatePhone = (rule, value, callback) => {
+        if (!isPhone(value)) {
+          callback(new Error('请输入正确的手机号码'))
+        } else {
+          callback()
+        }
+      }
       return {
-        enable: '1',
+        radio: '1',
         dateRange: null,  // 时间范围
-        temp: {   // 弹窗内容数据对象
-          enable: this.radio,
+        temp: {
+          radio: this.radio,
           name: null,
-          id: null
+          identify: null
         },
-        tableData: null,    // 表格数据
-        total: null,        // 数据总数
+        list: null,
+        total: null,
+        listLoading: true,
         dialogFormVisible: false,
         dialogStatus: '',
         rules: {
-          name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          id: [{required: true, message: '请输入标识', trigger: 'blur'}]
+          department_id: [{type: 'number', required: true, message: '请选择部门', trigger: 'change'}],
+          phone: [{required: true, trigger: 'blur', validator: validatePhone}],
+          name: [{required: true, message: '请输入真实姓名', trigger: 'blur'}],
+          roles: [{type: 'array', required: true, message: '请选择至少一个角色', trigger: 'change'}]
         },
-        listQuery: {  // 关键字查询，翻页等数据
-          page: 1,
+        listQuery: {
+          page: parseInt(this.$route.query.page) || 1,
           limit: 20,
+          keyword: undefined
         },
         textMap: {
           update: '编辑',
           create: '新增'
-        }
+        },
+        department_list: null,
+        roles_list: null,
+        id: ''
       }
     },
     mounted() {
-//      this.getTableData()
+      this.getList();
+      this.getDatas()
+      CKEDITOR.replace("editor", {height: "300px", width: "100%", toolbar: "Full"})
     },
     methods: {
+      handleCkeditor() {
+        console.log(CKEDITOR.instances.editor.getData())
+      },
       dateRangeChange() {      // 获取时间范围
         this.temp.startDate = new Date(this.dateRange[0]).getTime()
         this.temp.endDate = new Date(this.dateRange[1]).getTime()
       },
-      getTableData() {
-        getTableData('url', this.listQuery).then(res => {   // 获取tableData数据
-          const datas = re.data
-          this.tableData = datas.list.data
+      getList() {
+        this.listLoading = true
+        getUserList(this.listQuery).then(response => {
+          this.listLoading = false
+          const datas = response.data
+          console.log(datas)
+          this.list = datas.list.data
           this.total = datas.list.total
+          this.listQuery.limit = datas.list.per_page
         })
       },
-      handleCreate() {    // 点击创建新功能按钮
-        this.resetTemp()    // 清空原有表单
+      getDatas() {
+        getDatas().then(response => {
+          const datas = response.data
+          this.department_list = datas.departments
+          this.roles_list = datas.roles
+        })
+      },
+      handleFilter() {
+        this.getList()
+      },
+      handleCreate() {
+        this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleUpdate(row) {   // 点击编辑功能按钮
+      handleUpdate(row) {
         this.temp = {
-          id: row.id,
+          department_id: row.department_id,
+          email: row.email,
+          phone: row.phone,
           name: row.name,
+          roles: []
         }
+        this.id = row.id
+        for (let i = 0; i < row.roles.length; i++) {
+          this.$set(this.temp.roles, i, row.roles[i].id)
+        }
+        this.temp.user_id = row.id
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
@@ -172,34 +219,55 @@
           identify: null
         }
       },
-      create(temp) {    // 创建新功能
-        this.temp.enable = this.enable
-        if (!this.temp.startDate || !this.temp.endDate) {
-          this.$message.error('请选择时间范围')
-        }
-        this.$refs[temp].validate(valid => {
+      create(formname) {
+        this.$refs[formname].validate(valid => {
           if (valid) {
-            addFn(this.temp).then(() => {
-              this.getTableData()
+            console.log(this.temp)
+            addUser(this.temp).then(() => {
+              this.getList()
               this.dialogFormVisible = false
-              this.$message.success('创建成功')
+              this.$notify({
+                title: '成功',
+                message: '添加成功',
+                type: 'success',
+                duration: 2000
+              })
             })
+          } else {
+            console.log('error submit!!')
+            return false
           }
         })
       },
-      update(temp) {
-        this.temp.enable = this.enable
-        if (!this.temp.startDate || !this.temp.endDate) {
-          this.$message.error('请选择时间范围')
-        }
-        this.$refs[temp].validate(valid => {
+      update(formname) {
+        this.$refs[formname].validate(valid => {
           if (valid) {
-            addFn(this.temp).then(() => {   // 这里改为更新
-              this.getTableData()
+            updateUser(this.temp, this.id).then(() => {
+              this.getList()
               this.dialogFormVisible = false
-              this.$message.success('创建成功')
+              this.$notify({
+                title: '成功',
+                message: '更新成功',
+                type: 'success',
+                duration: 2000
+              })
             })
+          } else {
+            console.log('error submit!!')
+            return false
           }
+        })
+      },
+      handleModifyStatus(id) {
+        modifyStatus(id).then((response) => {
+          this.getList()
+          const datas = response
+          this.getList()
+          this.$message({
+            message: datas.msg,
+            type: 'success',
+            duration: 2000
+          })
         })
       }
     }

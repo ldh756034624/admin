@@ -1,20 +1,17 @@
 import fetch from '@/utils/fetch'
 
-export function login(phone, password) {    // 登录
+export function addFn(data) {    // 新增功能
   return fetch({
-    url: '/admin/login',
-    method: 'post',
-    data: {
-      phone,
-      password
-    }
+    url: '/community/banner_type',
+    method: 'POST',
+    data
   })
 }
 
-export function getRouterInfo(token) {
+export function getTableData(url, params) {    // 获取table列表
   return fetch({
-    url: '/admin/menus',
+    url,
     method: 'get',
-    params: {token}
+    params
   })
 }
