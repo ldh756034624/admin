@@ -129,6 +129,9 @@
         }
       }
     },
+    created(){
+      this.id = this.$route.query.id    // 获取列表id
+    },
     mounted() {
 //      this.getTableData()
     },
@@ -139,7 +142,7 @@
       },
       getTableData() {
         getTableData('url', this.listQuery).then(res => {   // 获取tableData数据
-          const datas = re.data
+          const datas = res.data
           this.tableData = datas.list.data
           this.total = datas.list.total
         })

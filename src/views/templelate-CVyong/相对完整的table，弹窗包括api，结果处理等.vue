@@ -2,10 +2,10 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
-      </el-button>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增</el-button>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="goList" icon="edit">去列表</el-button>
     </div>
-    <el-table :data="tableData" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -54,14 +54,14 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="handleModifyStatus(scope.row.id)">列表
+          <el-button size="small" type="success" @click="goList(scope.row.id)">列表
           </el-button>
           <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="pagination-container" v-show="!listLoading">
+    <div class="pagination-container">
       <el-pagination
         @current-change="getTableData"
         :current-page.sync="listQuery.page"
@@ -77,8 +77,8 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="id">
-          <el-input v-model="temp.id"></el-input>
+        <el-form-item label="标识" prop="code">
+          <el-input v-model="temp.code"></el-input>
         </el-form-item>
         <el-form-item label="上线时间">
           <el-date-picker
@@ -115,7 +115,7 @@
         enable: '1',
         dateRange: null,  // 时间范围
         temp: {   // 弹窗内容数据对象
-          enable: this.radio,
+          enable: '1',
           name: null,
           id: null
         },
@@ -125,7 +125,7 @@
         dialogStatus: '',
         rules: {
           name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          id: [{required: true, message: '请输入标识', trigger: 'blur'}]
+          code: [{required: true, message: '请输入标识', trigger: 'blur'}]
         },
         listQuery: {  // 关键字查询，翻页等数据
           page: 1,
@@ -141,6 +141,9 @@
 //      this.getTableData()
     },
     methods: {
+      goList(id) {  // 去功能列表
+        this.$router.push({path:'/community/fnlist', query: {id}})
+      },
       dateRangeChange() {      // 获取时间范围
         this.temp.startDate = new Date(this.dateRange[0]).getTime()
         this.temp.endDate = new Date(this.dateRange[1]).getTime()
@@ -169,7 +172,8 @@
         this.radio = '1'
         this.temp = {
           name: null,
-          identify: null
+          enable: '1',
+          id: null
         }
       },
       create(temp) {    // 创建新功能
@@ -179,10 +183,12 @@
         }
         this.$refs[temp].validate(valid => {
           if (valid) {
-            addFn(this.temp).then(() => {
-              this.getTableData()
-              this.dialogFormVisible = false
-              this.$message.success('创建成功')
+            addFn(this.temp).then(res => {
+              if (res.code === 0) {
+                this.getTableData()
+                this.dialogFormVisible = false
+                this.$message.success('创建成功')
+              }
             })
           }
         })

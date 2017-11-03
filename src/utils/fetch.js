@@ -44,7 +44,10 @@ service.interceptors.response.use(
           })
         })
         return response
-      } else {
+      } else if (res.code === 0) {    // 如果正常，返回
+        return res
+      } else {  // 其他都有异常
+        Message.error(res.msg)
         return res
       }
     }
@@ -55,7 +58,7 @@ service.interceptors.response.use(
         Message({
           message: name,
           type: 'error',
-          duration: 5 * 1000
+          duration: 10 * 1000
         })
       }
 

@@ -14,6 +14,8 @@ import '@/assets/iconfont/iconfont'
 import IconSvg from '@/components/Icon-svg/index.vue'
 import {getToken} from '@/utils/auth'
 import * as filters from './filters' // 全局vue filter
+import {formatDate} from './utils/index'
+
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {
@@ -27,6 +29,13 @@ Vue.component('icon-svg', IconSvg)
 
 const whiteList = ['/login']
 
+Vue.filter('formatDate', val => {   // 只有日期
+  return formatDate(new Date(val), 'yyyy-MM-dd')
+})
+
+Vue.filter('formatDateTime', val => {   // 有日期和时间
+  return formatDate(new Date(val), 'yyyy-MM-dd hh:mm:ss')
+})
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
