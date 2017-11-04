@@ -24,6 +24,8 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 
+Vue.prototype.IMGUP_API = process.env.IMGUP_API   // 图片上传地址
+
 Vue.use(ElementUI)
 Vue.component('icon-svg', IconSvg)
 

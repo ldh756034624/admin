@@ -2,7 +2,9 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增</el-button>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
+      </el-button>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="goList" icon="edit">去列表</el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -69,34 +71,19 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
-        <el-form-item label="名称" prop="title">
-          <el-input v-model="temp.title"></el-input>
+        <el-form-item label="分类名称" prop="name">
+          <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="图标">
-          <el-upload
-            :action="IMGUP_API"
-            :show-file-list="false"
-            :on-success="handleImgSuccess"
-            list-type="picture-card"
-            :before-upload="beforeHandleImg">
-            <i class="el-icon-plus"></i>
-          </el-upload>
+        <el-form-item label="标识" prop="code">
+          <el-input v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="字体颜色" prop="fontColor">
-          <el-input v-model="temp.fontColor"></el-input>
-        </el-form-item>
-        <el-form-item label="连接类型">
-          <div class="checkitem">
-            <el-radio class="radio" v-model="temp.urlType" label="1">网址</el-radio>
-            <el-radio class="radio" v-model="temp.urlType" label="0">内部页面</el-radio>
-            <el-radio class="radio" v-model="temp.urlType" label="0">不跳转</el-radio>
-          </div>
-        </el-form-item>
-        <el-form-item label="动作">
-          <el-input v-model="temp.url"></el-input>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-input v-model="temp.sort"></el-input>
+        <el-form-item label="上线时间">
+          <el-date-picker
+            v-model="dateRange"
+            @change="dateRangeChange"
+            type="daterange"
+            placeholder="选择日期范围">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="状态">
           <div class="checkitem">
@@ -116,7 +103,7 @@
 </template>
 
 <script>
-  import {addFunction, upadateFunction, getTableData} from '@/api/community_content'
+  import {addFn, upadateFn, getTableData} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -127,20 +114,16 @@
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           enable: '1',
-          id: 0,
-          icon: null,
-          sort: null,
-          title: null,
-          url: null,
-          urlType: '1'
+          name: null,
+          id: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
         dialogStatus: '',
         rules: {
-          title: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          fontColor: [{required: true, message: '请输入颜色', trigger: 'blur'}]
+          name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
+          code: [{required: true, message: '请输入标识', trigger: 'blur'}]
         },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
@@ -156,22 +139,6 @@
       this.getTableData()
     },
     methods: {
-      beforeHandleImg(file) {      // 头像上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' ||file.type === 'image/png'
-        if (!isJPG) {
-          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
-        }
-        return isJPG
-      },
-      handleImgSuccess(res, file) {      // 图片上传成功后
-        if (res.code === 0) {
-          this.$message.success('上传头像成功')
-          this.temp.icon = res.data
-          console.log(res.data)
-        } else {
-          this.$message.error('上传失败，请重试')
-        }
-      },
       goList(id) {  // 跳转至功能列表
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
@@ -205,13 +172,10 @@
       },
       resetTemp() {   // 重置弹出表格
         this.enable = '1'
-        this.temp = {      // 清空内容数据对象
+        this.temp = {
+          name: null,
           enable: '1',
-          id: 0,
-          icon: null,
-          sort: null,
-          title: null,
-          url: null
+          id: null
         }
       },
       create() {    // 创建新功能
@@ -224,7 +188,7 @@
         }
         this.$refs.temp.validate(valid => {
           if (valid) {
-            addFunction(this.temp).then(res => {
+            addFn(this.temp).then(res => {
               if (res.code === ERR_OK) {
                 this.getTableData()
                 this.dialogFormVisible = false
@@ -234,13 +198,13 @@
           }
         })
       },
-      update() {  // 确认编辑此条信息
+      update() {  // 编辑此条信息
         this.temp.enable = this.enable
         if (!this.temp.startTime || !this.temp.endTime) {
           this.$message.error('请选择时间范围')
           return
         }
-        upadateFunction(this.temp).then(res => {
+        upadateFn(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
