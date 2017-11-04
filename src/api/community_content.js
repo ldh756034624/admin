@@ -16,6 +16,13 @@ export function addFn(data) {    // 新增功能分类
   })
 }
 
+export function banSort(id) {    // 新增功能分类
+  return fetch({
+    url: '/community/banner_type/status/' + id,
+    method: 'put',
+  })
+}
+
 export function upadateFn(data) {    // 编辑功能分类
   return fetch({
     url: '/community/banner_type',

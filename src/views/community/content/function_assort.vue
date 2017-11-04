@@ -53,8 +53,7 @@
           </el-button>
           <el-button size="small" type="success" @click="goList(scope.row.id)">列表
           </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
-          </el-button>
+          <el-button size="small" type="primary" @click="handleBan(scope.row.id)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -103,7 +102,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
+  import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -139,6 +138,14 @@
       this.getTableData()
     },
     methods: {
+      handleBan(id) {
+        banSort(id).then(res => {
+          if (res.code === ERR_OK) {
+            this.$message.success('操作成功')
+            this.getTableData()
+          }
+        })
+      },
       goList(id) {  // 跳转至功能列表
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
