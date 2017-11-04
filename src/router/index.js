@@ -116,7 +116,7 @@ export const asyncRouterMap = [
       {path: 'article_assort', component: articleAssort, name: '文章分类', meta_name: 'articleAssort'},
       {path: 'article_list', component: articleList, name: '文章列表', meta_name: 'articleList'},
       {path: 'single_page', component: singlePage, name: '单网页管理', meta_name: 'singlePage'},
-      {path: 'goods_list', component: goodsList, name: '文章列表', meta_name: 'goodsList'},
+      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'},
     ]
   },
   {
