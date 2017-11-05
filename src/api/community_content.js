@@ -46,3 +46,10 @@ export function upadateFunction(data) {    // 编辑功能
     data
   })
 }
+
+export function delFunction(id) {    // 删除功能
+  return fetch({
+    url: '/community/banner/' + id,
+    method: 'delete',
+  })
+}

@@ -2,7 +2,8 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增</el-button>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
+      </el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -46,7 +47,7 @@
           </el-button>
           <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">删除
+          <el-button size="small" type="success" @click="handleDele(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -120,13 +121,14 @@
 </template>
 
 <script>
-  import {addFunction, upadateFunction, getTableData} from '@/api/community_content'
+  import {addFunction, upadateFunction, getTableData, delFunction} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
+        id: null,   // 上页面传入id
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           enable: '1',
@@ -148,8 +150,7 @@
         },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20,
-          id: null
+          pageSize: 20
         },
         textMap: {
           update: '编辑',
@@ -158,12 +159,12 @@
       }
     },
     created() {
-      this.listQuery.id = this.$route.query.id    // 带参id
+      this.id = this.$route.query.id    // 带参id
       this.getTableData()
     },
     methods: {
       beforeHandleImg(file) {      // 头像上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' ||file.type === 'image/png'
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {
           this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
         }
@@ -178,16 +179,30 @@
           this.$message.error('上传失败，请重试')
         }
       },
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
+      handleDele(id) { // 删除当前条目
+        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delFunction(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
       },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
       getTableData() {
-        getTableData('/community/banner/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+        getTableData('/community/banner/page/' + this.id, this.listQuery).then(res => {   // 获取tableData数据
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -214,7 +229,7 @@
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
           enable: '1',
-          id: this.listQuery.id,
+          id: this.id,
           icon: null,
           sort: null,
           title: null,
@@ -228,7 +243,7 @@
           this.$message.error('请选择时间范围')
           return
         }
-        this.temp.bannerTypeId = this.listQuery.id
+        this.temp.bannerTypeId = this.id
         this.$refs.temp.validate(valid => {
           if (valid) {
             console.log('temp', this.temp)
