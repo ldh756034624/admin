@@ -62,7 +62,7 @@
       <el-pagination
         @current-change="getTableData"
         :current-page.sync="listQuery.pageNumber"
-        :page-size="listQuery.limit"
+        :page-size="listQuery.pageSize"
         layout="total, prev, pager, next"
         :total="total">
       </el-pagination>

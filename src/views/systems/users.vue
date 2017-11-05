@@ -67,7 +67,7 @@
     <div class="pagination-container" v-show="!listLoading"><el-pagination
       @current-change=""
       :current-page.sync="listQuery.page"
-      :page-size="listQuery.limit"
+      :page-size="listQuery.pageSize"
       layout="total, prev, pager, next"
       :total="total">
     </el-pagination></div>
@@ -174,7 +174,7 @@
           console.log(datas)
           this.list = datas.list.data;
           this.total = datas.list.total;
-          this.listQuery.limit = datas.list.per_page;
+          this.listQuery.pageSize = datas.list.per_page;
         });
       },
       getDatas() {

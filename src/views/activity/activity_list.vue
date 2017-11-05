@@ -54,7 +54,7 @@
       <el-pagination
         @current-change="getTableData"
         :current-page.sync="listQuery.pageNumber"
-        :page-size="listQuery.limit"
+        :page-size="listQuery.pageSize"
         layout="total, prev, pager, next"
         :total="total">
       </el-pagination>
@@ -210,15 +210,12 @@
       this.getTableData()
     },
     methods: {
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
-      },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/community/activity/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
