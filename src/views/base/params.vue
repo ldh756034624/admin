@@ -16,19 +16,19 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="参数名">
+      <el-table-column align="center" label="参数标识">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.code}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="参数值">
         <template scope="scope">
-          <span>{{scope.row.startTime}}</span>
+          <span>{{scope.row.val}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="说明">
         <template scope="scope">
-          <span>{{scope.row.endTime}}</span>
+          <span>{{scope.row.description}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="配置时间">
@@ -38,9 +38,9 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
+          <el-button size="small" type="primary" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="error" @click="handleDele(scope.row.id)">删除
+          <el-button size="small" type="danger" @click="handleDele(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -57,34 +57,34 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
-        <el-form-item label="参数名称" prop="name">
+      <el-form label-width="100px">
+        <el-form-item label="参数名称">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="参数标识" prop="code">
+        <el-form-item label="参数标识">
           <el-input v-model="temp.code"></el-input>
         </el-form-item>
         <el-form-item label="参数类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">文本</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">对象</el-radio>
+            <el-radio class="radio" label="0" v-model="temp.type">文本</el-radio>
+            <el-radio class="radio" label="1" v-model="temp.type">对象</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="参数值" prop="code">
-          <el-input v-model="temp.code"></el-input>    <!--v-if="temp.type == 1"-->
-          <div>
-            <div v-for="item in temp.objParams">
+          <el-input v-if="temp.type == 0" v-model="temp.val"></el-input>
+          <div v-else>
+            <div v-for="(item, index) in temp.objParams" style="margin-bottom: 10px">
               <span>key:</span>
-              <el-input v-model="item.key"></el-input>
+              <el-input class="w30" v-model="item.key"></el-input>
               <span>value:</span>
-              <el-input v-model="item.code"></el-input>
+              <el-input class="w30" v-model="item.code"></el-input>
               <el-button type="primary" icon="plus" v-if="index === 0" @click="add"></el-button>
               <el-button type="primary" icon="minus" v-else @click="minus"></el-button>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="参数描述">
-          <el-input type="textarea" v-model="temp.code"></el-input>
+          <el-input type="textarea" v-model="temp.description"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -98,20 +98,26 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
+  import {getTableData, createParams, updateParams} from '@/api/base'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
-        enable: '1',
-        dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          enable: '1',
-          name: null,
-          id: null
+          type: '0',
+          code: null,
+          description: null,
+          val: null,
+          objParams: [
+            {
+              key: null,
+              code: null
+            }
+          ]
         },
+        dateRange: null,  // 时间范围
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
@@ -137,7 +143,7 @@
       add() { // 添加一条参数
         this.temp.objParams.push({
           key: null,
-          value: nulltemp
+          code: null
         })
       },
       minus() { // 删除一条参数
@@ -165,8 +171,8 @@
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+        getTableData('/basis/param/page', this.listQuery).then(res => {   // 获取tableData数据
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -179,57 +185,59 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
-        this.enable = row.enable.toString()
+        row.type = row.type.toString()
+        let objParams = JSON.parse(row.val)
+        row.val = null
         this.temp = row   // 赋值
+        this.$set(this.temp, 'objParams', objParams)
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
-        this.enable = '1'
         this.temp = {
-          name: null,
-          enable: '1',
-          id: null
+          type: '0',
+          code: null,
+          description: null,
+          val: null,
+          objParams: [
+            {
+              key: null,
+              code: null
+            }
+          ]
         }
       },
       create() {    // 创建新功能
-        this.resetTemp()
-        this.temp.id = 0
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
+        if (this.temp.type == 1) {
+          this.temp.val = JSON.stringify(this.temp.objParams)
         }
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFn(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
+        console.log(this.temp)
+
+        createParams(this.temp).then(res => {
+          if (res.code === ERR_OK) {
+            this.$message.success('创建成功')
+            this.getTableData()
+            this.dialogFormVisible = false
           }
         })
       },
       update() {  // 编辑此条信息
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
+        if (this.temp.type == 1) {
+          this.temp.val = JSON.stringify(this.temp.objParams)
         }
-        upadateFn(this.temp).then(res => {
+        updateParams(this.temp).then(res => {
           if (res.code === ERR_OK) {
+            this.$message.success('保存成功')
             this.getTableData()
             this.dialogFormVisible = false
-            this.$message.success('保存成功')
           }
         })
       }
     }
   }
 </script>
+
+<style lang="scss">
+
+</style>
