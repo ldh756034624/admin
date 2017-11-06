@@ -10,7 +10,7 @@
         <el-form-item v-for="(item, index)  in realData.targetRate" label-width="10px" style="margin-bottom: 5px;">
           <div>
             <span>第{{index + 1}}位</span>
-            <el-input v-model="item.pos" class="w50" placeholder="请输入中奖比例"></el-input>
+            <el-input v-model="item.rate" class="w50" placeholder="请输入中奖比例"></el-input>
             <el-button type="primary" icon="plus" v-if="index === 0" @click="add"></el-button>
             <el-button type="primary" icon="minus" v-else @click="minus"></el-button>
           </div>
@@ -31,7 +31,8 @@
             targetCount : null,
             targetRate: [
               {
-                pos: null
+                pos: 1,
+                rate: null
               }
             ]
           }
@@ -49,7 +50,8 @@
       },
       add() {
         this.realData.targetRate.push({
-          pos: null
+          pos: 1,
+          rate: null
         })
       },
       minus() {

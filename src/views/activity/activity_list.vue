@@ -6,14 +6,9 @@
       </el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="活动ID" width="65">
+      <el-table-column align="center" label="活动ID">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="活动类型">
-        <template scope="scope">
-          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="活动名称">
@@ -23,17 +18,17 @@
       </el-table-column>
       <el-table-column align="center" label="活动预览">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
+          <span>{{scope.row.activityDesc}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="开始时间">
         <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
+          <span>{{scope.row.startTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="结束时间">
         <template scope="scope">
-          <span>{{scope.row.code}}</span>
+          <span>{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -45,7 +40,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">停止
+          <el-button size="small" type="success" @click="handleActive(scope.row)">{{scope.row.enable == 0 ? '开启' : '关闭'}}
           </el-button>
         </template>
       </el-table-column>
@@ -143,9 +138,10 @@
               </div>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="高级设置">
-            <hongbao ref="hongbao" @getProData="getProData"></hongbao>
-          </el-tab-pane>
+          <!--todo 以后有高级设置再加上-->
+          <!--<el-tab-pane label="高级设置">-->
+            <!--<hongbao :data="proData" ref="hongbao" @getProData="getProData"></hongbao>-->
+          <!--</el-tab-pane>-->
         </el-tabs>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -159,9 +155,9 @@
 </template>
 
 <script>
-  import {getTableData, addGame} from '@/api/activity'
+  import {getTableData, addGame, updateGame, activeGame} from '@/api/activity'
   import {isPhone} from '@/utils/validate'
-  import Hongbao from '@/components/activity/hongbao'
+//  import Hongbao from '@/components/activity/hongbao'
 
   const ERR_OK = 0
   export default {
@@ -211,6 +207,25 @@
     }
     ,
     methods: {
+      handleActive(row) {  // 开启关闭活动
+        let id = row.id
+        let desc = row.enable == 0 ? '开启' : '关闭'
+        this.$confirm(`是否${desc}活动?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          activeGame(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
+      },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
@@ -227,7 +242,7 @@
       }
       ,
       handleCreate() {    // 点击创建新功能按钮
-//        this.resetTemp()    // 清空原有表单
+        this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       }
@@ -236,7 +251,15 @@
         this.dateRange = []
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
-        this.enable = row.enable.toString()
+        let stringArr = ['isPush', 'needPhone', 'needSms', 'enable']  // 转为string
+        stringArr.forEach(item => {
+          row[item] =row[item].toString()
+        })
+//        let proData = {
+//          targetRate: row.targetRate,
+//          targetCount: row.targetCount
+//        }
+//        this.proData = proData
         this.temp = row   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -287,23 +310,22 @@
       }
       ,
       update() {  // 编辑此条信息
-        this.temp.enable = this.enable
         if (!this.temp.startTime || !this.temp.endTime) {
           this.$message.error('请选择时间范围')
           return
         }
-        upadateFn(this.temp).then(res => {
+        updateGame(this.temp).then(res => {
           if (res.code === ERR_OK) {
+            this.$message.success('保存成功')
             this.getTableData()
             this.dialogFormVisible = false
-            this.$message.success('保存成功')
           }
         })
       }
     }
     ,
     components: {
-      Hongbao
+//      Hongbao
     }
   }
 </script>

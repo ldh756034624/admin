@@ -15,3 +15,18 @@ export function addGame(data) {    // 增加活动
     data
   })
 }
+
+export function updateGame(data) {    // 编辑活动
+  return fetch({
+    url: '/community/activity',
+    method: 'put',
+    data
+  })
+}
+
+export function activeGame(id) {    // 开启或者关闭活动
+  return fetch({
+    url: '/community/activity/' + id + '/status',
+    method: 'put'
+  })
+}

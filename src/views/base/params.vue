@@ -4,7 +4,6 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="goList" icon="edit">去列表</el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -12,48 +11,36 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类名称">
+      <el-table-column align="center" label="名称">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数量">
+      <el-table-column align="center" label="参数名">
         <template scope="scope">
           <span>{{scope.row.bannerCount}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="开始时间">
+      <el-table-column align="center" label="参数值">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
+          <span>{{scope.row.startTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="结束时间">
+      <el-table-column align="center" label="说明">
         <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
+          <span>{{scope.row.endTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" label="配置时间">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="标示码" width="100">
-        <template scope="scope">
-          <span>{{scope.row.code}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="状态">
-        <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">列表
-          </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
+          <el-button size="small" type="error" @click="handleDele(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -71,25 +58,33 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
-        <el-form-item label="分类名称" prop="name">
+        <el-form-item label="参数名称" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="code">
+        <el-form-item label="参数标识" prop="code">
           <el-input v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="上线时间">
-          <el-date-picker
-            v-model="dateRange"
-            @change="dateRangeChange"
-            type="daterange"
-            placeholder="选择日期范围">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="参数类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">禁用</el-radio>
+            <el-radio class="radio" v-model="enable" label="1">文本</el-radio>
+            <el-radio class="radio" v-model="enable" label="0">对象</el-radio>
           </div>
+        </el-form-item>
+        <el-form-item label="参数值" prop="code">
+          <el-input v-model="temp.code"></el-input>    <!--v-if="temp.type == 1"-->
+          <div>
+            <div v-for="item in temp.objParams">
+              <span>key:</span>
+              <el-input v-model="item.key"></el-input>
+              <span>value:</span>
+              <el-input v-model="item.code"></el-input>
+              <el-button type="primary" icon="plus" v-if="index === 0" @click="add"></el-button>
+              <el-button type="primary" icon="minus" v-else @click="minus"></el-button>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="参数描述">
+          <el-input type="textarea" v-model="temp.code"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,7 +98,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
+  import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -139,8 +134,31 @@
       this.getTableData()
     },
     methods: {
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
+      add() { // 添加一条参数
+        this.temp.objParams.push({
+          key: null,
+          value: nulltemp
+        })
+      },
+      minus() { // 删除一条参数
+        this.temp.objParams.pop()
+      },
+      handleDele(id) { // 删除当前条目
+        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delFunction(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
       },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
