@@ -71,7 +71,11 @@
           </div>
         </el-form-item>
         <el-form-item label="参数值" prop="code">
-          <el-input v-if="temp.type == 0" v-model="temp.val"></el-input>
+          <div v-if="temp.type == 0" v-for="(item, index) in temp.val">
+            <el-input v-model="item.val"></el-input>
+            <el-button type="primary" icon="plus" v-if="index === 0" @click="add(txt)"></el-button>
+            <el-button type="primary" icon="minus" v-else @click="minus(txt)"></el-button>
+          </div>
           <div v-else>
             <div v-for="(item, index) in temp.objParams" style="margin-bottom: 10px">
               <span>key:</span>
@@ -98,7 +102,7 @@
 </template>
 
 <script>
-  import {getTableData, createParams, updateParams} from '@/api/base'
+  import {getTableData, createParams, updateParams, delParams} from '@/api/base'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -109,7 +113,9 @@
           type: '0',
           code: null,
           description: null,
-          val: null,
+          val: [{
+            val: null
+          }],
           objParams: [
             {
               key: null,
@@ -140,13 +146,23 @@
       this.getTableData()
     },
     methods: {
-      add() { // 添加一条参数
+      add(type) { // 添加一条参数
+        if (type === 'txt') {
+          this.temp.val.push({
+            val: null,
+          })
+          return
+        }
         this.temp.objParams.push({
           key: null,
           code: null
         })
       },
-      minus() { // 删除一条参数
+      minus(type) { // 删除一条参数
+        if (type === 'txt') {
+          this.temp.val.pop()
+          return
+        }
         this.temp.objParams.pop()
       },
       handleDele(id) { // 删除当前条目
@@ -155,12 +171,9 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delFunction(id).then(res => {
+          delParams(id).then(res => {
             if (res.code === ERR_OK) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
+              this.$message.success('删除成功!')
               this.getTableData()
             }
           })
@@ -210,10 +223,8 @@
       },
       create() {    // 创建新功能
         if (this.temp.type == 1) {
-          this.temp.val = JSON.stringify(this.temp.objParams)
+          this.temp.val = JSON.stringify(this.temp.objParams)   // 字符串化
         }
-        console.log(this.temp)
-
         createParams(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.$message.success('创建成功')
@@ -224,7 +235,7 @@
       },
       update() {  // 编辑此条信息
         if (this.temp.type == 1) {
-          this.temp.val = JSON.stringify(this.temp.objParams)
+          this.temp.val = JSON.stringify(this.temp.objParams) // 字符串化
         }
         updateParams(this.temp).then(res => {
           if (res.code === ERR_OK) {

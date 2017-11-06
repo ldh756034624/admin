@@ -23,3 +23,11 @@ export function updateParams(data) {    // 编辑参数
     data
   })
 }
+
+export function delParams(id) {    // 删除参数
+  return fetch({
+    url: '/basis/param/' + id,
+    method: 'delete',
+  })
+}
+
