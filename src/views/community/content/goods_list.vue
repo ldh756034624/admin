@@ -78,6 +78,9 @@
         <el-form-item label="名称">
           <el-input class="w30" v-model="temp.name"></el-input>
         </el-form-item>
+        <el-form-item label="编码">
+          <el-input class="w30" v-model="temp.code"></el-input>
+        </el-form-item>
         <el-form-item label="类型">
           <el-select v-model="temp.goodsTypeId" placeholder="活动区域">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
@@ -162,6 +165,7 @@
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           img: null,
+          code: null,
           name: null,
           description: null,
           goodsTypeId: 1,
@@ -283,6 +287,7 @@
           goodsTypeId: 1,
           id: null,
           price: null,
+          code: null,
           realPrice: null,
           status: 1,
           stock: null,
