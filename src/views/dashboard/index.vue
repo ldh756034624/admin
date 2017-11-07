@@ -111,7 +111,7 @@ import { parseTime } from '@/utils/index'
         }
       },
       mounted() {
-        this.getInit();
+//        this.getInit();
       },
       methods: {
         getInit() {

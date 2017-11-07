@@ -63,7 +63,7 @@ export const constantRouterMap = [
   {path: '/login', component: Login, hidden: true},
   {path: '/404', component: Err404, hidden: true},
   {   // 默认打开工作台
-    path: '',
+    path: '/',
     component: Layout,
     redirect: '/work',
     meta_name: 'Home2',
