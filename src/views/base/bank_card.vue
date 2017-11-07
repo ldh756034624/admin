@@ -25,9 +25,9 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">启用
+          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="handleBankStatus(scope.row.id, 1)">启用
           </el-button>
-          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 0)">禁用
+          <el-button v-else size="small" type="danger" @click="handleBankStatus(scope.row.id, 0)">禁用
           </el-button>
         </template>
       </el-table-column>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-  import {getTableData, createBankCard, updateBankCard} from '@/api/base'
+  import {getTableData, createBankCard, updateBankCard, changeBankStatus} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -114,14 +114,14 @@
       this.getTableData()
     },
     methods: {
-      changeStatus(id, type) { // 物品上下架
+      handleBankStatus(id, type) { // 物品上下架
         let desc = type === 0 ? '禁用' : '启用'
-        this.$confirm(`是否${desc}此商品?`, '提示', {
+        this.$confirm(`是否${desc}此银行卡?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          changeGoodsStatus(id).then(res => {
+          changeBankStatus(id).then(res => {
             if (res.code === ERR_OK) {
               this.$message({
                 type: 'success',

@@ -28,12 +28,15 @@ const user = {
     // 登录
     Login({commit}, userInfo) {
       return new Promise((resolve, reject) => {
+        console.log('执行登录login方法')
         login(userInfo.name, userInfo.password).then(response => {
+          console.log('获得登录接口数据')
           const data = response.data
           console.log(data)
           setToken(data.token)
           commit('SET_TOKEN', data.token)
           commit('SET_NAME', data.name)
+          console.log('返回成功')
           resolve()
         }).catch(error => {
           reject(error)

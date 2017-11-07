@@ -32,6 +32,9 @@
 
   export default {
     name: 'login',
+    created() {
+      console.log('进入登录页')
+    },
     data() {
       const validatePhone = (rule, value, callback) => {
         if (!isPhone(value)) {
@@ -70,7 +73,8 @@
             this.loading = true;
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false;
-              this.$router.push({path: '/'});
+              console.log('最后我要跳转到///了')
+              this.$router.push({path: '/'})
             }).catch(() => {
               this.loading = false;
             });

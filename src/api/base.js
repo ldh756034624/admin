@@ -47,3 +47,9 @@ export function updateBankCard(data) {    // 编辑银行
   })
 }
 
+export function changeBankStatus(id) {    // 启用/关闭银行卡
+  return fetch({
+    url: `/basis/bank/${id}/status`,
+    method: 'put'
+  })
+}
