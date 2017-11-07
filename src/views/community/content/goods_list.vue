@@ -186,7 +186,6 @@
       }
     },
     created() {
-      this.id = this.$route.query.id    // 带参id
       this.getTableData()
     },
     methods: {

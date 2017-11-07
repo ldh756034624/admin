@@ -31,3 +31,19 @@ export function delParams(id) {    // 删除参数
   })
 }
 
+export function createBankCard(data) {    // 创建新的银行
+  return fetch({
+    url: '/basis/bank',
+    method: 'post',
+    data
+  })
+}
+
+export function updateBankCard(data) {    // 编辑银行
+  return fetch({
+    url: '/basis/bank',
+    method: 'put',
+    data
+  })
+}
+
