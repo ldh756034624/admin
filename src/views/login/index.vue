@@ -70,19 +70,20 @@
       handleLogin() {
         this.$refs.loginForm.validate(valid => {
           if (valid) {
-            this.loading = true;
+            this.loading = true
             this.$store.dispatch('Login', this.loginForm).then(() => {
-              this.loading = false;
+              this.loading = false
               console.log('最后我要跳转到///了')
               this.$router.push({path: '/'})
+              console.log('你跳没跳?')
             }).catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
           } else {
-            console.log('error submit!!');
-            return false;
+            console.log('error submit!!')
+            return false
           }
-        });
+        })
       }
     }
   }
