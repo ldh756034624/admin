@@ -16,6 +16,11 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="商品编码">
+        <template scope="scope">
+          <span>{{scope.row.code}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="商品类型">
         <template scope="scope">
           <span>{{scope.row.goodsType.name}}</span>

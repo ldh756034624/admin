@@ -1,8 +1,8 @@
 {
-  "name": "gofar_front",
+  "name": "h9_admin_web",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "国富小贷管理系统",
+  "description": "徽酒欢乐之家管理系统",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
