@@ -73,9 +73,8 @@
             this.loading = true
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.loading = false
-              console.log('最后我要跳转到///了')
+              console.log('router', this.$router)
               this.$router.push({path: '/'})
-              console.log('你跳没跳?')
             }).catch(() => {
               this.loading = false
             })
