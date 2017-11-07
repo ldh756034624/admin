@@ -66,17 +66,18 @@
         </el-form-item>
         <el-form-item label="参数类型">
           <div class="checkitem">
-            <el-radio class="radio" label="0" v-model="temp.type">文本</el-radio>
-            <el-radio class="radio" label="1" v-model="temp.type">对象</el-radio>
+            <el-radio class="radio" :label="0" v-model="temp.type">文本</el-radio>
+            <el-radio class="radio" :label="1" v-model="temp.type">对象</el-radio>
+            <el-radio class="radio" :label="2" v-model="temp.type">数组</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="参数值" prop="code">
-          <div v-if="temp.type == 0" v-for="(item, index) in temp.val">
-            <el-input v-model="item.val"></el-input>
-            <el-button type="primary" icon="plus" v-if="index === 0" @click="add(txt)"></el-button>
-            <el-button type="primary" icon="minus" v-else @click="minus(txt)"></el-button>
+          <!--文本-->
+          <div v-if="temp.type == 0">
+            <el-input class="w30" v-model="temp.textParams"></el-input>
           </div>
-          <div v-else>
+          <!--对象-->
+          <div v-if="temp.type == 1">
             <div v-for="(item, index) in temp.objParams" style="margin-bottom: 10px">
               <span>key:</span>
               <el-input class="w30" v-model="item.key"></el-input>
@@ -84,6 +85,14 @@
               <el-input class="w30" v-model="item.code"></el-input>
               <el-button type="primary" icon="plus" v-if="index === 0" @click="add"></el-button>
               <el-button type="primary" icon="minus" v-else @click="minus"></el-button>
+            </div>
+          </div>
+          <!--数组-->
+          <div v-if="temp.type == 2">
+            <div v-for="(item, index) in temp.arrParams" style="margin-bottom: 10px">
+              <el-input class="w30" v-model="item.val"></el-input>
+              <el-button type="primary" icon="plus" v-if="index === 0" @click="add(0)"></el-button>
+              <el-button type="primary" icon="minus" v-else @click="minus(0)"></el-button>
             </div>
           </div>
         </el-form-item>
@@ -110,13 +119,15 @@
     data() {
       return {
         temp: {           // 弹窗内容数据对象
-          type: '0',
+          type: 0,
           code: null,
           description: null,
-          val: [{
+          val: null,    // 接口params传递
+          textParams: null, // 文本输入框
+          arrParams: [{   // 数组输入框
             val: null
           }],
-          objParams: [
+          objParams: [  // 对象输入框
             {
               key: null,
               code: null
@@ -147,9 +158,9 @@
     },
     methods: {
       add(type) { // 添加一条参数
-        if (type === 'txt') {
-          this.temp.val.push({
-            val: null,
+        if (type === 0) {
+          this.temp.arrParams.push({
+            val: null
           })
           return
         }
@@ -159,8 +170,8 @@
         })
       },
       minus(type) { // 删除一条参数
-        if (type === 'txt') {
-          this.temp.val.pop()
+        if (type === 0) {
+          this.temp.arrParams.pop()
           return
         }
         this.temp.objParams.pop()
@@ -198,22 +209,32 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        row.type = row.type.toString()
-        let objParams = JSON.parse(row.val)
-        row.val = null
-        this.temp = row   // 赋值
-        this.$set(this.temp, 'objParams', objParams)
+        this.resetTemp()
+        this.temp = Object.assign(this.temp, row)
+
+        let type = row.type
+        if (type == 0) {
+          this.temp.textParams = row.val[0].val
+        } else if (type == 1) {
+          this.temp.objParams = row.val
+        } else {
+          this.temp.arrParams = row.val
+        }
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {
-          type: '0',
+          type: 0,
           code: null,
           description: null,
-          val: null,
-          objParams: [
+          val: null,    // 接口params传递
+          textParams: null, // 文本输入框
+          arrParams: [{   // 数组输入框
+            val: null
+          }],
+          objParams: [  // 对象输入框
             {
               key: null,
               code: null
@@ -222,9 +243,7 @@
         }
       },
       create() {    // 创建新功能
-        if (this.temp.type == 1) {
-          this.temp.val = JSON.stringify(this.temp.objParams)   // 字符串化
-        }
+        this.assignVal()
         createParams(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.$message.success('创建成功')
@@ -234,9 +253,7 @@
         })
       },
       update() {  // 编辑此条信息
-        if (this.temp.type == 1) {
-          this.temp.val = JSON.stringify(this.temp.objParams) // 字符串化
-        }
+        this.assignVal()
         updateParams(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.$message.success('保存成功')
@@ -244,6 +261,15 @@
             this.dialogFormVisible = false
           }
         })
+      },
+      assignVal() {   // 给 temp.val 赋值
+        if (this.temp.type == 1) {  // 对象
+          this.temp.val = this.temp.objParams
+        } else if (this.temp.type == 0) {  //文本
+          this.temp.val = [{val: this.temp.textParams}]
+        } else {  // 数组
+          this.temp.val = this.temp.arrParams
+        }
       }
     }
   }

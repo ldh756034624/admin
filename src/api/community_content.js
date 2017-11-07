@@ -53,3 +53,19 @@ export function delFunction(id) {    // 删除功能
     method: 'delete',
   })
 }
+
+export function addGoods(data) {    // 新增商品
+  return fetch({
+    url: '/community/banner',
+    method: 'POST',
+    data
+  })
+}
+
+export function upadateGoods(data) {    // 编辑商品
+  return fetch({
+    url: '/community/banner',
+    method: 'put',
+    data
+  })
+}
