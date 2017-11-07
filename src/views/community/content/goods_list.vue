@@ -50,9 +50,9 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="handleModifyStatus(scope.row.id)">上架
+          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">上架
           </el-button>
-          <el-button v-else size="small" type="danger" @click="handleDele(scope.row.id)">下架
+          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 0)">下架
           </el-button>
         </template>
       </el-table-column>
@@ -114,8 +114,8 @@
         </el-form-item>
         <el-form-item label="状态">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.status" label="1">上架</el-radio>
-            <el-radio class="radio" v-model="temp.status" label="0">下架</el-radio>
+            <el-radio class="radio" v-model="temp.status" :label="1">上架</el-radio>
+            <el-radio class="radio" v-model="temp.status" :label="0">下架</el-radio>
           </div>
         </el-form-item>
       </el-form>
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-  import {getTableData, addGoods, upadateGoods} from '@/api/community_content'
+  import {getTableData, addGoods, upadateGoods, changeGoodsStatus} from '@/api/community_content'
 
   const ERR_OK = 0
   export default {
@@ -163,7 +163,7 @@
           id: null,
           price: null,
           realPrice: null,
-          status: '1',
+          status: 1,
           stock: null,
           vCoinsRate: null
         },
@@ -190,6 +190,24 @@
       this.getTableData()
     },
     methods: {
+      changeStatus(id, type) { // 物品上下架
+        let desc = type === 0 ? '下架' : '上架'
+        this.$confirm(`是否${desc}此商品?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          changeGoodsStatus(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: `${desc}成功!`
+              })
+              this.getTableData()
+            }
+          })
+        })
+      },
       beforeHandleImg(file) {      // 头像上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {
@@ -245,13 +263,15 @@
         this.dateRange = []
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
-        row.status = row.status.toString()
+        console.log(row)
+        row.goodsTypeId = row.goodsType.id
         this.temp = row   // 赋值
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
+        this.dateRange = []
         this.temp = {      // 清空内容数据对象
           img: null,
           name: null,
@@ -260,7 +280,7 @@
           id: null,
           price: null,
           realPrice: null,
-          status: '1',
+          status: 1,
           stock: null,
           vCoinsRate: null
         }

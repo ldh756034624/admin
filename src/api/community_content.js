@@ -56,7 +56,7 @@ export function delFunction(id) {    // 删除功能
 
 export function addGoods(data) {    // 新增商品
   return fetch({
-    url: '/community/banner',
+    url: '/community/goods',
     method: 'POST',
     data
   })
@@ -64,8 +64,15 @@ export function addGoods(data) {    // 新增商品
 
 export function upadateGoods(data) {    // 编辑商品
   return fetch({
-    url: '/community/banner',
+    url: '/community/goods',
     method: 'put',
     data
+  })
+}
+
+export function changeGoodsStatus(id) {    // 上架下架商品
+  return fetch({
+    url: `/community/goods/${id}/status`,
+    method: 'put',
   })
 }
