@@ -11,6 +11,11 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="类型">
+        <template scope="scope">
+          <span>{{scope.row.type | typeFilter}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="名称">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
@@ -269,6 +274,17 @@
           this.temp.val = [{val: this.temp.textParams}]
         } else {  // 数组
           this.temp.val = this.temp.arrParams
+        }
+      }
+    },
+    filters: {
+      typeFilter (val) {
+        if (val == 0) {
+          return '文本'
+        } else if (val == 1) {
+          return '对象'
+        } else {
+          return '数组'
         }
       }
     }

@@ -67,8 +67,6 @@ const permission = {
         let accessedRouters
         accessedRouters = asyncRouterMap
         commit('SET_ROUTERS', accessedRouters)
-        console.log('store同步router信息')
-
         resolve();
       })
     }
