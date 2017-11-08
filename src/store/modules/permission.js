@@ -61,12 +61,14 @@ const permission = {
   actions: {
     SetAdminMenus({ commit }, data) {
       return new Promise(resolve => {
-        let accessedRouters
         // 需要权限时，下面两个放开
-        // let rout = data.routers[0].child;
         // accessedRouters = filterAsyncRouter(asyncRouterMap, rout)
+        // let rout = data.routers[0].child;
+        let accessedRouters
         accessedRouters = asyncRouterMap
-        commit('SET_ROUTERS', accessedRouters);
+        commit('SET_ROUTERS', accessedRouters)
+        console.log('store同步router信息')
+
         resolve();
       })
     }

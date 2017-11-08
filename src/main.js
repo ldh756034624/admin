@@ -39,36 +39,40 @@ Vue.filter('formatDateTime', val => {   // 有日期和时间
   return formatDate(new Date(val), 'yyyy-MM-dd hh:mm:ss')
 })
 
-// router.beforeEach((to, from, next) => {
-//   NProgress.start()
-//   if (getToken()) {
-//     if (to.path === '/login') {
-//       next({path: '/'})
-//     } else {
-//       // store.dispatch('GetRouterInfo').then(res => {
-//       //   const routers = res.data
-//       //   store.dispatch('SetAdminMenus', {routers}).then(() => {
-//       //     router.addRoutes(store.getters.addRouters)
-//       //     next({...to})
-//       //   })
-//       // })
-//
-//       // 去除权限，上面需要权限
-//       store.dispatch('SetAdminMenus').then(() => {
-//         router.addRoutes(store.getters.addRouters)
-//         next({...to})
-//       })
-//       next()
-//     }
-//   } else {
-//     if (whiteList.indexOf(to.path) !== -1) {
-//       next()
-//     } else {
-//       next('/login')
-//       NProgress.done()
-//     }
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  if (getToken()) {
+    if (to.path === '/login') {
+      next({path: '/'})
+    } else {
+      // store.dispatch('GetRouterInfo').then(res => {
+      //   const routers = res.data
+      //   store.dispatch('SetAdminMenus', {routers}).then(() => {
+      //     router.addRoutes(store.getters.addRouters)
+      //     next({...to})
+      //   })
+      // })
+      // 去除权限，上面需要权限
+      console.log('设置路由信息')
+      store.dispatch('SetAdminMenus').then(() => {
+        router.addRoutes(store.getters.addRouters)
+        console.log('设置路由信息完成，前往下一个')
+        next({...to})
+      })
+      console.log('开始跳转')
+
+      next()
+
+    }
+  } else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next()
+    } else {
+      next('/login')
+      NProgress.done()
+    }
+  }
+})
 
 router.afterEach(() => {
   NProgress.done()
