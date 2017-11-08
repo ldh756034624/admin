@@ -19,7 +19,7 @@ function_assort.vue
           <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
         </el-form-item>
       </el-form>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="menu">所有参与记录
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleDetail(null)" icon="menu">所有参与记录
       </el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
@@ -85,8 +85,15 @@ function_assort.vue
     data() {
       return {
         dateRange: null,  // 时间范围
+        temp: {           // 弹窗内容数据对象
+          enable: '1',
+          name: null,
+          id: null
+        },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
+        dialogFormVisible: false,
+        dialogStatus: '',
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
@@ -98,11 +105,19 @@ function_assort.vue
       this.getTableData()
     },
     methods: {
-      handleDetail(code) {  // 跳转至详情列表
+      handleDetail(code) {  // 跳转至功能列表
         this.$router.push({path: '/activity/hongbaoPeople', query: {code}})
       },
+      dateRangeChange() {      // 获取时间范围
+        if (!this.dateRange[0] || !this.dateRange[1]) {
+          delete this.listQuery.startTime
+          delete this.listQuery.endTime
+          return
+        }
+        this.listQuery.startTime = new Date(this.dateRange[0]).getTime()
+        this.listQuery.endTime = new Date(this.dateRange[1]).getTime()
+      },
       getTableData() {
-        console.log(JSON.stringify(this.listQuery))
         getTableData('/activity/lottery/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data

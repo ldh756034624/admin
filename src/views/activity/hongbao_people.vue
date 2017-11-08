@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">详情
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDetail(scope.row)">详情
           </el-button>
         </template>
       </el-table-column>
@@ -74,36 +74,38 @@
       </el-pagination>
     </div>
 
-    <!-- 弹出编辑和新增窗口 -->
-    <!--<el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">-->
-      <!--<el-form :model="temp" ref="temp" :rules="rules" label-width="100px">-->
-        <!--<el-form-item label="分类名称" prop="name">-->
-          <!--<el-input v-model="temp.name"></el-input>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item label="标识" prop="code">-->
-          <!--<el-input v-model="temp.code"></el-input>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item label="上线时间">-->
-          <!--<el-date-picker-->
-            <!--v-model="dateRange"-->
-            <!--@change="dateRangeChange"-->
-            <!--type="daterange"-->
-            <!--placeholder="选择日期范围">-->
-          <!--</el-date-picker>-->
-        <!--</el-form-item>-->
-        <!--<el-form-item label="状态">-->
-          <!--<div class="checkitem">-->
-            <!--<el-radio class="radio" v-model="enable" label="1">启用</el-radio>-->
-            <!--<el-radio class="radio" v-model="enable" label="0">禁用</el-radio>-->
-          <!--</div>-->
-        <!--</el-form-item>-->
-      <!--</el-form>-->
-      <!--<div slot="footer" class="dialog-footer">-->
-        <!--<el-button @click="dialogFormVisible = false">取消</el-button>-->
-        <!--<el-button v-if="dialogStatus == 'create'" type="primary" @click="create">提交</el-button>-->
-        <!--<el-button v-else type="primary" @click="update">提交</el-button>-->
-      <!--</div>-->
-    <!--</el-dialog>-->
+    <!-- 详情窗口 -->
+    <el-dialog title="详情" :visible.sync="dialogFormVisible" size="full">
+      <el-form :model="temp" label-width="100px">
+        <el-form-item label="用户ID">
+          <span>{{temp.urserId}}</span>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <span>{{temp.phone}}</span>
+        </el-form-item>
+        <el-form-item label="中奖金额(元)">
+          <span>{{temp.money}}</span>
+        </el-form-item>
+        <el-form-item label="经纬度">
+          <span>{{temp.urserId}}</span>
+        </el-form-item>
+        <el-form-item label="IP">
+          <span>{{temp.ip}}</span>
+        </el-form-item>
+        <el-form-item label="手机品牌">
+          <span>{{temp.phoneType}}</span>
+        </el-form-item>
+        <el-form-item label="版本">
+          <span>{{temp.version}}</span>
+        </el-form-item>
+        <el-form-item label="时间">
+          <span>{{temp.createTime | formatDateTime}}</span>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -119,7 +121,6 @@
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
-        dialogStatus: '',
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
@@ -143,13 +144,6 @@
       }
     },
     methods: {
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
-      },
-      dateRangeChange() {      // 获取时间范围
-        this.temp.startTime = new Date(this.dateRange[0]).getTime()
-        this.temp.endTime = new Date(this.dateRange[1]).getTime()
-      },
       getTableData() {
         getTableData('/activity/lottery/flow/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
@@ -159,62 +153,9 @@
           }
         })
       },
-      handleCreate() {    // 点击创建新功能按钮
-        this.resetTemp()    // 清空原有表单
-        this.dialogStatus = 'create'
+      handleDetail(row) {   // 查看详情
+        this.temp = row
         this.dialogFormVisible = true
-      },
-      handleUpdate(row) {   // 点击编辑功能按钮
-        this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
-        this.enable = row.enable.toString()
-        this.temp = row   // 赋值
-
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-      },
-      resetTemp() {   // 重置弹出表格
-        this.enable = '1'
-        this.temp = {
-          name: null,
-          enable: '1',
-          id: null
-        }
-      },
-      create() {    // 创建新功能
-        this.resetTemp()
-        this.temp.id = 0
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFn(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
-          }
-        })
-      },
-      update() {  // 编辑此条信息
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        upadateFn(this.temp).then(res => {
-          if (res.code === ERR_OK) {
-            this.getTableData()
-            this.dialogFormVisible = false
-            this.$message.success('保存成功')
-          }
-        })
       }
     }
   }
