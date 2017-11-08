@@ -39,36 +39,36 @@ Vue.filter('formatDateTime', val => {   // 有日期和时间
   return formatDate(new Date(val), 'yyyy-MM-dd hh:mm:ss')
 })
 
-router.beforeEach((to, from, next) => {
-  NProgress.start()
-  if (getToken()) {
-    if (to.path === '/login') {
-      next({path: '/'})
-    } else {
-      // store.dispatch('GetRouterInfo').then(res => {
-      //   const routers = res.data
-      //   store.dispatch('SetAdminMenus', {routers}).then(() => {
-      //     router.addRoutes(store.getters.addRouters)
-      //     next({...to})
-      //   })
-      // })
-
-      // 去除权限，上面需要权限
-      store.dispatch('SetAdminMenus').then(() => {
-        router.addRoutes(store.getters.addRouters)
-        next({...to})
-      })
-      next()
-    }
-  } else {
-    if (whiteList.indexOf(to.path) !== -1) {
-      next()
-    } else {
-      next('/login')
-      NProgress.done()
-    }
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   NProgress.start()
+//   if (getToken()) {
+//     if (to.path === '/login') {
+//       next({path: '/'})
+//     } else {
+//       // store.dispatch('GetRouterInfo').then(res => {
+//       //   const routers = res.data
+//       //   store.dispatch('SetAdminMenus', {routers}).then(() => {
+//       //     router.addRoutes(store.getters.addRouters)
+//       //     next({...to})
+//       //   })
+//       // })
+//
+//       // 去除权限，上面需要权限
+//       store.dispatch('SetAdminMenus').then(() => {
+//         router.addRoutes(store.getters.addRouters)
+//         next({...to})
+//       })
+//       next()
+//     }
+//   } else {
+//     if (whiteList.indexOf(to.path) !== -1) {
+//       next()
+//     } else {
+//       next('/login')
+//       NProgress.done()
+//     }
+//   }
+// })
 
 router.afterEach(() => {
   NProgress.done()
