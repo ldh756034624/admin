@@ -73,12 +73,6 @@ export const constantRouterMap = [
   }
 ]
 
-export default new Router({
-  // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({y: 0}),
-  routes: constantRouterMap
-})
-
 /**
  * icon : the icon show in the sidebar
  * hidden : if `hidden:true` will not show in the sidebar
@@ -179,3 +173,13 @@ export const asyncRouterMap = [
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
+
+let routers = constantRouterMap.concat(asyncRouterMap)
+
+console.log(routers)
+
+export default new Router({
+  // mode: 'history', //后端支持可开
+  scrollBehavior: () => ({y: 0}),
+  routes: routers
+})
