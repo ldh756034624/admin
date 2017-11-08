@@ -42,7 +42,9 @@ Vue.filter('formatDateTime', val => {   // 有日期和时间
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
+    console.log('获得有token')
     if (to.path === '/login') {
+      console.log('不是去login，去首页')
       next({path: '/'})
     } else {
       // store.dispatch('GetRouterInfo').then(res => {
@@ -57,17 +59,19 @@ router.beforeEach((to, from, next) => {
       store.dispatch('SetAdminMenus').then(() => {
         router.addRoutes(store.getters.addRouters)
         console.log('设置路由信息完成')
-        // next({...to})
-        console.log('。。to已注释')
+        next({...to})
+        console.log('。。to已完成')
       })
       console.log('开始跳转')
       next()
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
+      console.log('是白名单，next')
       next()
     } else {
       next('/login')
+      console.log('非白名单，进入login')
       NProgress.done()
     }
   }

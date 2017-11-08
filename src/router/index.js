@@ -63,9 +63,9 @@ export const constantRouterMap = [
   {path: '/login', component: Login, hidden: true},
   {path: '/404', component: Err404, hidden: true},
   {   // 默认打开工作台
-    path: '/',
+    path: '',
     component: Layout,
-    redirect: '/work',
+    redirect: 'work',
     meta_name: 'Home2',
     icon: 'zujian',
     noDropdown: true,
@@ -176,5 +176,6 @@ export const asyncRouterMap = [
       {path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment'},
       {path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction'}
     ]
-  }
+  },
+  { path: '*', redirect: '/404', hidden: true }
 ]
