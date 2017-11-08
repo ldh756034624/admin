@@ -56,13 +56,12 @@ router.beforeEach((to, from, next) => {
       console.log('设置路由信息')
       store.dispatch('SetAdminMenus').then(() => {
         router.addRoutes(store.getters.addRouters)
-        console.log('设置路由信息完成，前往下一个')
-        next({...to})
+        console.log('设置路由信息完成')
+        // next({...to})
+        console.log('。。to已注释')
       })
       console.log('开始跳转')
-
       next()
-
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
