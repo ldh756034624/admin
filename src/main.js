@@ -60,7 +60,7 @@ router.beforeEach((to, from, next) => {
       //   next({...to})
       //   console.log('next走起')
       // })
-      store.dispatch('SetAdminMenus')
+      store.dispatch('SetAdminMenus')   // 去除权限后，生成左侧列表数据
       next()
     }
   } else {

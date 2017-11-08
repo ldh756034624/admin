@@ -174,9 +174,8 @@ export const asyncRouterMap = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+// 线上hack，暂时没有权限的做法，加入权限后，请删除该行
 let routers = constantRouterMap.concat(asyncRouterMap)
-
-console.log(routers)
 
 export default new Router({
   // mode: 'history', //后端支持可开
