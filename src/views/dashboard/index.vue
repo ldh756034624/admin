@@ -1,161 +1,86 @@
 <template>
   <div class="dashboard-container">
-    <div class="hd">我的代办事项</div>
     <div class="bd">
       <ul>
-        <router-link :to="{ path: '/loan/apply'}">
-          <li>
-            <div class="num">{{info.waitSubmit}}</div>
-            <div class="name">待提交</div>
-          </li>
-        </router-link>
-        <router-link :to="{ path: '/loan/approval'}">
-          <li>
-            <div class="num">{{info.waitAudit}}</div>
-            <div class="name">待审批</div>
-          </li>
-        </router-link>
-        <router-link :to="{ path: '/loan/recheack'}">
-          <li>
-            <div class="num">{{info.waitRecheck}}</div>
-            <div class="name">待复审</div>
-          </li>
-        </router-link>
-        <router-link :to="{ path: '/loan/deal'}">
-          <li>
-            <div class="num">{{info.waitDispose}}</div>
-            <div class="name">待处理</div>
-          </li>
-        </router-link>
-        <router-link :to="{ path: '/loan/audit'}">
-          <li>
-            <div class="num">{{info.waitDisposeApprove}}</div>
-            <div class="name">待处理审核</div>
-          </li>
-        </router-link>
-        <router-link :to="{ path: '/loan/review'}">
-          <li>
-            <div class="num">{{info.waitLaw}}</div>
-            <div class="name">待法律审查</div>
-          </li>
-        </router-link>
-
-        <router-link :to="{ path: '/loan/lend'}">
-          <li>
-            <div class="num">{{info.waitMakeLoan}}</div>
-            <div class="name">待放款</div>
-          </li>
-        </router-link>
-
-        <router-link :to="{ path: '/manage/firstcheck'}">
-          <li>
-            <div class="num">{{info.waitCheck}}</div>
-            <div class="name">待检查</div>
-          </li>
-        </router-link>
-
-        <router-link :to="{ path: '/manage/checkaudit'}">
-          <li>
-            <div class="num">{{info.waitExamineCheck}}</div>
-            <div class="name">待检查审核</div>
-          </li>
-        </router-link>
-
-        <router-link :to="{ path: '/repay/repayment'}">
-          <li>
-            <div class="num">{{info.aboutToExpire}}</div>
-            <div class="name">即将到期</div>
-          </li>
-        </router-link>
-
-        <!-- <router-link :to="{ path: '/repay/repayment'}"> -->
-          <li @click="goTody">
-            <div class="num">{{info.todayExpire}}</div>
-            <div class="name">今日到期</div>
-          </li>
-        <!-- </router-link> -->
-
-        <!-- <li>
-          <div class="num">{{info.waitPeriodAudit}}</div>
-          <div class="name">待审批展期</div>
+        <li class="item">
+          <div class="title">奖金</div>
+          <div class="content">
+            <div class="count">13213123312.12</div>
+            <div class="desc">总奖金(元)</div>
+          </div>
         </li>
-        <li>
-          <div class="num">{{info.waitAudit}}</div>
-          <div class="name">待复审展期</div>
-        </li>
-        <li>
-          <div class="num">{{info.waitPeriodDispose}}</div>
-          <div class="name">待处理展期</div>
-        </li>
-        <li>
-          <div class="num">{{info.waitAudit}}</div>
-          <div class="name">待处理审核展期</div>
-        </li>
-        <li>
-          <div class="num">{{info.waitPeriodLaw}}</div>
-          <div class="name">待法律审查展期</div>
-        </li> -->
       </ul>
     </div>
   </div>
 </template>
 
 <script>
-import { getDashboard } from '@/api/login'
-import { parseTime } from '@/utils/index'
-    export default {
-      name: 'dashboard',
-      data() {
-        return {
-          info: {}
-        }
-      },
-      mounted() {
+  import {getDashboard} from '@/api/login'
+  import {parseTime} from '@/utils/index'
+
+  export default {
+    name: 'dashboard',
+    data() {
+      return {
+        list: {}
+      }
+    },
+    created() {
 //        this.getInit();
-      },
-      methods: {
-        getInit() {
-          getDashboard().then(res => {
-            console.log('dashbord', res)
-            const data = res.data;
-            this.info = data;
-          })
-        },
-        goTody() {
-          const today = parseTime(new Date(), '{y}-{m}-{d}');
-          this.$router.push({ path: '/repay/repayment', query: { start_time: today, end_time: today } })
-        }
+    },
+    methods: {
+      getInit() {
+        getDashboard().then(res => {
+          const data = res.data;
+          this.info = data;
+        })
       }
     }
+  }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.dashboard {
-  &-container {
-    margin: 30px;
-    ul {
-      margin-left: -20px;
-      font-size: 14px;
-      li {
-        list-style: none;
-        float:left;
-        width: 120px;
-        margin-bottom:40px;
-        .num {
-          border: 1px solid #ccc;
-          border-radius: 20px;
-          width: 40px;
-          height: 40px;
-          line-height: 40px;
-          text-align: center;
-          margin-bottom: 10px;
+  ul, li {
+    list-style: none;
+  }
+
+  .bd {
+    padding: 20px;
+    .item {
+      float: left;
+      min-width: 200px;
+      border: 1px solid #d1dbe5;
+      border-radius: 4px;
+      background-color: #fff;
+      overflow: hidden;
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04);
+      margin-right: 20px;
+      margin-bottom: 20px;
+      .title {
+        height: 40px;
+        padding-left: 20px;
+        line-height: 40px;
+        border-bottom: 1px solid #d1dbe5;
+        font-size: 20px;
+        color: #444;
+        font-weight: bold;
+      }
+      .content {
+        box-sizing: border-box;
+        padding: 10px 30px;
+        height: 100px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content:space-around;
+        .count {
+          font-size: 26px;
+          color: #555;
+        }
+        .desc {
+          font-size: 16px;
         }
       }
     }
-  },
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
   }
-}
 </style>

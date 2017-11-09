@@ -87,7 +87,7 @@
           <span>{{temp.money}}</span>
         </el-form-item>
         <el-form-item label="经纬度">
-          <span>{{temp.urserId}}</span>
+          <span>{{temp.longitude}},{{temp.latitude}}</span>
         </el-form-item>
         <el-form-item label="IP">
           <span>{{temp.ip}}</span>
@@ -129,7 +129,15 @@
           status: 0
         },
         temp: {
-
+          urserId: null,
+          latitude: null,
+          longitude: null,
+          phone: null,
+          money: null,
+          ip: null,
+          phoneType: null,
+          version: null,
+          createTime: null
         },
         textMap: {
           update: '编辑',

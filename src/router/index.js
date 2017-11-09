@@ -40,7 +40,6 @@ const withdraw = _import('finance/withdraw')
 const bankCard = _import('finance/bank_card')
 const moneyDetail = _import('finance/money_detail')
 const vDetail = _import('finance/v_detail')
-const withdrawDetail = _import('finance/withdraw_detail')
 
 /*基础设置*/
 const accountBlacklist = _import('base/account_blacklist')
@@ -136,7 +135,6 @@ export const asyncRouterMap = [
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
       {path: 'vDetail', component: vDetail, name: 'V币明细', meta_name: 'vDetail', hidden: true},
-      {path: 'withdrawDetail', component: withdrawDetail, name: '提现明细', meta_name: 'withdrawDetail', hidden: true},
       {path: 'bankCard', component: bankCard, name: '银行卡', meta_name: 'bankCard', hidden: true},
     ]
   },
