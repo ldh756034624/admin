@@ -4,7 +4,6 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="goList" icon="edit">去列表</el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -12,24 +11,14 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类名称">
+      <el-table-column align="center" label="名称">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数量">
+      <el-table-column align="center" label="是否启用">
         <template scope="scope">
           <span>{{scope.row.bannerCount}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="开始时间">
-        <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="结束时间">
-        <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -37,24 +26,22 @@
           <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="标示码" width="100">
+      <el-table-column align="center" label="文章数" width="100">
         <template scope="scope">
           <span>{{scope.row.code}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态">
+      <el-table-column align="center" label="排序">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.enable}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">列表
-          </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
-          </el-button>
+          <el-button size="small" type="primary" @click="handleBan(scope.row.id)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
+          <el-button size="small" type="danger" @click="goList(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,18 +61,10 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="code">
-          <el-input v-model="temp.code"></el-input>
+        <el-form-item label="排序" prop="code">
+          <el-input v-model="temp.sort"></el-input>
         </el-form-item>
-        <el-form-item label="上线时间">
-          <el-date-picker
-            v-model="dateRange"
-            @change="dateRangeChange"
-            type="daterange"
-            placeholder="选择日期范围">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="是否启用">
           <div class="checkitem">
             <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
             <el-radio class="radio" v-model="enable" label="0">禁用</el-radio>
@@ -103,7 +82,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
+  import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -139,16 +118,20 @@
       this.getTableData()
     },
     methods: {
+      handleBan(id) {
+        banSort(id).then(res => {
+          if (res.code === ERR_OK) {
+            this.$message.success('操作成功')
+            this.getTableData()
+          }
+        })
+      },
       goList(id) {  // 跳转至功能列表
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
-      dateRangeChange() {      // 获取时间范围
-        this.temp.startTime = new Date(this.dateRange[0]).getTime()
-        this.temp.endTime = new Date(this.dateRange[1]).getTime()
-      },
       getTableData() {
         getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -161,9 +144,6 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
         this.enable = row.enable.toString()
         this.temp = row   // 赋值
 
@@ -180,30 +160,15 @@
       },
       create() {    // 创建新功能
         this.resetTemp()
-        this.temp.id = 0
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFn(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
+        addFn(this.temp).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible = false
+            this.$message.success('创建成功')
           }
         })
       },
       update() {  // 编辑此条信息
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
         upadateFn(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()

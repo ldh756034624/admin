@@ -35,4 +35,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+	// 上传图片路径
+  config.filebrowserImageUploadUrl = 'https://console-dev-h9.thy360.com/h9/admin/common/file/upload'
 };

@@ -29,32 +29,32 @@
       </el-table-column>
       <el-table-column align="center" label="兑奖码">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.code}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="用户ID">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号">
         <template scope="scope">
-          <span>{{scope.row.startTime}}</span>
+          <span>{{scope.row.phone}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="金额">
         <template scope="scope">
-          <span>{{scope.row.endTime}}</span>
+          <span>{{scope.row.money}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="ip">
         <template scope="scope">
-          <span>{{scope.row.createTime}}</span>
+          <span>{{scope.row.ip}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="经纬度">
         <template scope="scope">
-          <span>{{scope.row.code}}</span>
+          <span>{{scope.row.longitude}},{{scope.row.latitude}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -78,7 +78,7 @@
     <el-dialog title="详情" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
         <el-form-item label="用户ID">
-          <span>{{temp.urserId}}</span>
+          <span>{{temp.userId}}</span>
         </el-form-item>
         <el-form-item label="手机号">
           <span>{{temp.phone}}</span>
@@ -93,7 +93,7 @@
           <span>{{temp.ip}}</span>
         </el-form-item>
         <el-form-item label="手机品牌">
-          <span>{{temp.phoneType}}</span>
+          <span>{{temp.phoneType || '无'}}</span>
         </el-form-item>
         <el-form-item label="版本">
           <span>{{temp.version}}</span>
@@ -146,10 +146,10 @@
       }
     },
     created() {
-      this.getTableData()
       if (this.$route.query.code) {
         this.listQuery.code = this.$route.query.code
       }
+      this.getTableData()
     },
     methods: {
       getTableData() {

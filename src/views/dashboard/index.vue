@@ -2,11 +2,11 @@
   <div class="dashboard-container">
     <div class="bd">
       <ul>
-        <li class="item">
-          <div class="title">奖金</div>
+        <li class="item" v-for="item in list">
+          <div class="title">{{item.name}}</div>
           <div class="content">
-            <div class="count">13213123312.12</div>
-            <div class="desc">总奖金(元)</div>
+            <div class="count">{{item.value}}</div>
+            <div class="desc">{{item.desc}}</div>
           </div>
         </li>
       </ul>
@@ -26,13 +26,14 @@
       }
     },
     created() {
-//        this.getInit();
+      this.getInit()
     },
     methods: {
       getInit() {
         getDashboard().then(res => {
-          const data = res.data;
-          this.info = data;
+          if (res.code === 0) {
+            this.list = res.data
+          }
         })
       }
     }
@@ -48,18 +49,18 @@
     padding: 20px;
     .item {
       float: left;
-      min-width: 200px;
+      min-width: 300px;
       border: 1px solid #d1dbe5;
       border-radius: 4px;
       background-color: #fff;
       overflow: hidden;
-      box-shadow: 0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04);
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
       margin-right: 20px;
       margin-bottom: 20px;
       .title {
-        height: 40px;
+        height: 45px;
+        line-height: 45px;
         padding-left: 20px;
-        line-height: 40px;
         border-bottom: 1px solid #d1dbe5;
         font-size: 20px;
         color: #444;
@@ -72,7 +73,7 @@
         width: 100%;
         display: flex;
         flex-direction: column;
-        justify-content:space-around;
+        justify-content: space-around;
         .count {
           font-size: 26px;
           color: #555;
