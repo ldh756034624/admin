@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column align="center" label="是否启用">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.enable == 0 ? '禁用' : '启用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -28,20 +28,20 @@
       </el-table-column>
       <el-table-column align="center" label="文章数" width="100">
         <template scope="scope">
-          <span>{{scope.row.code}}</span>
+          <span>{{scope.row.articleCount}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="排序">
         <template scope="scope">
-          <span>{{scope.row.enable}}</span>
+          <span>{{scope.row.sort}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="primary" @click="handleBan(scope.row.id)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
-          <el-button size="small" type="danger" @click="goList(scope.row.id)">删除</el-button>
+          <el-button size="small" type="primary" @click="actionArtAssort(scope.row)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
+          <el-button size="small" type="danger" @click="delItem(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -57,7 +57,7 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
+      <el-form :model="temp" label-width="100px">
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
@@ -66,8 +66,8 @@
         </el-form-item>
         <el-form-item label="是否启用">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">禁用</el-radio>
+            <el-radio class="radio" v-model="temp.enable" :label="1">启用</el-radio>
+            <el-radio class="radio" v-model="temp.enable" :label="0">禁用</el-radio>
           </div>
         </el-form-item>
       </el-form>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
+  import {getTableData, addArtAssort, upadateArtAssort, delArtAssort} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -92,18 +92,14 @@
         enable: '1',
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          enable: '1',
           name: null,
-          id: null
+          sort: null,
+          enable: 1
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
         dialogStatus: '',
-        rules: {
-          name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          code: [{required: true, message: '请输入标识', trigger: 'blur'}]
-        },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
@@ -118,20 +114,14 @@
       this.getTableData()
     },
     methods: {
-      handleBan(id) {
-        banSort(id).then(res => {
-          if (res.code === ERR_OK) {
-            this.$message.success('操作成功')
-            this.getTableData()
-          }
-        })
-      },
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
+      actionArtAssort(row) {  // 启用禁用
+        row.enable === 0 ? row.enable = 1 : row.enable = 0
+        this.temp = row
+        this.update()
       },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if (res.code === 0) {
+        getTableData('/article/category/list', this.listQuery).then(res => {   // 获取tableData数据
+          if (res.code === ERR_OK) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -144,23 +134,20 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.enable = row.enable.toString()
         this.temp = row   // 赋值
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
-        this.enable = '1'
         this.temp = {
           name: null,
-          enable: '1',
-          id: null
+          sort: null,
+          enable: 1
         }
       },
       create() {    // 创建新功能
-        this.resetTemp()
-        addFn(this.temp).then(res => {
+        addArtAssort(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -169,12 +156,29 @@
         })
       },
       update() {  // 编辑此条信息
-        upadateFn(this.temp).then(res => {
+        upadateArtAssort(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
+        })
+      },
+      delItem(id) { //删除
+        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delArtAssort(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getTableData()
+            }
+          })
         })
       }
     }

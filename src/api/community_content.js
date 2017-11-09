@@ -76,3 +76,26 @@ export function changeGoodsStatus(id) {    // 上架下架商品
     method: 'put',
   })
 }
+
+export function addArtAssort(data) {    // 新增文章分类
+  return fetch({
+    url: '/article/category',
+    method: 'POST',
+    data
+  })
+}
+
+export function upadateArtAssort(data) {    // 编辑文章分类
+  return fetch({
+    url: '/article/category',
+    method: 'put',
+    data
+  })
+}
+
+export function delArtAssort(id) {    // 删除功能
+  return fetch({
+    url: '/article/category/' + id,
+    method: 'delete',
+  })
+}
