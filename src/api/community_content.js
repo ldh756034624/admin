@@ -93,9 +93,32 @@ export function upadateArtAssort(data) {    // 编辑文章分类
   })
 }
 
-export function delArtAssort(id) {    // 删除功能
+export function delArtAssort(id) {    // 删除文章分类
   return fetch({
     url: '/article/category/' + id,
+    method: 'delete',
+  })
+}
+
+export function addArt(data) {    // 新增文章
+  return fetch({
+    url: '/article/',
+    method: 'POST',
+    data
+  })
+}
+
+export function upadateArt(data) {    // 编辑文章
+  return fetch({
+    url: '/article/',
+    method: 'put',
+    data
+  })
+}
+
+export function delArt(id) {    // 删除文章
+  return fetch({
+    url: '/article/' + id,
     method: 'delete',
   })
 }

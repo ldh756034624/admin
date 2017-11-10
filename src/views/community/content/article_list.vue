@@ -13,12 +13,12 @@
       </el-table-column>
       <el-table-column align="center" label="标题">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.title}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="分类">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.articleType.name}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
@@ -28,12 +28,12 @@
       </el-table-column>
       <el-table-column align="center" label="是否推荐">
         <template scope="scope">
-          <span>{{scope.row.endTime}}</span>
+          <span>{{scope.row.recommend}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="排序" width="100">
         <template scope="scope">
-          <span>{{scope.row.code}}</span>
+          <span>{{scope.row.sort}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="时间">
@@ -45,8 +45,8 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="primary" @click="handleBan(scope.row.id)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
-          <el-button size="small" type="danger" @click="handleModifyStatus(scope.row.id)">删除
+          <el-button size="small" type="primary" @click="actionArtAssort(scope.row)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
+          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -68,29 +68,29 @@
           <el-input class="w30" v-model="temp.title"></el-input>
         </el-form-item>
         <el-form-item label="分类" prop="fontColor">
-          <el-select v-model="temp.goodsTypeId">
+          <el-select v-model="temp.articleTypeId" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="内容" prop="fontColor">
-          <ckeditor ref="ckeditor" :data="111" @getData="getCk"></ckeditor>
+          <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
         </el-form-item>
         <el-form-item label="推荐到首页">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">是</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">否</el-radio>
+            <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.recommend" :label="0">否</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="链接">
           <div class="checkitem">
             <el-checkbox v-model="temp.isPush" :true-label="1" :false-label="0">外部链接</el-checkbox>
-            <el-input class="w30" v-model="temp.fontColor"></el-input>
+            <el-input v-if="temp.isPush === 1" class="w30" v-model="temp.url"></el-input>
           </div>
         </el-form-item>
         <el-form-item label="启用">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">是</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">否</el-radio>
+            <el-radio class="radio" v-model="temp.enable" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.enable" :label="0">否</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="排序">
@@ -98,7 +98,7 @@
         </el-form-item>
         <el-form-item label="发布时间">
           <el-date-picker
-            v-model="temp.date"
+            v-model="temp.startTime"
             type="date"
             placeholder="选择日期"
             :picker-options="pickerOptions0">
@@ -107,8 +107,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus == 'create'" type="primary" @click="create">提交</el-button>
-        <el-button v-else type="primary" @click="update">提交</el-button>
+        <el-button v-if="dialogStatus == 'create'" type="primary" @click="create">创建</el-button>
+        <el-button v-else type="primary" @click="update">保存</el-button>
       </div>
     </el-dialog>
 
@@ -116,9 +116,8 @@
 </template>
 
 <script>
-  import {addFunction, upadateFunction, getTableData} from '@/api/community_content'
+  import {getTableData, addArt, upadateArt, delArt} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
-  import CKEDITOR from "CKEDITOR"
 
   import Ckeditor from '@/components/ckeditor/ckeditor'
 
@@ -131,34 +130,20 @@
             return time.getTime() < Date.now() - 8.64e7;
           }
         },
-        select: [
-          {
-            label: '手机卡',
-            val: 1
-          },
-          {
-            label: '滴滴卡',
-            val: 2
-          },
-          {
-            label: '实物',
-            val: 3
-          },
-          {
-            label: 'V币',
-            val: 4
-          },
-        ],
+        select: [],
         enable: '1',
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          enable: '1',
-          id: 0,
-          icon: null,
+          articleTypeId: null,
+          content: null,
+          enable: 1,
+          id: null,
+          recommend: 1,
           sort: null,
+          startTime: null,
           title: null,
           url: null,
-          urlType: '1'
+          isPush: 0
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -170,7 +155,7 @@
         },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20,
+          pageSize: 20
         },
         textMap: {
           update: '编辑',
@@ -180,10 +165,35 @@
     },
     created() {
       this.getTableData()
+      this.getArtType()
     },
     methods: {
-      getCk(val) {
-        console.log(val)
+      actionArtAssort(row) {  // 启用禁用
+        row.enable === 0 ? row.enable = 1 : row.enable = 0
+        row.articleTypeId = row.articleType.id
+        upadateArt(row).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.$message.success('修改成功')
+          }
+        })
+      },
+      getArtType() {  // 获取文章所有类别
+        let data = {
+          pageNumber: 1,
+          pageSize: 100
+        }
+        getTableData('/article/category/list', data).then(res => {
+          if (res.code === 0) {
+            res.data.data.forEach(item => {
+              let tmp = {
+                val: item.id,
+                label: item.name
+              }
+              this.select.push(tmp)
+            })
+          }
+        })
       },
       beforeHandleImg(file) {      // 头像上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
@@ -209,7 +219,7 @@
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -223,31 +233,39 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
-        this.enable = row.enable.toString()
-        this.temp = row   // 赋值
-
+        this.resetTemp()
+        this.temp = Object.assign(this.temp, row)   // 赋值
+        this.temp.articleTypeId = row.articleType.id
+        if (row.url) {
+          this.temp.isPush = 1
+        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
-        this.enable = '1'
         this.temp = {      // 清空内容数据对象
-          enable: '1',
-          id: 0,
-          icon: null,
+          articleTypeId: null,
+          content: null,
+          enable: 1,
+          id: null,
+          recommend: 1,
           sort: null,
+          startTime: null,
           title: null,
-          url: null
+          url: null,
+          isPush: 0
         }
       },
-      create() {    // 创建新功能
-        this.resetTemp()
+      getCk(val) {
+        this.temp.content = val
+      },
+      getContent() {  // 获取editor组件的内容
         this.$refs.ckeditor.getData()
-        return
-        addFunction(this.temp).then(res => {
+      },
+      create() {    // 创建新功能
+        this.getContent()
+        console.log(JSON.stringify(this.temp))
+        addArt(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -256,17 +274,30 @@
         })
       },
       update() {  // 确认编辑此条信息
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        upadateFunction(this.temp).then(res => {
+        this.getContent()
+        upadateArt(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
+        })
+      },
+      handleDel(id) { //删除
+        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delArt(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getTableData()
+            }
+          })
         })
       }
     },

@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column align="center" label="昵称">
         <template scope="scope">
-          <span>{{scope.row.nickName}}</span>
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号">
@@ -90,7 +90,7 @@
           <span>{{temp.urserId}}</span>
         </el-form-item>
         <el-form-item label="姓名">
-          <span>{{temp.nickName}}</span>
+          <span>{{temp.name}}</span>
         </el-form-item>
         <el-form-item label="开户银行">
           <span>{{temp.bankName}}</span>
@@ -99,19 +99,19 @@
           <span>{{temp.bankCardNo}}</span>
         </el-form-item>
         <el-form-item label="省市">
-          <span>{{temp.city}}</span>
+          <span>{{temp.provice + temp.city}}</span>
         </el-form-item>
         <el-form-item label="提现金额">
-          <span>{{temp.phoneType}}</span>
+          <span>{{temp.money}}</span>
         </el-form-item>
         <el-form-item label="手续费">
-          <span>{{temp.money}}</span>
+          <span>暂无该字段</span>
         </el-form-item>
         <el-form-item label="提现时间">
           <span>{{temp.createTime | formatDateTime}}</span>
         </el-form-item>
-        <el-form-item label="回调时间">
-          <span>{{temp.createTime | formatDateTime}}</span>
+        <el-form-item label="处理时间">
+          <span>{{temp.finishTime | formatDateTime}}</span>
         </el-form-item>
         <el-form-item label="提现状态">
           <span>{{temp.status | status}}</span>
@@ -200,12 +200,9 @@
         this.dialogFormVisible = true
       }
     },
-    filter: {
+    filters: {
       status(val) {
         switch (val) {
-          case 1:
-            return '提现中'
-            break;
           case 2:
             return '银行转账中'
             break;
@@ -218,9 +215,7 @@
           case 5:
             return '退回'
             break;
-
         }
-
       }
     }
   }
