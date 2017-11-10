@@ -36,6 +36,7 @@ const orderList = _import('order/list')
 
 /*财务管理*/
 const customer = _import('finance/customer')
+const transfer = _import('finance/transfer')
 const withdraw = _import('finance/withdraw')
 const bankCard = _import('finance/bank_card')
 const moneyDetail = _import('finance/money_detail')
@@ -109,7 +110,7 @@ export const asyncRouterMap = [
       {path: 'article_assort', component: articleAssort, name: '文章分类', meta_name: 'articleAssort'},
       {path: 'article_list', component: articleList, name: '文章列表', meta_name: 'articleList'},
       {path: 'single_page', component: singlePage, name: '单网页管理', meta_name: 'singlePage'},
-      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'},
+      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'}
     ]
   },
   {
@@ -120,7 +121,7 @@ export const asyncRouterMap = [
     meta_name: 'Order',
     icon: 'zujian',
     children: [
-      {path: 'orderList', component: orderList, name: '活动列表', meta_name: 'orderList'},
+      {path: 'orderList', component: orderList, name: '订单列表', meta_name: 'orderList'}
     ]
   },
   {
@@ -133,9 +134,10 @@ export const asyncRouterMap = [
     children: [
       {path: 'customer', component: customer, name: '用户资金', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
+      {path: 'transfer', component: transfer, name: '转账管理', meta_name: 'transfer'},
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
       {path: 'vDetail', component: vDetail, name: 'V币明细', meta_name: 'vDetail', hidden: true},
-      {path: 'bankCard', component: bankCard, name: '银行卡', meta_name: 'bankCard', hidden: true},
+      {path: 'bankCard', component: bankCard, name: '银行卡', meta_name: 'bankCard', hidden: true}
     ]
   },
   {
@@ -151,7 +153,7 @@ export const asyncRouterMap = [
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
-      {path: 'version', component: version, name: '版本管理', meta_name: 'version'},
+      {path: 'version', component: version, name: '版本管理', meta_name: 'version'}
     ]
   },
   {
@@ -169,7 +171,7 @@ export const asyncRouterMap = [
       {path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction'}
     ]
   },
-  { path: '*', redirect: '/404', hidden: true }
+  {path: '*', redirect: '/404', hidden: true}
 ]
 
 // 线上hack，暂时没有权限的做法，加入权限后，请删除该行
