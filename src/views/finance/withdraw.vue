@@ -68,7 +68,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDetail(scope.row)">详情
           </el-button>
-          <el-button size="small" type="warning" class="btn btn-sm btn-info" @click="handleDetail(scope.row)">退回
+          <el-button size="small" type="warning" class="btn btn-sm btn-info" v-if="scope.row.status == 4" @click="handleSendBack(scope.row.id)">退回
           </el-button>
         </template>
       </el-table-column>
@@ -126,8 +126,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
-  import {isPhone} from '@/utils/validate'
+  import {getTableData, sendBack} from '@/api/finance'
 
   const ERR_OK = 0
   export default {
@@ -195,9 +194,22 @@
           }
         })
       },
-      handleDetail(row) {   // 查看详情
-        this.temp = row
-        this.dialogFormVisible = true
+      handleSendBack(id) {   // 查看详情
+        this.$confirm('确定退回?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          sendBack(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '退回成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
       }
     },
     filters: {
