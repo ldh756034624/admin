@@ -4,7 +4,6 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="goList" icon="edit">去列表</el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -12,48 +11,39 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类名称">
+      <el-table-column align="center" label="标题">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.title}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数量">
+      <el-table-column align="center" label="名称">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="开始时间">
-        <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="结束时间">
-        <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="创建时间">
-        <template scope="scope">
-          <span>{{scope.row.createTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="标示码" width="100">
-        <template scope="scope">
-          <span>{{scope.row.code}}</span>
+          <span>{{scope.row.name || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.status === 0 ? '禁用' : '启用'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="标识">
+        <template scope="scope">
+          <span>{{scope.row.code || '无'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="时间">
+        <template scope="scope">
+          <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">列表
+          <el-button size="small" type="primary" @click="actionArtAssort(scope.row)">
+            {{scope.row.enable == 0 ? '启用' : '禁用'}}
           </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
+          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -70,32 +60,30 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
-        <el-form-item label="分类名称" prop="name">
-          <el-input v-model="temp.name"></el-input>
+      <el-form :model="temp" label-width="100px">
+        <el-form-item label="名称">
+          <el-input class="w30" v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="code">
-          <el-input v-model="temp.code"></el-input>
+        <el-form-item label="标题">
+          <el-input class="w30" v-model="temp.title"></el-input>
         </el-form-item>
-        <el-form-item label="上线时间">
-          <el-date-picker
-            v-model="dateRange"
-            @change="dateRangeChange"
-            type="daterange"
-            placeholder="选择日期范围">
-          </el-date-picker>
+        <el-form-item label="标识">
+          <el-input class="w30" v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="内容">
+          <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
+        </el-form-item>
+        <el-form-item label="启用">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">禁用</el-radio>
+            <el-radio class="radio" v-model="temp.status" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.status" :label="0">否</el-radio>
           </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus == 'create'" type="primary" @click="create">提交</el-button>
-        <el-button v-else type="primary" @click="update">提交</el-button>
+        <el-button v-if="dialogStatus == 'create'" type="primary" @click="create">创建</el-button>
+        <el-button v-else type="primary" @click="update">保存</el-button>
       </div>
     </el-dialog>
 
@@ -103,31 +91,34 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
+  import {getTableData, addSinglePage, upadateSinglePage, delSinglePage} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
+
+  import Ckeditor from '@/components/ckeditor/ckeditor'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
-        enable: '1',
-        dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          enable: '1',
+          code: null,
+          content: null,
+          status: 1,
+          id: null,
           name: null,
-          id: null
+          title: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
         dialogStatus: '',
         rules: {
-          name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          code: [{required: true, message: '请输入标识', trigger: 'blur'}]
+          title: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
+          fontColor: [{required: true, message: '请输入颜色', trigger: 'blur'}]
         },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20,
+          pageSize: 20
         },
         textMap: {
           update: '编辑',
@@ -139,16 +130,21 @@
       this.getTableData()
     },
     methods: {
+      actionArtAssort(row) {  // 启用禁用
+        row.status === 0 ? row.status = 1 : row.status = 0
+        upadateSinglePage(row).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.$message.success('修改成功')
+          }
+        })
+      },
       goList(id) {  // 跳转至功能列表
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
-      dateRangeChange() {      // 获取时间范围
-        this.temp.startTime = new Date(this.dateRange[0]).getTime()
-        this.temp.endTime = new Date(this.dateRange[1]).getTime()
-      },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+        getTableData('/html/list', this.listQuery).then(res => {   // 获取tableData数据
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -159,59 +155,76 @@
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs.ckeditor.clearData()
+        })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
-        this.enable = row.enable.toString()
-        this.temp = row   // 赋值
-
+        this.resetTemp()
+        this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs.ckeditor.setData()
+        })
       },
       resetTemp() {   // 重置弹出表格
-        this.enable = '1'
-        this.temp = {
+        this.temp = {      // 清空内容数据对象
+          code: null,
+          content: null,
+          status: 1,
+          id: null,
           name: null,
-          enable: '1',
-          id: null
+          title: null
         }
       },
+      getCk(val) {
+        this.temp.content = val
+      },
+      getContent() {  // 获取editor组件的内容
+        this.$refs.ckeditor.getData()
+      },
       create() {    // 创建新功能
-        this.resetTemp()
-        this.temp.id = 0
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFn(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
+        this.getContent()
+        console.log(JSON.stringify(this.temp))
+        addSinglePage(this.temp).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible = false
+            this.$message.success('创建成功')
           }
         })
       },
-      update() {  // 编辑此条信息
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        upadateFn(this.temp).then(res => {
+      update() {  // 确认编辑此条信息
+        this.getContent()
+        upadateSinglePage(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
         })
+      },
+      handleDel(id) { //删除
+        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delSinglePage(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
       }
+    },
+    components: {
+      Ckeditor
     }
   }
 </script>

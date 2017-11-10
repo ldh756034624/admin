@@ -195,28 +195,8 @@
           }
         })
       },
-      beforeHandleImg(file) {      // 头像上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
-        if (!isJPG) {
-          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
-        }
-        return isJPG
-      },
-      handleImgSuccess(res, file) {      // 图片上传成功后
-        if (res.code === 0) {
-          this.$message.success('上传头像成功')
-          this.temp.icon = res.data
-          console.log(res.data)
-        } else {
-          this.$message.error('上传失败，请重试')
-        }
-      },
       goList(id) {  // 跳转至功能列表
         this.$router.push({path: '/community/fnlist', query: {id}})
-      },
-      dateRangeChange() {      // 获取时间范围
-        this.temp.startTime = new Date(this.dateRange[0]).getTime()
-        this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
       getTableData() {
         getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
@@ -231,6 +211,9 @@
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs.ckeditor.clearData()
+        })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
@@ -241,6 +224,9 @@
         }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs.ckeditor.setData()
+        })
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象

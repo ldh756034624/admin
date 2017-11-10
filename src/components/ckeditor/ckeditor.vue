@@ -29,7 +29,7 @@
           if (!this.editor) { // 防止重复实例化
             this.editor = CKEDITOR.replace("editor", {height: "300px", width: "100%", toolbar: "Full"})
           }
-          if (this.realData || this.realData !== 0) {    // 初始化数据
+          if (this.realData || this.realData != 0) {    // 初始化数据
             this.editor.setData(this.realData)
           }
         })
@@ -38,6 +38,16 @@
       getData() {
         this.realData = this.editor.getData()
         this.$emit('getData', this.realData)
+      },
+      clearData() {
+        if (this.editor) {
+          this.editor.setData('')
+        }
+      },
+      setData() {
+        if (this.realData || this.realData != 0) {    // 初始化数据
+          this.editor.setData(this.realData)
+        }
       }
     }
   }

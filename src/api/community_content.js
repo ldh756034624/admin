@@ -122,3 +122,26 @@ export function delArt(id) {    // 删除文章
     method: 'delete',
   })
 }
+
+export function addSinglePage(data) {    // 新增单网页
+  return fetch({
+    url: '/html/',
+    method: 'POST',
+    data
+  })
+}
+
+export function upadateSinglePage(data) {    // 编辑单网页
+  return fetch({
+    url: '/html/',
+    method: 'put',
+    data
+  })
+}
+
+export function delSinglePage(id) {    // 删除单网页
+  return fetch({
+    url: '/html/' + id,
+    method: 'delete',
+  })
+}
