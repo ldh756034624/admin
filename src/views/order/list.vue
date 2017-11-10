@@ -1,52 +1,55 @@
 <template>
   <div class="app-container">
     <!-- 搜索 -->
-    <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
-      </el-button>
-    </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="ID" width="65">
+      <el-table-column align="center" label="订单编号">
+        <template scope="scope">
+          <span>{{scope.row.no || '无'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="商品名称">
+        <template scope="scope">
+          <span>{{scope.row.goods}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="数量">
+        <template scope="scope">
+          <span>{{scope.row.count}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="用户ID">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="标题">
+      <el-table-column align="center" label="手机号">
         <template scope="scope">
-          <span>{{scope.row.title}}</span>
+          <span>{{scope.row.userPhone}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类">
+      <el-table-column align="center" label="收货人" width="100">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态">
+      <el-table-column align="center" label="快递名称">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.expressName || '无'}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="是否推荐">
+      <el-table-column align="center" label="订单状态">
         <template scope="scope">
-          <span>{{scope.row.recommend}}</span>
+          <span>{{scope.row.status}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="排序" width="100">
-        <template scope="scope">
-          <span>{{scope.row.sort}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="时间">
+      <el-table-column align="center" label="创建时间">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
-          </el-button>
-          <el-button size="small" type="primary" @click="actionArtAssort(scope.row)">{{scope.row.enable == 0 ? '启用' : '禁用'}}</el-button>
-          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">查看
           </el-button>
         </template>
       </el-table-column>
@@ -62,47 +65,48 @@
     </div>
 
     <!-- 弹出编辑和新增窗口 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
+    <el-dialog title="订单详情" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <el-form-item label="标题">
-          <el-input class="w30" v-model="temp.title"></el-input>
+        <h1 class="title">商品信息</h1>
+        <el-form-item label="订单号">
+          <span>{{temp.no}}</span>
         </el-form-item>
-        <el-form-item label="分类" prop="fontColor">
+        <el-form-item label="商品名称">
+          <span>{{temp.goods}}</span>
+        </el-form-item>
+        <el-form-item label="用户ID">
+          <span>{{temp.userId }}</span>
+        </el-form-item>
+        <el-form-item label="下单时间">
+          <span>{{temp.createTime | formatDateTime}}</span>
+        </el-form-item>
+        <h1 class="title">支付信息</h1>
+        <el-form-item label="支付方式">
+          <span>{{temp.payMethond}}</span>
+        </el-form-item>
+        <el-form-item label="支付金额">
+          <span>{{temp.payMoney}}</span>
+        </el-form-item>
+        <el-form-item label="支付状态">
+          <span>{{temp.payStatus}}</span>
+        </el-form-item>
+        <h1 class="title">配送信息</h1>
+        <el-form-item label="收货人">
+          <el-input class="w30" v-model="temp.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input class="w30" v-model="temp.userPhone"></el-input>
+        </el-form-item>
+        <el-form-item label="收货地址">
+          <el-input class="w30" v-model="temp.userAddres"></el-input>
+        </el-form-item>
+        <el-form-item label="快递公司" prop="fontColor">
           <el-select v-model="temp.articleTypeId" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="内容" prop="fontColor">
-          <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
-        </el-form-item>
-        <el-form-item label="推荐到首页">
-          <div class="checkitem">
-            <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="0">否</el-radio>
-          </div>
-        </el-form-item>
-        <el-form-item label="链接">
-          <div class="checkitem">
-            <el-checkbox v-model="temp.isPush" :true-label="1" :false-label="0">外部链接</el-checkbox>
-            <el-input v-if="temp.isPush === 1" class="w30" v-model="temp.url"></el-input>
-          </div>
-        </el-form-item>
-        <el-form-item label="启用">
-          <div class="checkitem">
-            <el-radio class="radio" v-model="temp.enable" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.enable" :label="0">否</el-radio>
-          </div>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-input class="w30" v-model="temp.sort"></el-input>
-        </el-form-item>
-        <el-form-item label="发布时间">
-          <el-date-picker
-            v-model="temp.startTime"
-            type="date"
-            placeholder="选择日期"
-            :picker-options="pickerOptions0">
-          </el-date-picker>
+        <el-form-item label="快递单号">
+          <el-input class="w30" v-model="temp.logisticsNumber"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -116,39 +120,35 @@
 </template>
 
 <script>
-  import {getTableData, addArt, upadateArt, delArt} from '@/api/community_content'
-  import {isPhone} from '@/utils/validate'
-
-  import Ckeditor from '@/components/ckeditor/ckeditor'
+  import {getTableData, updateOrder} from '@/api/order'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
-        pickerOptions0: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7;
-          }
-        },
         select: [],
-        enable: '1',
-        dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
+          didiCardNumber: null,
+          expressName: null,
+          goods: null,
           id: null,
-          recommend: 1,
-          sort: null,
-          startTime: null,
-          title: null,
-          url: null,
-          isPush: 0
+          logisticsNumber: null,
+          money: null,
+          no: null,
+          orderType: null,
+          payMethodDesc: null,
+          payMethond: null,
+          payMoney: null,
+          payStatus: null,
+          status: null,
+          userAddres: null,
+          userId: null,
+          userName: null,
+          userPhone: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
-        dialogFormVisible: false,
-        dialogStatus: '',
+        dialogFormVisible: true,
         rules: {
           title: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
           fontColor: [{required: true, message: '请输入颜色', trigger: 'blur'}]
@@ -156,50 +156,32 @@
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20
-        },
-        textMap: {
-          update: '编辑',
-          create: '新增'
         }
       }
     },
     created() {
       this.getTableData()
-      this.getArtType()
+      this.getExpressCompany()
     },
     methods: {
-      actionArtAssort(row) {  // 启用禁用
-        row.enable === 0 ? row.enable = 1 : row.enable = 0
-        row.articleTypeId = row.articleType.id
-        upadateArt(row).then(res => {
-          if (res.code === ERR_OK) {
-            this.getTableData()
-            this.$message.success('修改成功')
-          }
-        })
-      },
-      getArtType() {  // 获取文章所有类别
-        let data = {
-          pageNumber: 1,
-          pageSize: 100
-        }
-        getTableData('/article/category/list', data).then(res => {
+      getExpressCompany() {  // 获取所有物流公司
+        getTableData('/order/supportExpress').then(res => {
           if (res.code === 0) {
+            let select = []
             res.data.data.forEach(item => {
               let tmp = {
                 val: item.id,
                 label: item.name
               }
-              this.select.push(tmp)
+              select.push(tmp)
             })
+            this.select = select
+            console.log('select', select)
           }
         })
       },
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
-      },
       getTableData() {
-        getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/order/list', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -207,88 +189,50 @@
           }
         })
       },
-      handleCreate() {    // 点击创建新功能按钮
-        this.resetTemp()    // 清空原有表单
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs.ckeditor.clearData()
-        })
-      },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
         this.temp = Object.assign(this.temp, row)   // 赋值
-        this.temp.articleTypeId = row.articleType.id
-        if (row.url) {
-          this.temp.isPush = 1
-        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs.ckeditor.setData()
-        })
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
+          didiCardNumber: null,
+          expressName: null,
+          goods: null,
           id: null,
-          recommend: 1,
-          sort: null,
-          startTime: null,
-          title: null,
-          url: null,
-          isPush: 0
+          logisticsNumber: null,
+          money: null,
+          no: null,
+          orderType: null,
+          payMethodDesc: null,
+          payMethond: null,
+          payMoney: null,
+          payStatus: null,
+          status: null,
+          userAddres: null,
+          userId: null,
+          userName: null,
+          userPhone: null
         }
       },
-      getCk(val) {
-        this.temp.content = val
-      },
-      getContent() {  // 获取editor组件的内容
-        this.$refs.ckeditor.getData()
-      },
-      create() {    // 创建新功能
-        this.getContent()
-        console.log(JSON.stringify(this.temp))
-        addArt(this.temp).then(res => {
-          if (res.code === ERR_OK) {
-            this.getTableData()
-            this.dialogFormVisible = false
-            this.$message.success('创建成功')
-          }
-        })
-      },
       update() {  // 确认编辑此条信息
-        this.getContent()
-        upadateArt(this.temp).then(res => {
+        updateOrder(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
         })
-      },
-      handleDel(id) { //删除
-        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delArt(id).then(res => {
-            if (res.code === ERR_OK) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.getTableData()
-            }
-          })
-        })
       }
-    },
-    components: {
-      Ckeditor
     }
   }
 </script>
+
+<style lang="scss" scoped>
+  .title {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 20px;
+  }
+</style>
