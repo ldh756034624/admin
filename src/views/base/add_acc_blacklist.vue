@@ -84,7 +84,7 @@
       }
     },
     created() {
-      this.getTableData()
+//      this.getTableData()
     },
     methods: {
       clearQuery() {  // 清空search
@@ -113,7 +113,7 @@
       getTableData() {
         getTableData('/account/rewardInfo', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
-            let datas = res.data
+            let datas = res
             this.total = datas.total
             this.tableData = datas.data
           }

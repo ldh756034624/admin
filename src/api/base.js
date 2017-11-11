@@ -69,3 +69,4 @@ export function updateAdmin(data) {    // 编辑管理员
     data
   })
 }
+
