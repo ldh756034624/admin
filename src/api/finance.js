@@ -14,3 +14,11 @@ export function sendBack(id) {    // 退回
     method: 'POST'
   })
 }
+
+export function transfer(data) {    // 转账
+  return fetch({
+    url: `/finance/lottery/flow/record`,
+    method: 'POST',
+    data
+  })
+}

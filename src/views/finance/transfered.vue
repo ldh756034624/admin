@@ -18,23 +18,21 @@
               placeholder="选择日期范围">
             </el-date-picker>
           </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="listQuery.status" placeholder="请选择">
+              <el-option label="全部" :value="0"></el-option>
+              <el-option label="成功" :value="1"></el-option>
+              <el-option label="失败" :value="2"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleTransfer">转账
-      </el-button>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleTransfered" icon="edit">
-        已操作转账记录
-      </el-button>
     </div>
     <el-table :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
               style="width: 100%">
-      <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
       <el-table-column align="center" label="序号" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -55,14 +53,41 @@
           <span>{{scope.row.code }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="用户余额">
+        <template scope="scope">
+          <span>{{scope.row.balance }}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="金额">
         <template scope="scope">
           <span>{{scope.row.money }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="状态" width="100">
+        <template scope="scope">
+          <span>{{scope.row.status == 1 ? '成功' : '失败'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作人">
+        <template scope="scope">
+          <span>{{scope.row.operator}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="发奖时间">
         <template scope="scope">
+          <span>{{scope.row.transferTime | formatDateTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="转账时间">
+        <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作">
+        <template scope="scope">
+          <el-button size="small" v-if="scope.row.status == 2" type="info" class="btn btn-sm btn-info"
+                     @click="handleTransfer(scope.row.id)">重新转账
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,12 +118,14 @@
           pageSize: 20,
           phone: null,
           code: null,
+          status: 0,
           startTime: null,
           endTime: null
         }
       }
     },
     created() {
+      this.getTableData()
     },
     methods: {
       dateRangeChange() {      // 获取时间范围
@@ -110,34 +137,23 @@
         this.listQuery.startTime = new Date(this.dateRange[0]).getTime()
         this.listQuery.endTime = new Date(this.dateRange[1]).getTime()
       },
-      handleSelectionChange(val) {  // 多表格勾选时
-        let ids = []
-        val.forEach(item => {
-          ids.push(item.id)
-        })
-        this.ids = ids
-      },
-      handleTransfered() {  // 跳转至功能列表
-        this.$router.push({path: '/finance/transfered'})
-      },
       getTableData() {
-        getTableData('/finance/lottery/flow/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/finance/lottery/flow/record/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            console.log(datas.data)
           }
         })
       },
-      handleTransfer() {  // 转账
-        if (this.ids.length > 0) {
-          transfer({ids: this.ids}).then((res) => {
-            if (res.code === 0) {
-              this.$message.success('操作成功')
-              this.getTableData()
-            }
-          })
-        }
+      handleTransfer(id) {  // 转账
+        transfer({ids: [id]}).then((res) => {
+          if (res.code === 0) {
+            this.$message.success('操作成功')
+            this.getTableData()
+          }
+        })
       }
     }
   }

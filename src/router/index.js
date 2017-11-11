@@ -37,6 +37,7 @@ const orderList = _import('order/list')
 /*财务管理*/
 const customer = _import('finance/customer')
 const transfer = _import('finance/transfer')
+const transfered = _import('finance/transfered')
 const withdraw = _import('finance/withdraw')
 const bankCard = _import('finance/bank_card')
 const moneyDetail = _import('finance/money_detail')
@@ -135,6 +136,7 @@ export const asyncRouterMap = [
       {path: 'customer', component: customer, name: '用户资金', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
       {path: 'transfer', component: transfer, name: '转账管理', meta_name: 'transfer'},
+      {path: 'transfered', component: transfered, name: '已操作转账', meta_name: 'transfered', hidden: true},
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
       {path: 'vDetail', component: vDetail, name: 'V币明细', meta_name: 'vDetail', hidden: true},
       {path: 'bankCard', component: bankCard, name: '银行卡', meta_name: 'bankCard', hidden: true}
