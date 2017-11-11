@@ -71,7 +71,7 @@
           <el-input v-model="temp.nickName"></el-input>
         </el-form-item>
         <el-form-item label="手机号" prop="code">
-          <el-input v-model="temp.phone"></el-input>
+          <span>{{temp.phone}}</span>
         </el-form-item>
         <el-form-item label="密码" prop="code">
           <el-input v-model="temp.password"></el-input>
