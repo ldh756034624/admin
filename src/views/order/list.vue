@@ -92,30 +92,34 @@
         </el-form-item>
         <h1 class="title">配送信息</h1>
         <el-form-item label="收货人">
-          <el-input class="w30" v-model="temp.userName"></el-input>
+          <span>{{temp.userName}}</span>
         </el-form-item>
         <el-form-item label="联系方式">
-          <el-input class="w30" v-model="temp.userPhone"></el-input>
+          <span>{{temp.userPhone}}</span>
         </el-form-item>
-        <el-form-item label="收货地址">
+        <el-form-item v-if="temp.orderType == 3" label="收货地址">
           <el-input class="w30" v-model="temp.userAddres"></el-input>
         </el-form-item>
-        <el-form-item label="快递公司" prop="fontColor">
-          <el-select v-model="temp.articleTypeId" placeholder="请选择">
-            <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
+        <el-form-item v-if="temp.orderType == 3" label="快递公司" prop="fontColor">
+          <el-select v-model="temp.expressName" placeholder="请选择">
+            <el-option v-for="item in select" :label="item.label" :value="item.label"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="快递单号">
+        <el-form-item v-if="temp.orderType == 3" label="快递单号">
           <el-input class="w30" v-model="temp.logisticsNumber"></el-input>
+        </el-form-item>
+        <el-form-item v-if="temp.orderType == 2" label="券号">
+          <span>{{temp.didiCardNumber}}</span>
+        </el-form-item>
+        <el-form-item v-if="temp.orderType == 1" label="充值手机号">
+          <span>{{temp.userPhone}}</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus == 'create'" type="primary" @click="create">创建</el-button>
-        <el-button v-else type="primary" @click="update">保存</el-button>
+        <el-button @click="dialogFormVisible = false">关闭</el-button>
+        <el-button type="primary" @click="update" v-if="temp.orderType == 3">保存</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -148,11 +152,7 @@
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
-        dialogFormVisible: true,
-        rules: {
-          title: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          fontColor: [{required: true, message: '请输入颜色', trigger: 'blur'}]
-        },
+        dialogFormVisible: false,
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20
@@ -168,15 +168,14 @@
         getTableData('/order/supportExpress').then(res => {
           if (res.code === 0) {
             let select = []
-            res.data.data.forEach(item => {
+            res.data.forEach((item, index) => {
               let tmp = {
-                val: item.id,
-                label: item.name
+                val: index,
+                label: item
               }
               select.push(tmp)
             })
             this.select = select
-            console.log('select', select)
           }
         })
       },
