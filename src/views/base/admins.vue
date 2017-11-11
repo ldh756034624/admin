@@ -50,7 +50,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="primary" @click="handleBan(scope.row.id)">{{scope.row.status == 1 ? '禁用' : '启用'}}</el-button>
+          <el-button size="small" type="primary" @click="handleBan(scope.row)">{{scope.row.status == 1 ? '禁用' : '启用'}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,8 +94,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
-  import {isPhone} from '@/utils/validate'
+  import {getTableData, createAdmin, updateAdmin} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -125,17 +124,22 @@
       this.getTableData()
     },
     methods: {
-      handleBan(id) {
-        banSort(id).then(res => {
+      handleBan(row) {  // 启用或者禁用
+        if (row.status == 1) {
+          row.status == 2
+        } else {
+          row.status == 1
+        }
+        updateAdmin(row).then(res => {
           if (res.code === ERR_OK) {
-            this.$message.success('操作成功')
             this.getTableData()
+            this.$message.success('修改成功')
           }
         })
       },
       getTableData() {
         getTableData('/basis/user/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -148,7 +152,7 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.temp = row   // 赋值
+        this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
@@ -162,21 +166,16 @@
       },
       create() {    // 创建新功能
         this.resetTemp()
-        this.temp.id = 0
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFn(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
+        createAdmin(this.temp).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible = false
+            this.$message.success('创建成功')
           }
         })
       },
       update() {  // 编辑此条信息
-        upadateFn(this.temp).then(res => {
+        updateAdmin(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false

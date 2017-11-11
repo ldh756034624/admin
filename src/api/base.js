@@ -53,3 +53,19 @@ export function changeBankStatus(id) {    // 启用/关闭银行卡
     method: 'put'
   })
 }
+
+export function createAdmin(data) {    // 创建新的管理员
+  return fetch({
+    url: '/basis/user',
+    method: 'post',
+    data
+  })
+}
+
+export function updateAdmin(data) {    // 编辑管理员
+  return fetch({
+    url: '/basis/user',
+    method: 'put',
+    data
+  })
+}
