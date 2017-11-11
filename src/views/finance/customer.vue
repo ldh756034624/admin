@@ -91,7 +91,7 @@
         this.$router.push({path: '/finance/vDetail', query: {id}})
       },
       handleWithdraw(id) {
-        this.$router.push({path: '/finance/moneyDetail', query: {id}})
+        this.$router.push({path: '/finance/withdrawDetail', query: {id}})
       },
       handleBankCard(id) {
         this.$router.push({path: '/finance/bankCard', query: {id}})
