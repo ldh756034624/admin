@@ -22,3 +22,10 @@ export function transfer(data) {    // 转账
     data
   })
 }
+
+export function retransfer(id) {    // 重新转账
+  return fetch({
+    url: `/finance/lottery/flow/record/${id}/status`,
+    method: 'put'
+  })
+}

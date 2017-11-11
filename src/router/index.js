@@ -170,7 +170,7 @@ export const asyncRouterMap = [
     children: [
       {path: 'menus', component: systemMenus, name: '菜单管理', meta_name: 'systemMenus'},
       {path: 'roles', component: systemRoles, name: '角色管理', meta_name: 'systemRoles'},
-      {path: 'users', component: systemUsers, name: '系统用户', meta_name: 'systemUsers'},
+      {path: 'users', component: systemUsers, name: '管理员', meta_name: 'systemUsers'},
       {path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment'},
       {path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction'}
     ]

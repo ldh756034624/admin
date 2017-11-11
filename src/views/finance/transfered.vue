@@ -31,7 +31,7 @@
         </el-form>
       </div>
     </div>
-    <el-table :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
+    <el-table :data="tableData" border fit highlight-current-row
               style="width: 100%">
       <el-table-column align="center" label="序号" width="65">
         <template scope="scope">
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-  import {getTableData, transfer} from '@/api/finance'
+  import {getTableData, retransfer} from '@/api/finance'
 
   const ERR_OK = 0
   export default {
@@ -147,8 +147,8 @@
           }
         })
       },
-      handleTransfer(id) {  // 转账
-        transfer({ids: [id]}).then((res) => {
+      handleTransfer(id) {  // 重新转账
+        retransfer(id).then((res) => {
           if (res.code === 0) {
             this.$message.success('操作成功')
             this.getTableData()
