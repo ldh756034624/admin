@@ -43,15 +43,6 @@ customer.vue
         </template>
       </el-table-column>
     </el-table>
-    <div class="pagination-container">
-      <el-pagination
-        @current-change="getTableData"
-        :current-page.sync="listQuery.pageNumber"
-        :page-size="listQuery.pageSize"
-        layout="total, prev, pager, next"
-        :total="total">
-      </el-pagination>
-    </div>
   </div>
 </template>
 
@@ -64,11 +55,7 @@ customer.vue
       return {
         userId: null,
         tableData: null,    // 表格数据
-        total: null,        // 数据总数
-        listQuery: {  // 关键字查询，翻页等数据
-          pageNumber: 1,
-          pageSize: 20
-        }
+        total: null        // 数据总数
       }
     },
     created() {
@@ -77,9 +64,8 @@ customer.vue
     },
     methods: {
       getTableData() {
-        getTableData(`/account/${this.userId}/bankInfo`, this.listQuery).then(res => {   // 获取tableData数据
+        getTableData(`/account/${this.userId}/bankInfo`).then(res => {   // 获取tableData数据
           if (res.code === 0) {
-            this.total = res.total
             this.tableData = res.data
           }
         })
