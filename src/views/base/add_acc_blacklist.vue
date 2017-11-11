@@ -13,15 +13,16 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="UserID或手机号">
-            <el-input type="text" v-model="listQuery.phone"></el-input>
+            <el-input type="text" v-model="listQuery.key"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
-            <el-button class="filter-item" type="primary" @click="getTableData" icon="search">清空</el-button>
+            <el-button class="filter-item" type="primary" @click="clearQuery" icon="search">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
-      <span>查询结果{{total || 0}}条</span><el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleTransfer">加入黑名单
+      <span>查询结果{{tableData.length}}条</span>
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleBlack">加入黑名单
       </el-button>
     </div>
     <el-table :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
@@ -30,12 +31,12 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="序号" width="65">
+      <el-table-column align="center" label="UserID">
         <template scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="用户名">
+      <el-table-column align="center" label="昵称">
         <template scope="scope">
           <span>{{scope.row.nickName }}</span>
         </template>
@@ -45,47 +46,36 @@
           <span>{{scope.row.phone }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="兑奖码">
+      <el-table-column align="center" label="openID">
         <template scope="scope">
-          <span>{{scope.row.code }}</span>
+          <span>{{scope.row.openId}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="金额">
+      <el-table-column align="center" label="开瓶次数">
         <template scope="scope">
-          <span>{{scope.row.money }}</span>
+          <span>{{scope.row.openCount}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="发奖时间">
+      <el-table-column align="center" label="参与次数">
         <template scope="scope">
-          <span>{{scope.row.createTime | formatDateTime}}</span>
+          <span>{{scope.row.joinCount}}</span>
         </template>
       </el-table-column>
     </el-table>
-    <div class="pagination-container">
-      <el-pagination
-        @current-change="getTableData"
-        :current-page.sync="listQuery.pageNumber"
-        :page-size="listQuery.pageSize"
-        layout="total, prev, pager, next"
-        :total="total">
-      </el-pagination>
-    </div>
   </div>
 </template>
 
 <script>
-  import {getTableData, transfer} from '@/api/finance'
+  import {getTableData} from '@/api/base'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
         dateRange: null,  // 时间范围
-        tableData: null,    // 表格数据
+        tableData: [],    // 表格数据
         total: null,        // 数据总数
         listQuery: {  // 关键字查询，翻页等数据
-          pageNumber: 1,
-          pageSize: 20,
           phone: null,
           code: null,
           startTime: null,
@@ -94,8 +84,16 @@
       }
     },
     created() {
+      this.getTableData()
     },
     methods: {
+      clearQuery() {  // 清空search
+        this.listQuery = {
+          startTime: null,
+          endTime: null,
+          key: null
+        }
+      },
       dateRangeChange() {      // 获取时间范围
         if (!this.dateRange[0] || !this.dateRange[1]) {
           delete this.listQuery.startTime
@@ -112,11 +110,8 @@
         })
         this.ids = ids
       },
-      handleTransfered() {  // 跳转至功能列表
-        this.$router.push({path: '/finance/transfered'})
-      },
       getTableData() {
-        getTableData('/finance/lottery/flow/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/account/rewardInfo', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -124,7 +119,7 @@
           }
         })
       },
-      handleTransfer() {  // 转账
+      handleBlack() {  // 拉黑
         if (this.ids.length > 0) {
           transfer({ids: this.ids}).then((res) => {
             if (res.code === 0) {

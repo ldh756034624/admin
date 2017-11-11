@@ -66,7 +66,7 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
+      <el-form :model="temp" ref="temp" label-width="100px">
         <el-form-item label="姓名" prop="name">
           <el-input v-model="temp.nickName"></el-input>
         </el-form-item>

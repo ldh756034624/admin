@@ -161,7 +161,6 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
-        console.log('编辑钱的row', row.content)
         this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import {getTableData} from '@/api/community_content'
+  import {getTableData} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -73,7 +73,7 @@
         dialogStatus: '',
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20,
+          pageSize: 20
         }
       }
     },
@@ -86,7 +86,7 @@
       },
       getTableData() {
         getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
