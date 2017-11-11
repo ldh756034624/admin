@@ -194,7 +194,7 @@
           }
         })
       },
-      handleSendBack(id) {   // 查看详情
+      handleSendBack(id) {   // 退回
         this.$confirm('确定退回?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -210,7 +210,11 @@
             }
           })
         })
-      }
+      },
+      handleDetail(row) {   // 查看详情
+        this.temp = row   // 赋值
+        this.dialogFormVisible = true
+      },
     },
     filters: {
       status(val) {

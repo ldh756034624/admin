@@ -8,7 +8,7 @@ export function getTableData(url, params) {    // 获取table列表,通用
   })
 }
 
-export function sendBack(id) {    // 新增功能分类
+export function sendBack(id) {    // 退回
   return fetch({
     url: `/finance/withdraw_record/${id}/status`,
     method: 'POST'
