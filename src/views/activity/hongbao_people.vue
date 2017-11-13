@@ -89,6 +89,9 @@
         <el-form-item label="经纬度">
           <span>{{temp.longitude}},{{temp.latitude}}</span>
         </el-form-item>
+        <el-form-item label="地址">
+          <span>{{temp.address}}</span>
+        </el-form-item>
         <el-form-item label="IP">
           <span>{{temp.ip}}</span>
         </el-form-item>
