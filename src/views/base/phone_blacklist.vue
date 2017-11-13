@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDeblocking(scope.row.userId)">解禁
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDeblocking(scope.row.imei)">解禁
           </el-button>
         </template>
       </el-table-column>
@@ -86,14 +86,14 @@
           }
         })
       },
-      handleDeblocking(userId) { // 解禁
+      handleDeblocking(imei) { // 解禁
         this.$confirm(`确定解禁?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           let data = {
-            imeis: [userId],
+            imeis: [imei],
             status: 2
           }
           phoneToBlacklist(data).then((res) => {

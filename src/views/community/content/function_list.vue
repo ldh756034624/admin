@@ -84,12 +84,11 @@
         </el-form-item>
         <el-form-item label="连接类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.urlType" :label="0">网址</el-radio>
-            <el-radio class="radio" v-model="temp.urlType" :label="1">内部页面</el-radio>
-            <el-radio class="radio" v-model="temp.urlType" :label="2">不跳转</el-radio>
+            <el-radio class="radio" v-model="temp.urlType" :label="1">跳转</el-radio>
+            <el-radio class="radio" v-model="temp.urlType" :label="0">不跳转</el-radio>
           </div>
         </el-form-item>
-        <el-form-item label="动作">
+        <el-form-item label="动作" v-if="temp.urlType === 1">
           <el-input v-model="temp.url"></el-input>
         </el-form-item>
         <el-form-item label="上线时间">
@@ -131,13 +130,13 @@
         id: null,   // 上页面传入id
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          enable: '1',
+          enable: 1,
           id: null,
           icon: null,
           sort: null,
           title: null,
           url: null,
-          urlType: 0,
+          urlType: 1,
           fontColor: null
         },
         tableData: null,    // 表格数据
@@ -215,10 +214,12 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
+        this.resetTemp()    // 清空原有表单
         this.dateRange = []
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
-        this.temp = row   // 赋值
+        this.temp = Object.assign(this.temp, row)   // 赋值
+        row.url ? this.temp.urlType = 1 : this.temp.urlType = 0
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -231,7 +232,7 @@
           sort: null,
           title: null,
           url: null,
-          urlType: 0,
+          urlType: 1,
           fontColor: null
         }
       },
@@ -241,9 +242,9 @@
           return
         }
         this.temp.bannerTypeId = this.id
+        this.temp.urlType === 0 && delete this.temp.url
         this.$refs.temp.validate(valid => {
           if (valid) {
-            console.log('temp', this.temp)
             addFunction(this.temp).then(res => {
               if (res.code === ERR_OK) {
                 this.getTableData()
@@ -259,6 +260,7 @@
           this.$message.error('请选择时间范围')
           return
         }
+        this.temp.urlType === 0 && delete this.temp.url
         upadateFunction(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
