@@ -183,15 +183,12 @@
           enable: '1',
           id: null
         }
+        this.dateRange = []
       },
       create() {    // 创建新功能
         this.resetTemp()
         this.temp.id = 0
         this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
         this.$refs.temp.validate(valid => {
           if (valid) {
             addFn(this.temp).then(res => {
@@ -206,10 +203,6 @@
       },
       update() {  // 编辑此条信息
         this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
         upadateFn(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
