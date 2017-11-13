@@ -131,11 +131,17 @@
       },
       handleTransfer() {  // 转账
         if (this.ids.length > 0) {
-          transfer({ids: this.ids}).then((res) => {
-            if (res.code === 0) {
-              this.$message.success('操作成功')
-              this.getTableData()
-            }
+          this.$confirm(`确定转账?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            transfer({ids: this.ids}).then((res) => {
+              if (res.code === 0) {
+                this.$message.success('操作成功')
+                this.getTableData()
+              }
+            })
           })
         }
       }
