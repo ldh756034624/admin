@@ -70,3 +70,18 @@ export function updateAdmin(data) {    // 编辑管理员
   })
 }
 
+export function accountToBlacklist(data) {    // 添加帐号到黑名单
+  return fetch({
+    url: '/account/black/Account',
+    method: 'post',
+    data
+  })
+}
+
+export function phoneToBlacklist(data) {    // 添加手机到黑名单
+  return fetch({
+    url: '/account/black/imei',
+    method: 'post',
+    data
+  })
+}

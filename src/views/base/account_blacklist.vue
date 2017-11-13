@@ -13,22 +13,22 @@
       </el-table-column>
       <el-table-column align="center" label="昵称">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.nickName }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.phone }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="openID">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.openId}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="加入时间">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
+          <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="解禁时间">
@@ -38,12 +38,12 @@
       </el-table-column>
       <el-table-column align="center" label="原因" width="100">
         <template scope="scope">
-          <span>{{scope.row.code}}</span>
+          <span>{{scope.row.cause}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">解禁
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDeblocking(scope.row.userId)">解禁
           </el-button>
         </template>
       </el-table-column>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import {getTableData} from '@/api/base'
+  import {getTableData, accountToBlacklist} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -69,8 +69,6 @@
       return {
         tableData: null,    // 表格数据
         total: null,        // 数据总数
-        dialogFormVisible: false,
-        dialogStatus: '',
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20
@@ -85,12 +83,30 @@
         this.$router.push({path: '/base/addAccBlacklist'})
       },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/account/black/account/list', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
           }
+        })
+      },
+      handleDeblocking(userId) { // 解禁
+        this.$confirm(`确定解禁?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let data = {
+            userIds: [userId],
+            status: 2
+          }
+          accountToBlacklist(data).then((res) => {
+            if (res.code === 0) {
+              this.$message.success('操作成功')
+              this.getTableData()
+            }
+          })
         })
       }
     }

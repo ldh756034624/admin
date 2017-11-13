@@ -66,7 +66,7 @@
 </template>
 
 <script>
-  import {getTableData} from '@/api/base'
+  import {getTableData, accountToBlacklist} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -106,7 +106,7 @@
       handleSelectionChange(val) {  // 多表格勾选时
         let ids = []
         val.forEach(item => {
-          ids.push(item.id)
+          ids.push(item.userId)
         })
         this.ids = ids
       },
@@ -121,11 +121,21 @@
       },
       handleBlack() {  // 拉黑
         if (this.ids.length > 0) {
-          transfer({ids: this.ids}).then((res) => {
-            if (res.code === 0) {
-              this.$message.success('操作成功')
-              this.getTableData()
+          this.$confirm(`确定拉黑?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let data = {
+              userIds: this.ids,
+              status: 1
             }
+            accountToBlacklist(data).then((res) => {
+              if (res.code === 0) {
+                this.$message.success('操作成功')
+                this.getTableData()
+              }
+            })
           })
         }
       }

@@ -84,9 +84,9 @@
         </el-form-item>
         <el-form-item label="连接类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.urlType" label="0">网址</el-radio>
-            <el-radio class="radio" v-model="temp.urlType" label="1">内部页面</el-radio>
-            <el-radio class="radio" v-model="temp.urlType" label="2">不跳转</el-radio>
+            <el-radio class="radio" v-model="temp.urlType" :label="0">网址</el-radio>
+            <el-radio class="radio" v-model="temp.urlType" :label="1">内部页面</el-radio>
+            <el-radio class="radio" v-model="temp.urlType" :label="2">不跳转</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="动作">
@@ -105,8 +105,8 @@
         </el-form-item>
         <el-form-item label="状态">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.enable" label="1">启用</el-radio>
-            <el-radio class="radio" v-model="temp.enable" label="0">禁用</el-radio>
+            <el-radio class="radio" v-model="temp.enable" :label="1">启用</el-radio>
+            <el-radio class="radio" v-model="temp.enable" :label="0">禁用</el-radio>
           </div>
         </el-form-item>
       </el-form>
@@ -137,7 +137,7 @@
           sort: null,
           title: null,
           url: null,
-          urlType: '0',
+          urlType: 0,
           fontColor: null
         },
         tableData: null,    // 表格数据
@@ -218,9 +218,6 @@
         this.dateRange = []
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
-        row.enable = row.enable.toString()
-        row.sort = row.sort.toString()
-        console.log(row)
         this.temp = row   // 赋值
 
         this.dialogStatus = 'update'
@@ -228,13 +225,13 @@
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          enable: '1',
+          enable: 1,
           id: this.id,
           icon: null,
           sort: null,
           title: null,
           url: null,
-          urlType: "0",
+          urlType: 0,
           fontColor: null
         }
       },
