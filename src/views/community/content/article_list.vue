@@ -72,6 +72,17 @@
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="图标">
+          <el-upload
+            :action="IMGUP_API"
+            :show-file-list="false"
+            :on-success="handleImgSuccess"
+            list-type="picture-card"
+            :before-upload="beforeHandleImg">
+            <img v-if="temp.imgUrl" :src="temp.imgUrl" class="avatar" width="148" height="148">
+            <i v-else class="avatar-uploader-icon el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="内容" prop="fontColor">
           <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
         </el-form-item>
@@ -143,7 +154,8 @@
           startTime: null,
           title: null,
           url: null,
-          isPush: 0
+          isPush: 0,
+          imgUrl: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -168,6 +180,21 @@
       this.getArtType()
     },
     methods: {
+      beforeHandleImg(file) {      // 头像上传前
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+        if (!isJPG) {
+          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
+        }
+        return isJPG
+      },
+      handleImgSuccess(res, file) {      // 图片上传成功后
+        if (res.code === 0) {
+          this.$message.success('上传成功')
+          this.temp.imgUrl = res.data
+        } else {
+          this.$message.error('上传失败，请重试')
+        }
+      },
       actionArtAssort(row) {  // 启用禁用
         row.enable === 0 ? row.enable = 1 : row.enable = 0
         row.articleTypeId = row.articleType.id
@@ -239,7 +266,8 @@
           startTime: null,
           title: null,
           url: null,
-          isPush: 0
+          isPush: 0,
+          imgUrl: null
         }
       },
       getCk(val) {
