@@ -12,8 +12,13 @@
               placeholder="选择日期范围">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="UserID或手机号">
-            <el-input type="text" v-model="listQuery.key"></el-input>
+          <el-form-item label="类型">
+            <el-select v-model="value" placeholder="请选择">
+              <el-option
+                label="全部"
+                value="全部">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
@@ -36,27 +41,17 @@
           <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="昵称">
+      <el-table-column align="center" label="串号">
         <template scope="scope">
-          <span>{{scope.row.nickName }}</span>
+          <span>{{scope.row.imei}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="手机号">
+      <el-table-column align="center" label="关联帐号数">
         <template scope="scope">
-          <span>{{scope.row.phone }}</span>
+          <span>{{scope.row.relevanceCount}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="openID">
-        <template scope="scope">
-          <span>{{scope.row.openId}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="开瓶次数">
-        <template scope="scope">
-          <span>{{scope.row.openCount}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="参与次数">
+      <el-table-column align="center" label="所有帐号参与次数">
         <template scope="scope">
           <span>{{scope.row.joinCount}}</span>
         </template>
@@ -66,12 +61,13 @@
 </template>
 
 <script>
-  import {getTableData, accountToBlacklist} from '@/api/base'
+  import {getTableData, phoneToBlacklist} from '@/api/base'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
+        value: '全部',
         dateRange: null,  // 时间范围
         tableData: [],    // 表格数据
         total: null,        // 数据总数
@@ -90,8 +86,7 @@
       clearQuery() {  // 清空search
         this.listQuery = {
           startTime: null,
-          endTime: null,
-          key: null
+          endTime: null
         }
         this.dateRange = null
       },
@@ -112,7 +107,7 @@
         this.ids = ids
       },
       getTableData() {
-        getTableData('/account/rewardInfo', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/account/deviceIdInfo', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res
             this.total = datas.total
@@ -128,10 +123,10 @@
             type: 'warning'
           }).then(() => {
             let data = {
-              userIds: this.ids,
+              imeis: this.ids,
               status: 1
             }
-            accountToBlacklist(data).then((res) => {
+            phoneToBlacklist(data).then((res) => {
               if (res.code === 0) {
                 this.$message.success('操作成功')
                 this.getTableData()

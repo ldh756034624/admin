@@ -48,6 +48,7 @@ const vDetail = _import('finance/v_detail')
 const accountBlacklist = _import('base/account_blacklist')
 const addAccBlacklist = _import('base/add_acc_blacklist')
 const phoneBlacklist = _import('base/phone_blacklist')
+const addPhoneBlacklist = _import('base/add_phone_blacklist')
 const params = _import('base/params')
 const backCard = _import('base/bank_card')
 const admins = _import('base/admins')
@@ -156,6 +157,7 @@ export const asyncRouterMap = [
       {path: 'accountBlacklist', component: accountBlacklist, name: '账户黑名单', meta_name: 'accountBlacklist'},
       {path: 'addAccBlacklist', component: addAccBlacklist, name: '新增账户黑名单', meta_name: 'addAccBlacklist', hidden: true},
       {path: 'phoneBlacklist', component: phoneBlacklist, name: '手机黑名单', meta_name: 'phoneBlacklist'},
+      {path: 'addPhoneBlacklist', component: addPhoneBlacklist, name: '新增手机黑名单', meta_name: 'addPhoneBlacklist', hidden: true},
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
