@@ -53,7 +53,7 @@
           </el-button>
           <el-button size="small" type="success" @click="goList(scope.row.id)">列表
           </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
+          <el-button size="small" type="warning" @click="handleActive(scope.row)">{{scope.row.enable == 0 ? '禁用' : '启用'}}
           </el-button>
         </template>
       </el-table-column>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
+  import {addFn, upadateFn, getTableData} from '@/api/activity'
   import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
@@ -139,6 +139,25 @@
       this.getTableData()
     },
     methods: {
+      handleActive(row) {  // 开启关闭活动
+        let id = row.id
+        let desc = row.enable == 0 ? '启用' : '禁用'
+        this.$confirm(`是否${desc}活动?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          activeGame(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
+      },
       goList(id) {  // 跳转至功能列表
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
@@ -179,7 +198,6 @@
         }
       },
       create() {    // 创建新功能
-        this.resetTemp()
         this.temp.id = 0
         this.temp.enable = this.enable
         if (!this.temp.startTime || !this.temp.endTime) {

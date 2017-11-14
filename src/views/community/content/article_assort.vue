@@ -134,7 +134,7 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.temp = row   // 赋值
+        this.temp = Object.assign(this.temp, row)   // 赋值
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

@@ -242,7 +242,7 @@
           return
         }
         this.temp.bannerTypeId = this.id
-        this.temp.urlType === 0 && delete this.temp.url
+        this.temp.urlType === 0 && (this.temp.url = '')
         this.$refs.temp.validate(valid => {
           if (valid) {
             addFunction(this.temp).then(res => {
@@ -260,7 +260,7 @@
           this.$message.error('请选择时间范围')
           return
         }
-        this.temp.urlType === 0 && delete this.temp.url
+        this.temp.urlType === 0 && (this.temp.url = '')
         upadateFunction(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
