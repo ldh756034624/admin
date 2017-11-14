@@ -273,7 +273,7 @@
         this.dateRange.push(new Date(row.endTime))
         console.log(row)
         row.goodsTypeId = row.goodsType.id
-        this.temp = row   // 赋值
+        this.temp = Object.assign(this.temp, row)   // 赋值
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

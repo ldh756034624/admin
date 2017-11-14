@@ -41,7 +41,7 @@
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button size="small" type="primary" @click="actionArtAssort(scope.row)">
-            {{scope.row.enable == 0 ? '启用' : '禁用'}}
+            {{scope.row.status == 0 ? '启用' : '禁用'}}
           </el-button>
           <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
           </el-button>
@@ -132,6 +132,7 @@
     methods: {
       actionArtAssort(row) {  // 启用禁用
         row.status === 0 ? row.status = 1 : row.status = 0
+        console.log('single', row)
         upadateSinglePage(row).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
@@ -186,7 +187,6 @@
       },
       create() {    // 创建新功能
         this.getContent()
-        console.log(JSON.stringify(this.temp))
         addSinglePage(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()

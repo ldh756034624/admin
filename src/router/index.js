@@ -96,7 +96,7 @@ export const asyncRouterMap = [
     icon: 'zujian',
     children: [
       {path: 'activityList', component: activityList, name: '活动列表', meta_name: 'activityList'},
-      {path: 'activityManage', component: activityManage, name: '活动管理', meta_name: 'activityManage'},
+      // {path: 'activityManage', component: activityManage, name: '活动管理', meta_name: 'activityManage'},
       {path: 'hongbao', component: hongbao, name: '抢红包', meta_name: 'hongbao'},
       {path: 'hongbaoPeople', component: hongbaoPeople, name: '参与列表', meta_name: 'hongbaoPeople', hidden: true}
     ]
@@ -161,24 +161,24 @@ export const asyncRouterMap = [
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
-      {path: 'version', component: version, name: '版本管理', meta_name: 'version'}
+      // {path: 'version', component: version, name: '版本管理', meta_name: 'version'}
     ]
   },
-  {
-    path: '/systems',
-    component: Layout,
-    redirect: 'noredirect',
-    name: '系统设置',
-    meta_name: 'Systems',
-    icon: 'zujian',
-    children: [
-      {path: 'menus', component: systemMenus, name: '菜单管理', meta_name: 'systemMenus'},
-      {path: 'roles', component: systemRoles, name: '角色管理', meta_name: 'systemRoles'},
-      {path: 'users', component: systemUsers, name: '管理员', meta_name: 'systemUsers'},
-      {path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment'},
-      {path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction'}
-    ]
-  },
+  // {
+  //   path: '/systems',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: '系统设置',
+  //   meta_name: 'Systems',
+  //   icon: 'zujian',
+  //   children: [
+  //     {path: 'menus', component: systemMenus, name: '菜单管理', meta_name: 'systemMenus'},
+  //     {path: 'roles', component: systemRoles, name: '角色管理', meta_name: 'systemRoles'},
+  //     {path: 'users', component: systemUsers, name: '管理员', meta_name: 'systemUsers'},
+  //     {path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment'},
+  //     {path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction'}
+  //   ]
+  // },
   {path: '*', redirect: '/404', hidden: true}
 ]
 

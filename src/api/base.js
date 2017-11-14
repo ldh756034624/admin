@@ -70,6 +70,13 @@ export function updateAdmin(data) {    // 编辑管理员
   })
 }
 
+export function banAdmin(id) {    // 启用禁用管理员
+  return fetch({
+    url: `/basis/user/${id}/status`,
+    method: 'put'
+  })
+}
+
 export function accountToBlacklist(data) {    // 添加帐号到黑名单
   return fetch({
     url: '/account/black/Account',

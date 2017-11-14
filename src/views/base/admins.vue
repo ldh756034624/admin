@@ -13,22 +13,22 @@
       </el-table-column>
       <el-table-column align="center" label="姓名">
         <template scope="scope">
-          <span>{{scope.row.nickName }}</span>
+          <span>{{scope.row.nickName || '--'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号">
         <template scope="scope">
-          <span>{{scope.row.phone }}</span>
+          <span>{{scope.row.phone || '--'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="部门">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
+          <span>{{scope.row.departmentName || '--'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="角色">
         <template scope="scope">
-          <span>{{scope.row.departmentName }}</span>
+          <span>{{scope.row.roleName || '--'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
@@ -71,7 +71,8 @@
           <el-input v-model="temp.nickName"></el-input>
         </el-form-item>
         <el-form-item label="手机号" prop="code">
-          <span>{{temp.phone}}</span>
+          <span v-if="dialogStatus == 'update'">{{temp.phone}}</span>
+          <el-input v-else v-model="temp.phone"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="code">
           <el-input v-model="temp.password"></el-input>
@@ -94,7 +95,7 @@
 </template>
 
 <script>
-  import {getTableData, createAdmin, updateAdmin} from '@/api/base'
+  import {getTableData, createAdmin, updateAdmin, banAdmin} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -125,12 +126,7 @@
     },
     methods: {
       handleBan(row) {  // 启用或者禁用
-        if (row.status == 1) {
-          row.status == 2
-        } else {
-          row.status == 1
-        }
-        updateAdmin(row).then(res => {
+        banAdmin(row.id).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.$message.success('修改成功')

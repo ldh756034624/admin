@@ -171,7 +171,7 @@
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
         this.enable = row.enable.toString()
-        this.temp = row   // 赋值
+        this.temp = Object.assign(this.temp, row)   // 赋值
 
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -186,7 +186,6 @@
         this.dateRange = []
       },
       create() {    // 创建新功能
-        this.resetTemp()
         this.temp.id = 0
         this.temp.enable = this.enable
         this.$refs.temp.validate(valid => {

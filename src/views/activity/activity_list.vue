@@ -140,7 +140,7 @@
           </el-tab-pane>
           <!--todo 以后有高级设置再加上-->
           <!--<el-tab-pane label="高级设置">-->
-            <!--<hongbao :data="proData" ref="hongbao" @getProData="getProData"></hongbao>-->
+          <!--<hongbao :data="proData" ref="hongbao" @getProData="getProData"></hongbao>-->
           <!--</el-tab-pane>-->
         </el-tabs>
       </el-form>
@@ -157,7 +157,7 @@
 <script>
   import {getTableData, addGame, updateGame, activeGame} from '@/api/activity'
   import {isPhone} from '@/utils/validate'
-//  import Hongbao from '@/components/activity/hongbao'
+  //  import Hongbao from '@/components/activity/hongbao'
 
   const ERR_OK = 0
   export default {
@@ -227,6 +227,11 @@
         })
       },
       dateRangeChange() {      // 获取时间范围
+        if (!this.dateRange[0]) {
+          this.temp.startTime = null
+          this.temp.endTime = null
+          return
+        }
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       }
@@ -253,14 +258,14 @@
         this.dateRange.push(new Date(row.endTime))
         let stringArr = ['isPush', 'needPhone', 'needSms', 'enable']  // 转为string
         stringArr.forEach(item => {
-          row[item] =row[item].toString()
+          row[item] = row[item].toString()
         })
 //        let proData = {
 //          targetRate: row.targetRate,
 //          targetCount: row.targetCount
 //        }
 //        this.proData = proData
-        this.temp = row   // 赋值
+        this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       }
@@ -292,15 +297,13 @@
       }
       ,
       create() {    // 创建新功能
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        this.$refs.hongbao.getData()   // 获取数据
-        let data = Object.assign(this.temp, this.proData)
-        console.log('data', data)
-        console.log(JSON.stringify(data))
-        addGame(data).then(res => {
+//        if (!this.temp.startTime || !this.temp.endTime) {
+//          this.$message.error('请选择时间范围')
+//          return
+//        }
+//        this.$refs.hongbao.getData()   // 获取数据
+//        let data = Object.assign(this.temp, this.proData)
+        addGame(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -310,10 +313,6 @@
       }
       ,
       update() {  // 编辑此条信息
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
         updateGame(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.$message.success('保存成功')
