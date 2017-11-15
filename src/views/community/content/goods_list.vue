@@ -75,18 +75,18 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" ref="temp" :rules="rules" label-width="100px" class="form30">
-        <el-form-item label="名称">
+        <el-form-item label="名称" class="red-star">
           <el-input class="w30" v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="编码">
+        <el-form-item label="编码" class="red-star">
           <el-input class="w30" v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="类型" class="red-star">
           <el-select v-model="temp.goodsTypeId" placeholder="活动区域">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="图标" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :show-file-list="false"
@@ -97,16 +97,16 @@
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="原价">
+        <el-form-item label="原价" class="red-star">
           <el-input class="w30" v-model="temp.realPrice"></el-input>
         </el-form-item>
-        <el-form-item label="价格">
+        <el-form-item label="价格" class="red-star">
           <el-input class="w30" v-model="temp.price"></el-input>
         </el-form-item>
-        <el-form-item label="V币兑换">
+        <el-form-item label="V币兑换" class="red-star">
           <el-input class="w30" v-model="temp.vCoinsRate"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" class="red-star">
           <el-input class="w30" type="textarea" v-model="temp.description"></el-input>
         </el-form-item>
         <el-form-item label="上架时间">
@@ -117,10 +117,10 @@
             placeholder="选择日期范围">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="库存">
+        <el-form-item label="库存" class="red-star">
           <el-input class="w30" v-model="temp.stock" v-number-only></el-input>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.status" :label="1">上架</el-radio>
             <el-radio class="radio" v-model="temp.status" :label="0">下架</el-radio>

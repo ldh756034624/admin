@@ -61,19 +61,19 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <el-form-item label="名称">
+        <el-form-item label="名称" class="red-star">
           <el-input class="w30" v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标题">
+        <el-form-item label="标题" class="red-star">
           <el-input class="w30" v-model="temp.title"></el-input>
         </el-form-item>
-        <el-form-item label="标识">
+        <el-form-item label="标识" class="red-star">
           <el-input class="w30" v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
         </el-form-item>
-        <el-form-item label="启用">
+        <el-form-item label="启用" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.status" :label="1">是</el-radio>
             <el-radio class="radio" v-model="temp.status" :label="0">否</el-radio>

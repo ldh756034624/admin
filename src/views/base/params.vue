@@ -63,20 +63,20 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form label-width="100px">
-        <el-form-item label="参数名称">
+        <el-form-item label="参数名称" class="red-star">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="参数标识">
+        <el-form-item label="参数标识" class="red-star">
           <el-input v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="参数类型">
+        <el-form-item label="参数类型" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" :label="0" v-model="temp.type">文本</el-radio>
             <el-radio class="radio" :label="1" v-model="temp.type">对象</el-radio>
             <el-radio class="radio" :label="2" v-model="temp.type">数组</el-radio>
           </div>
         </el-form-item>
-        <el-form-item label="参数值" prop="code">
+        <el-form-item label="参数值" prop="code" class="red-star">
           <!--文本-->
           <div v-if="temp.type == 0">
             <el-input class="w30" v-model="temp.textParams"></el-input>
@@ -101,7 +101,7 @@
             </div>
           </div>
         </el-form-item>
-        <el-form-item label="参数描述">
+        <el-form-item label="参数描述" class="red-star">
           <el-input type="textarea" v-model="temp.description"></el-input>
         </el-form-item>
       </el-form>

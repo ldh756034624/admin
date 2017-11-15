@@ -68,7 +68,7 @@
         <el-form-item label="名称" prop="title">
           <el-input v-model="temp.title"></el-input>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="图标" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :show-file-list="false"
@@ -79,10 +79,10 @@
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="字体颜色" prop="fontColor">
+        <el-form-item label="字体颜色">
           <el-input v-model="temp.fontColor"></el-input>
         </el-form-item>
-        <el-form-item label="连接类型">
+        <el-form-item label="连接类型" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.urlType" :label="1">跳转</el-radio>
             <el-radio class="radio" v-model="temp.urlType" :label="0">不跳转</el-radio>
@@ -91,7 +91,7 @@
         <el-form-item label="动作" v-if="temp.urlType === 1">
           <el-input v-model="temp.url"></el-input>
         </el-form-item>
-        <el-form-item label="上线时间">
+        <el-form-item label="上线时间" class="red-star">
           <el-date-picker
             v-model="dateRange"
             @change="dateRangeChange"
@@ -102,7 +102,7 @@
         <el-form-item label="排序">
           <el-input v-model="temp.sort"></el-input>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.enable" :label="1">启用</el-radio>
             <el-radio class="radio" v-model="temp.enable" :label="0">禁用</el-radio>
@@ -145,7 +145,6 @@
         dialogStatus: '',
         rules: {
           title: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          fontColor: [{required: true, message: '请输入颜色', trigger: 'blur'}]
         },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
