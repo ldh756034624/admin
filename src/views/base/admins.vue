@@ -50,7 +50,8 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="primary" @click="handleBan(scope.row)">{{scope.row.status == 1 ? '禁用' : '启用'}}</el-button>
+          <el-button size="small" type="primary" @click="handleBan(scope.row)">{{scope.row.status == 1 ? '禁用' : '启用'}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,15 +67,15 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" label-width="100px">
-        <el-form-item label="姓名" prop="name">
+      <el-form :model="temp" :rules="rules" ref="temp" label-width="100px">
+        <el-form-item label="姓名" prop="nickName">
           <el-input v-model="temp.nickName"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" prop="code">
+        <el-form-item label="手机号" prop="phone">
           <span v-if="dialogStatus == 'update'">{{temp.phone}}</span>
           <el-input v-else v-model="temp.phone"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="code">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="temp.password"></el-input>
         </el-form-item>
         <el-form-item label="状态">
@@ -118,6 +119,17 @@
         textMap: {
           update: '编辑',
           create: '新增'
+        },
+        rules: {
+          nickName: [
+            {required: true, message: '请输入姓名', trigger: 'blur'}
+          ],
+          phone: [
+            {required: true, message: '请输入手机号码', trigger: 'blur'}
+          ],
+          password: [
+            {required: true, message: '请输入密码', trigger: 'blur'}
+          ]
         }
       }
     },
@@ -161,12 +173,15 @@
         }
       },
       create() {    // 创建新功能
-        this.resetTemp()
-        createAdmin(this.temp).then(res => {
-          if (res.code === ERR_OK) {
-            this.getTableData()
-            this.dialogFormVisible = false
-            this.$message.success('创建成功')
+        this.$refs.temp.validate(valid => {
+          if (valid) {
+            createAdmin(this.temp).then(res => {
+              if (res.code === ERR_OK) {
+                this.getTableData()
+                this.dialogFormVisible = false
+                this.$message.success('创建成功')
+              }
+            })
           }
         })
       },

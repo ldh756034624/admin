@@ -40,7 +40,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="handleActive(scope.row)">{{scope.row.enable == 0 ? '开启' : '关闭'}}
+          <el-button size="small" type="success" @click="handleActive(scope.row)">{{scope.row.enable == 0 ? '开启' : '禁用'}}
           </el-button>
         </template>
       </el-table-column>
@@ -111,33 +111,34 @@
               </div>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="参与设置">
-            <el-form-item label="每人总次数" label-width="150px">
-              <div class="w50">
-                <el-input v-model="temp.personTotalNumber" placeholder="请输入活动规则"></el-input>
-              </div>
-            </el-form-item>
-            <el-form-item label="每人每天次数" label-width="150px">
-              <div class="w50">
-                <el-input v-model="temp.personDailyNumber" placeholder="请输入活动规则"></el-input>
-              </div>
-            </el-form-item>
-            <el-form-item label="每人每天中奖次数" label-width="150px">
-              <div class="w50">
-                <el-input v-model="temp.personDailyTargetNumber" placeholder="请输入活动规则"></el-input>
-              </div>
-            </el-form-item>
-            <el-form-item label="中奖时间间隔" label-width="150px">
-              <div class="w50">
-                <el-input v-model="temp.targetPeriod" placeholder="请输入活动规则"></el-input>
-              </div>
-            </el-form-item>
-            <el-form-item label="参与频率" label-width="150px">
-              <div class="w50">
-                <el-input v-model="temp.participationFrequency" placeholder="请输入活动规则"></el-input>
-              </div>
-            </el-form-item>
-          </el-tab-pane>
+          <!--todo 以后有高级设置再加上-->
+          <!--<el-tab-pane label="参与设置">-->
+            <!--<el-form-item label="每人总次数" label-width="150px">-->
+              <!--<div class="w50">-->
+                <!--<el-input v-model="temp.personTotalNumber" placeholder="请输入活动规则"></el-input>-->
+              <!--</div>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="每人每天次数" label-width="150px">-->
+              <!--<div class="w50">-->
+                <!--<el-input v-model="temp.personDailyNumber" placeholder="请输入活动规则"></el-input>-->
+              <!--</div>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="每人每天中奖次数" label-width="150px">-->
+              <!--<div class="w50">-->
+                <!--<el-input v-model="temp.personDailyTargetNumber" placeholder="请输入活动规则"></el-input>-->
+              <!--</div>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="中奖时间间隔" label-width="150px">-->
+              <!--<div class="w50">-->
+                <!--<el-input v-model="temp.targetPeriod" placeholder="请输入活动规则"></el-input>-->
+              <!--</div>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="参与频率" label-width="150px">-->
+              <!--<div class="w50">-->
+                <!--<el-input v-model="temp.participationFrequency" placeholder="请输入活动规则"></el-input>-->
+              <!--</div>-->
+            <!--</el-form-item>-->
+          <!--</el-tab-pane>-->
           <!--todo 以后有高级设置再加上-->
           <!--<el-tab-pane label="高级设置">-->
           <!--<hongbao :data="proData" ref="hongbao" @getProData="getProData"></hongbao>-->
@@ -175,13 +176,13 @@
           isPush: '0',
           needPhone: '1',
           needSms: '1',
-          participationFrequency: null,
-          personDailyNumber: null,
-          personDailyTargetNumber: null,
-          personTotalNumber: null,
+          participationFrequency: 0,
+          personDailyNumber: 0,
+          personDailyTargetNumber: 0,
+          personTotalNumber: 0,
           startTime: null,
           targetCount: null,
-          targetPeriod: null,
+          targetPeriod: 0,
           targetRate: null
         },
         tableData: null,    // 表格数据
@@ -209,7 +210,7 @@
     methods: {
       handleActive(row) {  // 开启关闭活动
         let id = row.id
-        let desc = row.enable == 0 ? '开启' : '关闭'
+        let desc = row.enable == 0 ? '开启' : '禁用'
         this.$confirm(`是否${desc}活动?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -281,13 +282,13 @@
           isPush: '0',
           needPhone: '1',
           needSms: '1',
-          participationFrequency: null,
-          personDailyNumber: null,
-          personDailyTargetNumber: null,
-          personTotalNumber: null,
+          participationFrequency: 0,
+          personDailyNumber: 0,
+          personDailyTargetNumber: 0,
+          personTotalNumber: 0,
           startTime: null,
           targetCount: null,
-          targetPeriod: null,
+          targetPeriod: 0,
           targetRate: null
         }
       }
