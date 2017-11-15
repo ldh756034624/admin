@@ -45,10 +45,10 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" ref="temp" :rules="rules" label-width="100px" class="form30">
-        <el-form-item label="名称">
+        <el-form-item label="名称" class="red-star">
           <el-input class="w30" v-model="temp.bankName"></el-input>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="图标" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :show-file-list="false"
@@ -59,10 +59,10 @@
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="背景色">
+        <el-form-item label="背景色" class="red-star">
           <el-input class="w30" v-model="temp.color"></el-input>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.status" :label="1">启用</el-radio>
             <el-radio class="radio" v-model="temp.status" :label="0">禁用</el-radio>

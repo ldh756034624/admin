@@ -56,7 +56,7 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <el-form-item label="标题">
+        <el-form-item label="标题" class="red-star">
           <el-input class="w30" v-model="temp.title"></el-input>
         </el-form-item>
         <el-form-item label="文章图片">
@@ -70,7 +70,7 @@
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="内容" prop="fontColor">
+        <el-form-item label="内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
         </el-form-item>
         <el-form-item label="外部链接">
@@ -79,7 +79,7 @@
             <el-input class="w30" v-model="temp.url"></el-input>
           </div>
         </el-form-item>
-        <el-form-item label="启用">
+        <el-form-item label="启用" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.enable" :label="1">是</el-radio>
             <el-radio class="radio" v-model="temp.enable" :label="0">否</el-radio>

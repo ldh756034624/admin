@@ -64,15 +64,15 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <el-form-item label="标题">
+        <el-form-item label="标题" class="red-star">
           <el-input class="w30" v-model="temp.title"></el-input>
         </el-form-item>
-        <el-form-item label="分类" prop="fontColor">
+        <el-form-item label="分类" prop="fontColor" class="red-star">
           <el-select v-model="temp.articleTypeId" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="文章图片" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :show-file-list="false"
@@ -83,10 +83,10 @@
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="内容" prop="fontColor">
+        <el-form-item label="内容" prop="fontColor" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
         </el-form-item>
-        <el-form-item label="推荐到首页">
+        <el-form-item label="推荐到首页" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
             <el-radio class="radio" v-model="temp.recommend" :label="0">否</el-radio>
@@ -98,7 +98,7 @@
             <el-input v-if="temp.isPush === 1" class="w30" v-model="temp.url"></el-input>
           </div>
         </el-form-item>
-        <el-form-item label="启用">
+        <el-form-item label="启用" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.enable" :label="1">是</el-radio>
             <el-radio class="radio" v-model="temp.enable" :label="0">否</el-radio>
@@ -116,7 +116,7 @@
             :picker-options="pickerOptions0">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="作者">
+        <el-form-item label="作者" class="red-star">
           <el-input class="w30" v-model="temp.userName"></el-input>
         </el-form-item>
       </el-form>

@@ -58,13 +58,13 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <el-form-item label="分类名称" prop="name">
+        <el-form-item label="分类名称" class="red-star">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="排序" prop="code">
+        <el-form-item label="排序">
           <el-input v-model="temp.sort"></el-input>
         </el-form-item>
-        <el-form-item label="是否启用">
+        <el-form-item label="是否启用" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.enable" :label="1">启用</el-radio>
             <el-radio class="radio" v-model="temp.enable" :label="0">禁用</el-radio>

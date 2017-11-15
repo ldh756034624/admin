@@ -75,7 +75,7 @@
         <el-form-item label="标识" prop="code">
           <el-input v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="上线时间">
+        <el-form-item label="上线时间" class="red-star">
           <el-date-picker
             v-model="dateRange"
             @change="dateRangeChange"
@@ -83,7 +83,7 @@
             placeholder="选择日期范围">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
             <el-radio class="radio" v-model="enable" label="0">禁用</el-radio>

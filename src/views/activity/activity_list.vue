@@ -60,7 +60,7 @@
       <el-form>
         <el-tabs type="border-card">
           <el-tab-pane label="活动设置">
-            <el-form-item label="活动名称" label-width="80px">
+            <el-form-item label="活动名称" label-width="80px" class="red-star">
               <div class="w50">
                 <el-input v-model="temp.activityName" placeholder="请输入活动名称"></el-input>
               </div>
@@ -71,7 +71,7 @@
                 <el-checkbox v-model="temp.isPush" true-label="1" false-label="0">回复关键字推送活动</el-checkbox>
               </div>
             </el-form-item>
-            <el-form-item label="活动时间" label-width="80px">
+            <el-form-item label="活动时间" label-width="80px" class="red-star">
               <div class="w50">
                 <el-date-picker
                   v-model="dateRange"
@@ -102,7 +102,7 @@
                 <el-input v-model="temp.activityDesc" type="textarea" placeholder="请输入活动规则"></el-input>
               </div>
             </el-form-item>
-            <el-form-item label="活动状态" label-width="80px">
+            <el-form-item label="活动状态" label-width="80px" class="red-star">
               <div class="w50">
                 <div class="checkitem">
                   <el-radio class="radio" v-model="temp.enable" label="1">开启</el-radio>
