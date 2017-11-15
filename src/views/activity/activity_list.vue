@@ -40,7 +40,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="handleActive(scope.row)">{{scope.row.enable == 0 ? '开启' : '关闭'}}
+          <el-button size="small" type="success" @click="handleActive(scope.row)">{{scope.row.enable == 0 ? '开启' : '禁用'}}
           </el-button>
         </template>
       </el-table-column>
@@ -209,7 +209,7 @@
     methods: {
       handleActive(row) {  // 开启关闭活动
         let id = row.id
-        let desc = row.enable == 0 ? '开启' : '关闭'
+        let desc = row.enable == 0 ? '开启' : '禁用'
         this.$confirm(`是否${desc}活动?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
