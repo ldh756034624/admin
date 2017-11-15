@@ -116,6 +116,9 @@
             :picker-options="pickerOptions0">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="作者">
+          <el-input class="w30" v-model="temp.userName"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -156,7 +159,8 @@
           title: null,
           url: null,
           isPush: 0,
-          imgUrl: null
+          imgUrl: null,
+          userName: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -275,7 +279,8 @@
           title: null,
           url: null,
           isPush: 0,
-          imgUrl: null
+          imgUrl: null,
+          userName: null
         }
       },
       getCk(val) {
@@ -320,6 +325,13 @@
               this.getTableData()
             }
           })
+        })
+      }
+    },
+    watch: {
+      'temp.sort'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.temp.sort = newVal.replace(/\D+/, '')
         })
       }
     },

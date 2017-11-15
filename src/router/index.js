@@ -28,6 +28,7 @@ const functionAssort = _import('community/content/function_assort')
 const functionList = _import('community/content/function_list')
 const articleAssort = _import('community/content/article_assort')
 const articleList = _import('community/content/article_list')
+const announceList = _import('community/content/announce_list')
 const singlePage = _import('community/content/single_page')
 const goodsList = _import('community/content/goods_list')
 
@@ -55,11 +56,11 @@ const admins = _import('base/admins')
 const version = _import('base/version')
 
 /* 系统设置*/
-const systemMenus = _import('systems/menus')
-const systemRoles = _import('systems/roles')
-const systemUsers = _import('systems/users')
-const systemDepartment = _import('systems/department')
-const systemAction = _import('systems/action')
+// const systemMenus = _import('systems/menus')
+// const systemRoles = _import('systems/roles')
+// const systemUsers = _import('systems/users')
+// const systemDepartment = _import('systems/department')
+// const systemAction = _import('systems/action')
 
 Vue.use(Router)
 
@@ -113,6 +114,7 @@ export const asyncRouterMap = [
       {path: 'fnlist', component: functionList, name: '功能列表', meta_name: 'functionList', hidden: true},
       {path: 'article_assort', component: articleAssort, name: '文章分类', meta_name: 'articleAssort'},
       {path: 'article_list', component: articleList, name: '文章列表', meta_name: 'articleList'},
+      {path: 'announce_list', component: announceList, name: '公告管理', meta_name: 'announceList'},
       {path: 'single_page', component: singlePage, name: '单网页管理', meta_name: 'singlePage'},
       {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'}
     ]
