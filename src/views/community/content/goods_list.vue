@@ -118,7 +118,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="库存">
-          <el-input class="w30" v-model="temp.stock"></el-input>
+          <el-input class="w30" v-model="temp.stock" v-number-only></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <div class="checkitem">
@@ -271,7 +271,6 @@
         this.dateRange = []
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
-        console.log(row)
         row.goodsTypeId = row.goodsType.id
         this.temp = Object.assign(this.temp, row)   // 赋值
 

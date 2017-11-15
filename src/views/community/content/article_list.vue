@@ -105,7 +105,7 @@
           </div>
         </el-form-item>
         <el-form-item label="排序">
-          <el-input class="w30" v-model="temp.sort"></el-input>
+          <el-input class="w30" v-number-only v-model="temp.sort"></el-input>
         </el-form-item>
         <el-form-item label="发布时间">
           <el-date-picker
