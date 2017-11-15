@@ -105,7 +105,7 @@
           </div>
         </el-form-item>
         <el-form-item label="排序">
-          <el-input class="w30" v-number-only v-model="temp.sort"></el-input>
+          <el-input class="w30" v-model="temp.sort"></el-input>
         </el-form-item>
         <el-form-item label="发布时间">
           <el-date-picker
@@ -115,6 +115,9 @@
             placeholder="选择日期"
             :picker-options="pickerOptions0">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="作者">
+          <el-input class="w30" v-model="temp.userName"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -156,7 +159,8 @@
           title: null,
           url: null,
           isPush: 0,
-          imgUrl: null
+          imgUrl: null,
+          userName: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -275,7 +279,8 @@
           title: null,
           url: null,
           isPush: 0,
-          imgUrl: null
+          imgUrl: null,
+          userName: null
         }
       },
       getCk(val) {
@@ -320,6 +325,13 @@
               this.getTableData()
             }
           })
+        })
+      }
+    },
+    watch: {
+      'temp.sort'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.temp.sort = newVal.replace(/\D+/, '')
         })
       }
     },

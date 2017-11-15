@@ -39,18 +39,18 @@ Vue.filter('formatDateTime', val => {   // 有日期和时间
   return formatDate(new Date(val), 'yyyy-MM-dd hh:mm:ss')
 })
 
-Vue.directive('numberOnly', { // 只允许输入数字
-  // 当被绑定的元素插入到 DOM 中时……
-  bind(el) {
-    el.handler = function () {
-      el.children[0].value = el.children[0].value.replace(/\D+/, '')
-    }
-    el.addEventListener('input', el.handler)
-  },
-  unbind(el) {
-    el.removeEventListener('input', el.handler)
-  }
-})
+// Vue.directive('numberOnly', { // 只允许输入数字
+//   // 当被绑定的元素插入到 DOM 中时……
+//   bind(el) {
+//     el.handler = function () {
+//       el.children[0].value = el.children[0].value.replace(/\D+/, '')
+//     }
+//     el.addEventListener('input', el.handler)
+//   },
+//   unbind(el) {
+//     el.removeEventListener('input', el.handler)
+//   }
+// })
 
 router.beforeEach((to, from, next) => {
   NProgress.start()

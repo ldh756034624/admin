@@ -62,7 +62,7 @@
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
         <el-form-item label="排序" prop="code">
-          <el-input v-model="temp.sort" v-number-only></el-input>
+          <el-input v-model="temp.sort"></el-input>
         </el-form-item>
         <el-form-item label="是否启用">
           <div class="checkitem">
@@ -179,6 +179,14 @@
               this.getTableData()
             }
           })
+        })
+      }
+    },
+    watch: {
+      'temp.sort'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.temp.sort = newVal.replace(/\D+/, '')
+          console.log(this.temp.sort)
         })
       }
     }
