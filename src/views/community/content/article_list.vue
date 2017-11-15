@@ -111,6 +111,7 @@
           <el-date-picker
             v-model="temp.startTime"
             type="date"
+            @change="dateChange"
             placeholder="选择日期"
             :picker-options="pickerOptions0">
           </el-date-picker>
@@ -180,6 +181,13 @@
       this.getArtType()
     },
     methods: {
+      dateChange(val) {
+        if (!val) {
+          this.temp.startTime = 0
+          return
+        }
+        this.temp.startTime = new Date(val).getTime()
+      },
       beforeHandleImg(file) {      // 头像上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {
