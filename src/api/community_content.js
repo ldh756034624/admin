@@ -145,3 +145,26 @@ export function delSinglePage(id) {    // 删除单网页
     method: 'delete',
   })
 }
+
+export function addAnnounce(data) {    // 新增公告
+  return fetch({
+    url: '/community/announcement',
+    method: 'POST',
+    data
+  })
+}
+
+export function upadateAnnounce(data) {    // 编辑公告
+  return fetch({
+    url: '/community/announcement',
+    method: 'put',
+    data
+  })
+}
+
+export function delAnnounce(id) {    // 启用禁用公告
+  return fetch({
+    url: `/community/announcement/${id}/status`,
+    method: 'put',
+  })
+}
