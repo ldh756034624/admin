@@ -186,7 +186,6 @@
       'temp.sort'(newVal, oldVal) {
         this.$nextTick(() => {
           this.temp.sort = newVal.replace(/\D+/, '')
-          console.log(this.temp.sort)
         })
       }
     }

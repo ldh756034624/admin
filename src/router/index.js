@@ -112,7 +112,7 @@ export const asyncRouterMap = [
     children: [
       {path: 'fnassort', component: functionAssort, name: '功能分类', meta_name: 'functionAssort'},
       {path: 'fnlist', component: functionList, name: '功能列表', meta_name: 'functionList', hidden: true},
-      {path: 'article_assort', component: articleAssort, name: '文章分类', meta_name: 'articleAssort'},
+      {path: 'article_assort', component: articleAssort, name: '文章分类', meta_name: 'articleAssort',hidden: true},
       {path: 'article_list', component: articleList, name: '文章列表', meta_name: 'articleList'},
       {path: 'announce_list', component: announceList, name: '公告管理', meta_name: 'announceList'},
       {path: 'single_page', component: singlePage, name: '单网页管理', meta_name: 'singlePage'},
