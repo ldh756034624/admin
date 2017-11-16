@@ -36,11 +36,6 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="UserID">
-        <template scope="scope">
-          <span>{{scope.row.userId}}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="串号">
         <template scope="scope">
           <span>{{scope.row.imei}}</span>
@@ -102,7 +97,7 @@
       handleSelectionChange(val) {  // 多表格勾选时
         let ids = []
         val.forEach(item => {
-          ids.push(item.userId)
+          ids.push(item.imei)
         })
         this.ids = ids
       },
