@@ -2,6 +2,16 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
+      <div class="filter-container">
+        <el-form inline>
+          <el-form-item label="名称或参数标识">
+            <el-input type="text" v-model="listQuery.key"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
     </div>
@@ -151,6 +161,7 @@
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
+          key: null
         },
         textMap: {
           update: '编辑',
