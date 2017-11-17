@@ -294,10 +294,6 @@
         }
       },
       create() {    // 创建新功能
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
         addGoods(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
@@ -307,10 +303,6 @@
         })
       },
       update() {  // 确认编辑此条信息
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
         upadateGoods(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
