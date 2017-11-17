@@ -149,6 +149,11 @@
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
       dateRangeChange() {      // 获取时间范围
+        if (!this.dateRange[0]) {
+          this.temp.startTime = null
+          this.temp.endTime = null
+          return
+        }
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
