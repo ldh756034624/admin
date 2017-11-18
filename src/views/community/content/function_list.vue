@@ -218,6 +218,7 @@
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
         this.temp = Object.assign(this.temp, row)   // 赋值
+        this.temp.bannerTypeId = row.bannerType.id
         row.url ? this.temp.urlType = 1 : this.temp.urlType = 0
 
         this.dialogStatus = 'update'
