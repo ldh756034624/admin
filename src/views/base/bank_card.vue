@@ -25,9 +25,9 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="handleBankStatus(scope.row.id, 1)">启用
+          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="handleBankStatus(scope.row.id, '启用')">启用
           </el-button>
-          <el-button v-else size="small" type="danger" @click="handleBankStatus(scope.row.id, 0)">禁用
+          <el-button v-else size="small" type="danger" @click="handleBankStatus(scope.row.id, '禁用')">禁用
           </el-button>
         </template>
       </el-table-column>
@@ -114,8 +114,7 @@
       this.getTableData()
     },
     methods: {
-      handleBankStatus(id, type) { // 物品上下架
-        let desc = type === 0 ? '禁用' : '启用'
+      handleBankStatus(id, desc) { // 物品上下架
         this.$confirm(`是否${desc}此银行卡?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
