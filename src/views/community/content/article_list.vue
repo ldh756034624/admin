@@ -294,7 +294,7 @@
       },
       create() {    // 创建新功能
         this.getContent()
-        console.log(JSON.stringify(this.temp))
+        this.temp.isPush == false && delete this.temp.url
         addArt(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
@@ -305,6 +305,7 @@
       },
       update() {  // 确认编辑此条信息
         this.getContent()
+        this.temp.isPush == false && delete this.temp.url
         upadateArt(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
