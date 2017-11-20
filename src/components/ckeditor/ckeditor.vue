@@ -46,9 +46,7 @@
       },
       setData() {
         this.$nextTick(() => {
-          if (this.data || this.data != 0) {    // 初始化数据
-            this.editor.setData(this.data)
-          }
+          this.editor.setData(this.data)
         })
       }
     }

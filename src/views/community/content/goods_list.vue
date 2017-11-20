@@ -107,7 +107,7 @@
           <el-input class="w30" v-model="temp.vCoinsRate"></el-input>
         </el-form-item>
         <el-form-item label="内容" class="red-star">
-          <el-input class="w30" type="textarea" v-model="temp.description"></el-input>
+          <ckeditor ref="ckeditor" :data="temp.description" @getData="getCk"></ckeditor>
         </el-form-item>
         <el-form-item label="上架时间">
           <el-date-picker
@@ -118,7 +118,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="库存" class="red-star">
-          <el-input class="w30" v-model="temp.stock" v-number-only></el-input>
+          <el-input class="w30" v-model="temp.stock"></el-input>
         </el-form-item>
         <el-form-item label="状态" class="red-star">
           <div class="checkitem">
@@ -139,6 +139,7 @@
 
 <script>
   import {getTableData, addGoods, upadateGoods, changeGoodsStatus} from '@/api/community_content'
+  import Ckeditor from '@/components/ckeditor/ckeditor'
 
   const ERR_OK = 0
   export default {
@@ -198,6 +199,12 @@
       this.getTableData()
     },
     methods: {
+      getCk(val) {
+        this.temp.description = val
+      },
+      getContent() {  // 获取editor组件的内容
+        this.$refs.ckeditor.getData()
+      },
       changeStatus(id, type) { // 物品上下架
         let desc = type === 0 ? '下架' : '上架'
         this.$confirm(`是否${desc}此商品?`, '提示', {
@@ -266,6 +273,9 @@
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs.ckeditor.clearData()
+        })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.dateRange = []
@@ -273,9 +283,12 @@
         this.dateRange.push(new Date(row.endTime))
         row.goodsTypeId = row.goodsType.id
         this.temp = Object.assign(this.temp, row)   // 赋值
-
+        console.log(this.temp)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs.ckeditor.setData()
+        })
       },
       resetTemp() {   // 重置弹出表格
         this.dateRange = []
@@ -294,6 +307,7 @@
         }
       },
       create() {    // 创建新功能
+        this.getContent()
         addGoods(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
@@ -303,6 +317,7 @@
         })
       },
       update() {  // 确认编辑此条信息
+        this.getContent()
         upadateGoods(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
@@ -311,6 +326,10 @@
           }
         })
       }
+    },
+    components: {
+      Ckeditor
+
     }
   }
 </script>
