@@ -44,7 +44,7 @@
           <span>{{scope.row.bankName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="卡号">
+      <el-table-column align="center" label="卡号" width="200">
         <template scope="scope">
           <span>{{scope.row.bankCardNo}}</span>
         </template>
@@ -54,7 +54,7 @@
           <span>{{scope.row.money}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="时间">
+      <el-table-column align="center" label="时间" width="200">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
