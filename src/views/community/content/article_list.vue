@@ -92,7 +92,7 @@
         <el-form-item label="推荐到首页" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="0">否</el-radio>
+            <el-radio class="radio" v-model="temp.recommend" :label="2">否</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="链接">
