@@ -45,7 +45,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
+          <el-button size="small" :type="scope.row.enable == 0 ? 'success' : 'warning'" @click="handleEnable(scope.row)">{{scope.row.enable == 0 ? '启用' : '禁用'}}
           </el-button>
           <el-button size="small" type="success" @click="handleDele(scope.row.id)">删除
           </el-button>
@@ -161,6 +161,28 @@
       this.getTableData()
     },
     methods: {
+      handleEnable(row) {  // 启用禁用
+        let newRow = Object.assign({}, row)
+        let desc = newRow.enable == 0 ? '启用' : '禁用'
+        if (newRow.enable == 0) {
+          newRow.enable = 1
+        } else {
+          newRow.enable = 0
+        }
+        newRow.bannerTypeId = newRow.bannerType.id
+        this.$confirm(`是否${desc}`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          upadateFunction(newRow).then(res => {
+            if (res.code === ERR_OK) {
+              this.getTableData()
+              this.$message.success('操作成功')
+            }
+          })
+        })
+      },
       beforeHandleImg(file) {      // 头像上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {

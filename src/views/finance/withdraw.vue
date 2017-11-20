@@ -147,7 +147,7 @@
           },
           {
             label: '提现异常',
-            value: 4
+            value: 6
           },
           {
             label: '退回',
@@ -160,7 +160,7 @@
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
-          status: 4,
+          status: 6,
           phone: null,
           bankCardNo: null
         },
