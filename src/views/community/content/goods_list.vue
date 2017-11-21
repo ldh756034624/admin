@@ -48,7 +48,7 @@
       </el-table-column>
       <el-table-column align="center" label="商品状态">
         <template scope="scope">
-          <span>{{scope.row.status === 0 ? '下架' : '上架'}}</span>
+          <span>{{scope.row.status === 2 ? '下架' : '上架'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -57,7 +57,7 @@
           </el-button>
           <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">上架
           </el-button>
-          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 0)">下架
+          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">下架
           </el-button>
         </template>
       </el-table-column>
@@ -123,7 +123,7 @@
         <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.status" :label="1">上架</el-radio>
-            <el-radio class="radio" v-model="temp.status" :label="0">下架</el-radio>
+            <el-radio class="radio" v-model="temp.status" :label="2">下架</el-radio>
           </div>
         </el-form-item>
       </el-form>
@@ -206,7 +206,7 @@
         this.$refs.ckeditor.getData()
       },
       changeStatus(id, type) { // 物品上下架
-        let desc = type === 0 ? '下架' : '上架'
+        let desc = type === 2 ? '下架' : '上架'
         this.$confirm(`是否${desc}此商品?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -329,7 +329,6 @@
     },
     components: {
       Ckeditor
-
     }
   }
 </script>

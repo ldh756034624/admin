@@ -90,7 +90,7 @@
           <span>{{temp.longitude}},{{temp.latitude}}</span>
         </el-form-item>
         <el-form-item label="地址">
-          <span>{{temp.address}}</span>
+          <span>{{temp.address || '无'}}</span>
         </el-form-item>
         <el-form-item label="IP">
           <span>{{temp.ip}}</span>
