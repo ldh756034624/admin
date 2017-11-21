@@ -164,7 +164,7 @@ export function upadateAnnounce(data) {    // 编辑公告
 
 export function delAnnounce(id) {    // 启用禁用公告
   return fetch({
-    url: `/community/announcement/${id}/status`,
-    method: 'put',
+    url: `/community/announcement/${id}`,
+    method: 'delete'
   })
 }

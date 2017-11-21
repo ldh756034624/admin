@@ -247,6 +247,23 @@
           }
         })
       },
+      handleDel(id) { // 删除公告
+        this.$confirm(`确定删除?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delAnnounce(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
+      },
       update() {  // 确认编辑此条信息
         this.getContent()
         upadateAnnounce(this.temp).then(res => {
