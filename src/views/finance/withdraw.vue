@@ -146,13 +146,17 @@
             value: 3
           },
           {
-            label: '提现异常',
-            value: 6
+            label: '银行转账失败',
+            value: 4
           },
           {
             label: '退回',
             value: 5
           },
+          {
+            label: '提现异常',
+            value: 6
+          }
         ],
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -226,10 +230,13 @@
             return '银行转账完成'
             break;
           case 4:
-            return '提现异常'
+            return '银行转账失败'
             break;
           case 5:
             return '退回'
+            break;
+          case 6:
+            return '提现异常'
             break;
         }
       }
