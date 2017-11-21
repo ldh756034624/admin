@@ -54,6 +54,7 @@ const params = _import('base/params')
 const backCard = _import('base/bank_card')
 const admins = _import('base/admins')
 const version = _import('base/version')
+const fileManage = _import('base/file_manage')
 
 /* 系统设置*/
 // const systemMenus = _import('systems/menus')
@@ -163,6 +164,7 @@ export const asyncRouterMap = [
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
+      {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'}
       // {path: 'version', component: version, name: '版本管理', meta_name: 'version'}
     ]
   },
