@@ -68,7 +68,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDetail(scope.row)">详情
           </el-button>
-          <el-button size="small" type="warning" class="btn btn-sm btn-info" v-if="scope.row.status == 4" @click="handleSendBack(scope.row.id)">退回
+          <el-button size="small" type="warning" class="btn btn-sm btn-info" v-if="scope.row.status == 6" @click="handleSendBack(scope.row.id)">退回
           </el-button>
         </template>
       </el-table-column>
@@ -210,6 +210,7 @@
                 type: 'success',
                 message: '退回成功!'
               })
+              this.listQuery.status = 5
               this.getTableData()
             }
           })
