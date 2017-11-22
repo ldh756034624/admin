@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column align="center" label="订单状态">
         <template scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.status && '已完成'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">

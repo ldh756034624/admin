@@ -18,12 +18,12 @@
       </el-table-column>
       <el-table-column align="center" label="路径">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.directory}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="预览">
         <template scope="scope">
-          <span>{{scope.row.recommend}}</span>
+          <span><img :src="scope.row.url" height="50" width="90"></span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -36,7 +36,7 @@
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
           <!--<el-button size="small" type="primary" @click="actionArtAssort(scope.row)">-->
-            <!--{{scope.row.enable == 0 ? '启用' : '禁用'}}-->
+          <!--{{scope.row.enable == 0 ? '启用' : '禁用'}}-->
           <!--</el-button>-->
           <!--<el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除-->
           <!--</el-button>-->
@@ -60,7 +60,7 @@
           <el-input class="w30" v-model="temp.title"></el-input>
         </el-form-item>
         <el-form-item label="文件夹" prop="fontColor" class="red-star">
-          <el-select v-model="temp.articleTypeId" placeholder="请选择">
+          <el-select v-model="temp.directory" placeholder="请选择文件夹">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
@@ -71,7 +71,7 @@
             :on-success="handleImgSuccess"
             list-type="picture-card"
             :before-upload="beforeHandleImg">
-            <img v-if="temp.imgUrl" :src="temp.imgUrl" class="avatar" width="148" height="148">
+            <img v-if="temp.url" :src="temp.url" class="avatar" width="148" height="148">
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-  import {getTableData, addArt, upadateArt, delArt} from '@/api/community_content'
+  import {getTableData, createImage, updateImage} from '@/api/base'
 
   const ERR_OK = 0
   export default {
@@ -95,18 +95,9 @@
       return {
         select: [],
         temp: {           // 弹窗内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
-          id: null,
-          recommend: 1,
-          sort: null,
-          startTime: null,
+          directory: null,
           title: null,
-          url: null,
-          isPush: 0,
-          imgUrl: null,
-          userName: null
+          url: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -124,16 +115,9 @@
     },
     created() {
       this.getTableData()
-      this.getArtType()
+      this.getFileList()
     },
     methods: {
-      dateChange(val) {
-        if (!val) {
-          this.temp.startTime = 0
-          return
-        }
-        this.temp.startTime = new Date(val).getTime()
-      },
       beforeHandleImg(file) {      // 头像上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {
@@ -144,32 +128,18 @@
       handleImgSuccess(res, file) {      // 图片上传成功后
         if (res.code === 0) {
           this.$message.success('上传成功')
-          this.temp.imgUrl = res.data
+          this.temp.url = res.data
         } else {
           this.$message.error('上传失败，请重试')
         }
       },
-      actionArtAssort(row) {  // 启用禁用
-        row.enable === 0 ? row.enable = 1 : row.enable = 0
-        row.articleTypeId = row.articleType.id
-        upadateArt(row).then(res => {
-          if (res.code === ERR_OK) {
-            this.getTableData()
-            this.$message.success('修改成功')
-          }
-        })
-      },
-      getArtType() {  // 获取文章所有类别
-        let data = {
-          pageNumber: 1,
-          pageSize: 100
-        }
-        getTableData('/article/category/list', data).then(res => {
+      getFileList() {  // 获取文件夹列表
+        getTableData('/basis/image/folders').then(res => {
           if (res.code === 0) {
-            res.data.data.forEach(item => {
+            res.data.forEach(item => {
               let tmp = {
-                val: item.id,
-                label: item.name
+                val: item,
+                label: item
               }
               this.select.push(tmp)
             })
@@ -177,7 +147,7 @@
         })
       },
       getTableData() {
-        getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/basis/image/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -193,30 +163,18 @@
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
         this.temp = Object.assign(this.temp, row)   // 赋值
-        this.temp.articleTypeId = row.articleType.id
-        if (row.url) {
-          this.temp.isPush = 1
-        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
-          id: null,
-          recommend: 1,
-          startTime: null,
+          directory: null,
           title: null,
-          url: null,
-          isPush: 0,
-          imgUrl: null,
+          url: null
         }
       },
       create() {    // 创建新功能
-        this.temp.isPush == false && delete this.temp.url
-        addArt(this.temp).then(res => {
+        createImage(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -225,30 +183,15 @@
         })
       },
       update() {  // 确认编辑此条信息
-        this.temp.isPush == false && delete this.temp.url
-        upadateArt(this.temp).then(res => {
+        delete this.temp.url    // 删除多余的属性
+        delete this.temp.directory
+
+        updateImage(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
-        })
-      },
-      handleDel(id) { //删除
-        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delArt(id).then(res => {
-            if (res.code === ERR_OK) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.getTableData()
-            }
-          })
         })
       }
     }

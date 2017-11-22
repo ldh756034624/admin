@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column align="center" label="是否推荐">
         <template scope="scope">
-          <span>{{scope.row.recommend}}</span>
+          <span>{{scope.row.recommend === 1 ? '是' : '否'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="排序" width="100">
