@@ -232,7 +232,7 @@
       },
       handleImgSuccess(res, file) {      // 图片上传成功后
         if (res.code === 0) {
-          this.$message.success('上传头像成功')
+          this.$message.success('上传成功')
           this.temp.img = res.data
           console.log(res.data)
         } else {

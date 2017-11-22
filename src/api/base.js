@@ -92,3 +92,19 @@ export function phoneToBlacklist(data) {    // 添加手机到黑名单
     data
   })
 }
+
+export function createImage(data) {    // 增加新的图片文件
+  return fetch({
+    url: '/basis/image',
+    method: 'post',
+    data
+  })
+}
+
+export function updateImage(data) {    // 编辑图片文件
+  return fetch({
+    url: '/basis/image',
+    method: 'put',
+    data
+  })
+}
