@@ -47,9 +47,24 @@
           <span>{{scope.row.money}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="客户端">
+        <template scope="scope">
+          <span>{{scope.row.os  || '无'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="版本">
+        <template scope="scope">
+          <span>{{scope.row.version  || '无'}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="ip">
         <template scope="scope">
           <span>{{scope.row.ip}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="地址">
+        <template scope="scope">
+          <span>{{scope.row.address  || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="经纬度">
@@ -97,6 +112,12 @@
         </el-form-item>
         <el-form-item label="手机品牌">
           <span>{{temp.phoneType || '无'}}</span>
+        </el-form-item>
+        <el-form-item label="客户端">
+          <span>{{temp.os || '无'}}</span>
+        </el-form-item>
+        <el-form-item label="IMEI">
+          <span>{{temp.imei || '无'}}</span>
         </el-form-item>
         <el-form-item label="版本">
           <span>{{temp.version}}</span>
