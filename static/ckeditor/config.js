@@ -8,5 +8,5 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
   // 图片上传
-  config.filebrowserImageUploadUrl = "https://console-dev-h9.thy360.com/h9/admin/common/file/upload"
+  config.filebrowserImageUploadUrl = "https://console-dev-h9.thy360.com/h9/admin/common/file/ckeditor/upload"
 };
