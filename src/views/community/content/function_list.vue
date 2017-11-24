@@ -13,12 +13,12 @@
       </el-table-column>
       <el-table-column align="center" label="名称">
         <template scope="scope">
-          <span>{{scope.row.title}}</span>
+          <a class="blue" :href="scope.row.url || scope.row.jointUrl">{{scope.row.title}}</a>
         </template>
       </el-table-column>
       <el-table-column align="center" label="图标">
         <template scope="scope">
-          <img :src="scope.row.icon" width="50" height="50">
+          <img :src="scope.row.icon" width="100" height="60">
         </template>
       </el-table-column>
       <el-table-column align="center" label="开始时间">
