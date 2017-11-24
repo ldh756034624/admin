@@ -49,12 +49,12 @@
       </el-table-column>
       <el-table-column align="center" label="客户端">
         <template scope="scope">
-          <span>{{scope.row.os  || '无'}}</span>
+          <span>{{scope.row.client || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="版本">
         <template scope="scope">
-          <span>{{scope.row.version  || '无'}}</span>
+          <span>{{scope.row.version || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="ip">
@@ -64,7 +64,7 @@
       </el-table-column>
       <el-table-column align="center" label="地址">
         <template scope="scope">
-          <span>{{scope.row.address  || '无'}}</span>
+          <span>{{scope.row.address || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="经纬度">
@@ -114,7 +114,7 @@
           <span>{{temp.phoneType || '无'}}</span>
         </el-form-item>
         <el-form-item label="客户端">
-          <span>{{temp.os || '无'}}</span>
+          <span>{{temp.client || '无'}}</span>
         </el-form-item>
         <el-form-item label="IMEI">
           <span>{{temp.imei || '无'}}</span>
@@ -188,6 +188,17 @@
       handleDetail(row) {   // 查看详情
         this.temp = row
         this.dialogFormVisible = true
+      }
+    },
+    filters: {
+      client(val) { // 客户端字段过滤
+        if (val == 1) {
+          return '安卓'
+        } else if (val == 2) {
+          return '苹果'
+        } else {
+          return '微信'
+        }
       }
     }
   }

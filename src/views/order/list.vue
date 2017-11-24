@@ -19,7 +19,7 @@
       </el-table-column>
       <el-table-column align="center" label="用户ID">
         <template scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.row.userId || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号">
@@ -75,20 +75,20 @@
           <span>{{temp.goods}}</span>
         </el-form-item>
         <el-form-item label="用户ID">
-          <span>{{temp.userId }}</span>
+          <span>{{temp.userId || '无'}}</span>
         </el-form-item>
         <el-form-item label="下单时间">
           <span>{{temp.createTime | formatDateTime}}</span>
         </el-form-item>
         <h1 class="title">支付信息</h1>
         <el-form-item label="支付方式">
-          <span>{{temp.payMethond}}</span>
+          <span>{{temp.payMethodDesc}}</span>
         </el-form-item>
         <el-form-item label="支付金额">
           <span>{{temp.payMoney}}</span>
         </el-form-item>
         <el-form-item label="支付状态">
-          <span>{{temp.payStatus}}</span>
+          <span>{{temp.payStatusDesc}}</span>
         </el-form-item>
         <h1 class="title">配送信息</h1>
         <el-form-item label="收货人">

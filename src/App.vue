@@ -23,12 +23,6 @@
     margin-top: 0;
     margin-bottom: 0;
   }
-
-  .red-star > label:before{
-    content: '*';
-    color: red;
-    margin-right: 5px;
-  }
 </style>
 
 

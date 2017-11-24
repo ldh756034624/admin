@@ -13,7 +13,7 @@
       </el-table-column>
       <el-table-column align="center" label="标题">
         <template scope="scope">
-          <span>{{scope.row.title}}</span>
+          <a class="blue" :href="scope.row.url || scope.row.jointUrl">{{scope.row.title}}</a>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
