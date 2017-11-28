@@ -56,6 +56,8 @@ const addPhoneBlacklist = _import('base/add_phone_blacklist')
 const params = _import('base/params')
 const backCard = _import('base/bank_card')
 const admins = _import('base/admins')
+const roles = _import('base/roles')
+const sysUsers = _import('base/sys_users')
 const version = _import('base/version')
 const fileManage = _import('base/file_manage')
 
@@ -174,6 +176,8 @@ export const asyncRouterMap = [
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
+      {path: 'roles', component: roles, name: '角色管理', meta_name: 'roles'},
+      {path: 'sysUsers', component: sysUsers, name: '系统用户', meta_name: 'sysUsers'},
       {path: 'version', component: version, name: '版本管理', meta_name: 'version'},
       {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'}
     ]
