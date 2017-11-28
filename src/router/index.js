@@ -31,6 +31,8 @@ const articleList = _import('community/content/article_list')
 const announceList = _import('community/content/announce_list')
 const singlePage = _import('community/content/single_page')
 const goodsList = _import('community/content/goods_list')
+const goodsAssort = _import('community/content/goods_assort')
+const insertGoodsData = _import('community/content/insert_goods_data')
 
 /*订单管理*/
 const orderList = _import('order/list')
@@ -56,6 +58,10 @@ const backCard = _import('base/bank_card')
 const admins = _import('base/admins')
 const version = _import('base/version')
 const fileManage = _import('base/file_manage')
+
+/*日志管理*/
+const withdrawApi = _import('log/withdraw_api')
+const message = _import('log/message')
 
 /* 系统设置*/
 // const systemMenus = _import('systems/menus')
@@ -118,7 +124,9 @@ export const asyncRouterMap = [
       {path: 'article_list', component: articleList, name: '文章列表', meta_name: 'articleList'},
       {path: 'announce_list', component: announceList, name: '公告管理', meta_name: 'announceList'},
       {path: 'single_page', component: singlePage, name: '单网页管理', meta_name: 'singlePage'},
-      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'}
+      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'},
+      {path: 'goodsAssort', component: goodsAssort, name: '商品分类', meta_name: 'goodsAssort', hidden: true},
+      {path: 'insertGoodsData', component: insertGoodsData, name: '导入数据', meta_name: 'insertGoodsData', hidden: true}
     ]
   },
   {
@@ -168,6 +176,18 @@ export const asyncRouterMap = [
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
       {path: 'version', component: version, name: '版本管理', meta_name: 'version'},
       {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'}
+    ]
+  },
+  {
+    path: '/log',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '日志管理',
+    meta_name: 'Log',
+    icon: 'zujian',
+    children: [
+      {path: 'withdrawApi', component: withdrawApi, name: '提现接口日志', meta_name: 'withdrawApi'},
+      {path: 'message', component: message, name: '短信发送日志', meta_name: 'message'},
     ]
   },
   // {
