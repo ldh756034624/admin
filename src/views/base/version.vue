@@ -12,48 +12,36 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类名称">
+      <el-table-column align="center" label="版本">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数量">
+      <el-table-column align="center" label="版本号">
         <template scope="scope">
           <span>{{scope.row.bannerCount}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="开始时间">
+      <el-table-column align="center" label="升级类型">
         <template scope="scope">
           <span>{{scope.row.startTime | formatDateTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="结束时间">
+      <el-table-column align="center" label="内容">
         <template scope="scope">
           <span>{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" label="发布时间">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="标示码" width="100">
-        <template scope="scope">
-          <span>{{scope.row.code}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="状态">
-        <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">列表
-          </el-button>
-          <el-button size="small" type="warning" @click="handleModifyStatus(scope.row.id)">禁用
+          <el-button size="small" type="success" @click="goList(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -71,25 +59,37 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
-        <el-form-item label="分类名称" prop="name">
+        <el-form-item label="版本">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="code">
+        <el-form-item label="版本号">
           <el-input v-model="temp.code"></el-input>
         </el-form-item>
-        <el-form-item label="上线时间">
-          <el-date-picker
-            v-model="dateRange"
-            @change="dateRangeChange"
-            type="daterange"
-            placeholder="选择日期范围">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="客户端类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
-            <el-radio class="radio" v-model="enable" label="0">禁用</el-radio>
+            <el-radio class="radio" v-model="enable" :label="1">IOS</el-radio>
+            <el-radio class="radio" v-model="enable" :label="0">Android</el-radio>
           </div>
+        </el-form-item>
+        <el-form-item label="升级类型">
+          <div class="checkitem">
+            <el-radio class="radio" v-model="enable" :label="1">不提示升级</el-radio>
+            <el-radio class="radio" v-model="enable" :label="0">建议升级</el-radio>
+            <el-radio class="radio" v-model="enable" :label="2">强制升级</el-radio>
+          </div>
+        </el-form-item>
+        <el-form-item label="内容">
+          <el-input type="textarea" :rows="2" v-model="temp.name"></el-input>
+        </el-form-item>
+        <el-form-item label="内容">
+          <el-upload
+            class="upload-demo"
+            drag
+            :action="FILE_API"
+            :on-success="handleFileSuccess">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -110,7 +110,6 @@
   export default {
     data() {
       return {
-        enable: '1',
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           enable: '1',
@@ -121,10 +120,6 @@
         total: null,        // 数据总数
         dialogFormVisible: false,
         dialogStatus: '',
-        rules: {
-          name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          code: [{required: true, message: '请输入标识', trigger: 'blur'}]
-        },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
@@ -139,8 +134,8 @@
       this.getTableData()
     },
     methods: {
-      goList(id) {  // 跳转至功能列表
-        this.$router.push({path: '/community/fnlist', query: {id}})
+      handleFileSuccess(res, file) {
+        console.log('fileupsuccess', res)
       },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
@@ -148,7 +143,7 @@
       },
       getTableData() {
         getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
+          if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
