@@ -4,7 +4,6 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="goList" icon="edit">去列表</el-button>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -14,22 +13,22 @@
       </el-table-column>
       <el-table-column align="center" label="版本">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.version }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="版本号">
         <template scope="scope">
-          <span>{{scope.row.bannerCount}}</span>
+          <span>{{scope.row.versionNumber }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="升级类型">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
+          <span>{{scope.row.upgradeTypeDesc }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="内容">
         <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
+          <span>{{scope.row.description }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="发布时间">
@@ -41,7 +40,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="success" @click="goList(scope.row.id)">删除
+          <el-button size="small" type="success" @click="delItem(scope.row.id)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -58,34 +57,37 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
+      <el-form :model="temp" ref="temp" label-width="100px">
         <el-form-item label="版本">
-          <el-input v-model="temp.name"></el-input>
+          <el-input v-model="temp.version"></el-input>
         </el-form-item>
         <el-form-item label="版本号">
-          <el-input v-model="temp.code"></el-input>
+          <el-input v-model="temp.versionNumber"></el-input>
         </el-form-item>
         <el-form-item label="客户端类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" :label="1">IOS</el-radio>
-            <el-radio class="radio" v-model="enable" :label="0">Android</el-radio>
+            <el-radio class="radio" v-model="temp.clientType" :label="1">IOS</el-radio>
+            <el-radio class="radio" v-model="temp.clientType" :label="2">Android</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="升级类型">
           <div class="checkitem">
-            <el-radio class="radio" v-model="enable" :label="1">不提示升级</el-radio>
-            <el-radio class="radio" v-model="enable" :label="0">建议升级</el-radio>
-            <el-radio class="radio" v-model="enable" :label="2">强制升级</el-radio>
+            <el-radio class="radio" v-model="temp.upgradeType" :label="1">不提示升级</el-radio>
+            <el-radio class="radio" v-model="temp.upgradeType" :label="2">建议升级</el-radio>
+            <el-radio class="radio" v-model="temp.upgradeType" :label="3">强制升级</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="内容">
-          <el-input type="textarea" :rows="2" v-model="temp.name"></el-input>
+          <el-input type="textarea" :rows="2" v-model="temp.description"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="Android包">
           <el-upload
             class="upload-demo"
             drag
             :action="FILE_API"
+            :file-list="fileList"
+            :on-remove="handleRemove"
+            :before-upload="beforeFileUpload"
             :on-success="handleFileSuccess">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -103,18 +105,21 @@
 </template>
 
 <script>
-  import {addFn, upadateFn, getTableData} from '@/api/community_content'
-  import {isPhone} from '@/utils/validate'
+  import {getTableData, createVer, updateVer, delVer} from '@/api/base'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
-        dateRange: null,  // 时间范围
+        fileList:[],
+        dateRange: null,  // 时间范围 
         temp: {           // 弹窗内容数据对象
-          enable: '1',
-          name: null,
-          id: null
+          version: null,
+          versionNumber: null,
+          clientType: 1,
+          upgradeType: 1,
+          description: null,
+          packageName: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -134,15 +139,25 @@
       this.getTableData()
     },
     methods: {
-      handleFileSuccess(res, file) {
-        console.log('fileupsuccess', res)
+      handleRemove(file, fileList) {  // 清空上传文件列表
+        this.fileList = []
       },
-      dateRangeChange() {      // 获取时间范围
-        this.temp.startTime = new Date(this.dateRange[0]).getTime()
-        this.temp.endTime = new Date(this.dateRange[1]).getTime()
+      beforeFileUpload(file) {
+        if (this.fileList.length > 0) {
+          this.$message.error('最多只能上传一个文件')
+          return false
+        }
+      },
+      handleFileSuccess(res, file) {
+        if (res.code === ERR_OK) {
+          this.$message.success('上传成功')
+          this.fileList = [{name: file.name, url: res.data}]
+          this.temp.packageUrl = res.data
+          this.temp.packageName = file.name
+        }
       },
       getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/basis/version/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -150,61 +165,69 @@
           }
         })
       },
+      resetTemp() {   // 重置弹出表格
+        this.fileList = []
+        this.temp = {
+          version: null,
+          versionNumber: null,
+          clientType: 1,
+          upgradeType: 1,
+          description: null,
+          packageUrl: null,
+          packageName: null
+        }
+      },
       handleCreate() {    // 点击创建新功能按钮
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleUpdate(row) {   // 点击编辑功能按钮
-        this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
-        this.enable = row.enable.toString()
-        this.temp = Object.assign(this.temp, row)   // 赋值
-
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-      },
-      resetTemp() {   // 重置弹出表格
-        this.enable = '1'
-        this.temp = {
-          name: null,
-          enable: '1',
-          id: null
-        }
-      },
       create() {    // 创建新功能
-        this.resetTemp()
-        this.temp.id = 0
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
-        }
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFn(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
+        this.hasFile()
+        createVer(this.temp).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible = false
+            this.$message.success('创建成功')
           }
         })
       },
-      update() {  // 编辑此条信息
-        this.temp.enable = this.enable
-        if (!this.temp.startTime || !this.temp.endTime) {
-          this.$message.error('请选择时间范围')
-          return
+      handleUpdate(row) {   // 点击编辑功能按钮
+        if(row.packageUrl) {
+          this.fileList = [{name: row.packageName, url: row.packageUrl}]
         }
-        upadateFn(this.temp).then(res => {
+        this.temp = Object.assign(this.temp, row)   // 赋值
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+      },
+      update() {  // 编辑此条信息
+        this.hasFile()
+        updateVer(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
+        })
+      },
+      hasFile() { //　是否有升级包上传
+        if(this.fileList.length === 0) {
+          this.temp.packageUrl = null
+          this.temp.packageName = null
+        }
+      },
+      delItem(id) {
+        this.$confirm(`确定删除?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delVer(id).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message.success('删除成功')
+              this.getTableData()
+            }
+          })
         })
       }
     }

@@ -108,3 +108,26 @@ export function updateImage(data) {    // 编辑图片文件
     data
   })
 }
+
+export function createVer(data) {    // 新建版本
+  return fetch({
+    url: '/basis/version',
+    method: 'post',
+    data
+  })
+}
+
+export function updateVer(data) {    // 编辑版本
+  return fetch({
+    url: '/basis/version',
+    method: 'put',
+    data
+  })
+}
+
+export function delVer(id) {    // 编辑版本
+  return fetch({
+    url: '/basis/version/' + id,
+    method: 'delete'
+  })
+}
