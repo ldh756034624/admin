@@ -112,7 +112,7 @@
     data() {
       return {
         fileList:[],
-        dateRange: null,  // 时间范围 
+        dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           version: null,
           versionNumber: null,

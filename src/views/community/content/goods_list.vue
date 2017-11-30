@@ -62,6 +62,10 @@
           </el-button>
           <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">下架
           </el-button>
+          <router-link to="/community/insertGoodsData">
+            <el-button size="small" type="success" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">导入数据
+            </el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
