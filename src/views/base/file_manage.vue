@@ -64,7 +64,7 @@
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="文章图片" class="red-star">
+        <el-form-item label="上传文件" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :show-file-list="false"

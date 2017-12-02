@@ -31,6 +31,8 @@ const articleList = _import('community/content/article_list')
 const announceList = _import('community/content/announce_list')
 const singlePage = _import('community/content/single_page')
 const goodsList = _import('community/content/goods_list')
+const goodsAssort = _import('community/content/goods_assort')
+const insertGoodsData = _import('community/content/insert_goods_data')
 
 /*订单管理*/
 const orderList = _import('order/list')
@@ -41,7 +43,7 @@ const transfer = _import('finance/transfer')
 const transfered = _import('finance/transfered')
 const withdraw = _import('finance/withdraw')
 const withDrawDetail= _import('finance/withdraw_detail')
-const bankCard = _import('finance/bank_card')
+const userInfo = _import('finance/user_info')
 const moneyDetail = _import('finance/money_detail')
 const vDetail = _import('finance/v_detail')
 
@@ -49,12 +51,19 @@ const vDetail = _import('finance/v_detail')
 const accountBlacklist = _import('base/account_blacklist')
 const addAccBlacklist = _import('base/add_acc_blacklist')
 const phoneBlacklist = _import('base/phone_blacklist')
+const whiteList = _import('base/white_list')
 const addPhoneBlacklist = _import('base/add_phone_blacklist')
 const params = _import('base/params')
 const backCard = _import('base/bank_card')
 const admins = _import('base/admins')
+const roles = _import('base/roles')
+const sysUsers = _import('base/sys_users')
 const version = _import('base/version')
 const fileManage = _import('base/file_manage')
+
+/*日志管理*/
+const withdrawApi = _import('log/withdraw_api')
+const message = _import('log/message')
 
 /* 系统设置*/
 // const systemMenus = _import('systems/menus')
@@ -117,7 +126,9 @@ export const asyncRouterMap = [
       {path: 'article_list', component: articleList, name: '文章列表', meta_name: 'articleList'},
       {path: 'announce_list', component: announceList, name: '公告管理', meta_name: 'announceList'},
       {path: 'single_page', component: singlePage, name: '单网页管理', meta_name: 'singlePage'},
-      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'}
+      {path: 'goods_list', component: goodsList, name: '商品列表', meta_name: 'goodsList'},
+      {path: 'goodsAssort', component: goodsAssort, name: '商品分类', meta_name: 'goodsAssort', hidden: true},
+      {path: 'insertGoodsData', component: insertGoodsData, name: '导入数据', meta_name: 'insertGoodsData', hidden: true}
     ]
   },
   {
@@ -139,14 +150,14 @@ export const asyncRouterMap = [
     meta_name: 'Finance',
     icon: 'zujian',
     children: [
-      {path: 'customer', component: customer, name: '用户资金', meta_name: 'customer'},
+      {path: 'customer', component: customer, name: '用户管理', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
       {path: 'transfer', component: transfer, name: '转账管理', meta_name: 'transfer'},
       {path: 'transfered', component: transfered, name: '已操作转账', meta_name: 'transfered', hidden: true},
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
       {path: 'withDrawDetail', component: withDrawDetail, name: '提现明细', meta_name: 'withDrawDetail', hidden: true},
       {path: 'vDetail', component: vDetail, name: 'V币明细', meta_name: 'vDetail', hidden: true},
-      {path: 'bankCard', component: bankCard, name: '银行卡', meta_name: 'bankCard', hidden: true}
+      {path: 'userInfo', component: userInfo, name: '用户信息', meta_name: 'userInfo', hidden: true}
     ]
   },
   {
@@ -161,11 +172,26 @@ export const asyncRouterMap = [
       {path: 'addAccBlacklist', component: addAccBlacklist, name: '新增账户黑名单', meta_name: 'addAccBlacklist', hidden: true},
       {path: 'phoneBlacklist', component: phoneBlacklist, name: '手机黑名单', meta_name: 'phoneBlacklist'},
       {path: 'addPhoneBlacklist', component: addPhoneBlacklist, name: '新增手机黑名单', meta_name: 'addPhoneBlacklist', hidden: true},
+      {path: 'whiteList', component: whiteList, name: '白名单', meta_name: 'whiteList'},
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
+      {path: 'roles', component: roles, name: '角色管理', meta_name: 'roles'},
+      {path: 'sysUsers', component: sysUsers, name: '系统用户', meta_name: 'sysUsers'},
+      {path: 'version', component: version, name: '版本管理', meta_name: 'version'},
       {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'}
-      // {path: 'version', component: version, name: '版本管理', meta_name: 'version'}
+    ]
+  },
+  {
+    path: '/log',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '日志管理',
+    meta_name: 'Log',
+    icon: 'zujian',
+    children: [
+      {path: 'withdrawApi', component: withdrawApi, name: '提现接口日志', meta_name: 'withdrawApi'},
+      {path: 'message', component: message, name: '短信发送日志', meta_name: 'message'},
     ]
   },
   // {

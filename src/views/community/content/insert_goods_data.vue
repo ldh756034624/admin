@@ -2,10 +2,49 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
+      <div class="filter-container">
+        <el-form :model="temp" label-width="100px">
+          <el-form-item label="商品名称" class="red-star">
+            <span>滴滴代驾券30元</span>
+          </el-form-item>
+          <el-form-item label="数据" class="red-star">
+            <el-input class="w30" :rows="5" type="textarea" v-model="temp.data"></el-input>
+          </el-form-item>
+          <el-form-item label="导入数据" class="red-star">
+            <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">导入
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <hr>
+      <div class="filter-container">
+        <el-form inline>
+          <el-form-item label="userID">
+            <el-input type="text" v-model="listQuery.userId"></el-input>
+          </el-form-item>
+          <el-form-item label="批次">
+            <el-select v-model="listQuery.status" placeholder="请选择">
+              <el-option label="全部" :value="0"></el-option>
+              <el-option label="是" :value="1"></el-option>
+              <el-option label="否" :value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="listQuery.status" placeholder="请选择">
+              <el-option label="全部" :value="0"></el-option>
+              <el-option label="是" :value="1"></el-option>
+              <el-option label="否" :value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
       <router-link to="/community/goodsAssort">
-        <el-button class="filter-item" type="primary" style="margin-left:10px"icon="menu">分类管理</el-button>
+        <el-button class="filter-item" type="primary" style="margin-left:10px" icon="menu">分类管理</el-button>
       </router-link>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
@@ -14,58 +53,42 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="商品名称">
+      <el-table-column align="center" label="券号">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="商品编码">
-        <template scope="scope">
-          <span>{{scope.row.code}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="商品类型">
-        <template scope="scope">
-          <span>{{scope.row.goodsType.name}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="商品价格">
-        <template scope="scope">
-          <span>{{scope.row.price}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="库存">
-        <template scope="scope">
-          <span>{{scope.row.stock}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="开始时间">
-        <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="结束时间">
-        <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="商品状态">
+      <el-table-column align="center" label="状态">
         <template scope="scope">
           <span>{{scope.row.status === 2 ? '下架' : '上架'}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="批次">
+        <template scope="scope">
+          <span>{{scope.row.code}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="userID">
+        <template scope="scope">
+          <span>{{scope.row.goodsType.name}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="导入时间">
+        <template scope="scope">
+          <span>{{scope.row.startTime | formatDateTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="发放时间">
+        <template scope="scope">
+          <span>{{scope.row.endTime | formatDateTime}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">启用
           </el-button>
-          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">上架
+          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">禁用
           </el-button>
-          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">下架
-          </el-button>
-          <router-link to="/community/insertGoodsData">
-            <el-button size="small" type="success" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">导入数据
-            </el-button>
-          </router-link>
         </template>
       </el-table-column>
     </el-table>

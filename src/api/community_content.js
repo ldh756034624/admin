@@ -168,3 +168,19 @@ export function delAnnounce(id) {    // 启用禁用公告
     method: 'delete'
   })
 }
+
+export function addGoodsAssort(data) {    // 新增商品分类
+  return fetch({
+    url: '/transaction/goods_type',
+    method: 'POST',
+    data
+  })
+}
+
+export function upadateGoodsAssort(data) {    // 编辑商品分类
+  return fetch({
+    url: '/transaction/goods_type',
+    method: 'put',
+    data
+  })
+}
