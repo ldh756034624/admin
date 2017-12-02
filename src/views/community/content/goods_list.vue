@@ -58,7 +58,7 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">上架
+          <el-button v-if="scope.row.status === 2" size="small" type="success" @click="changeStatus(scope.row.id, 1)">上架
           </el-button>
           <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">下架
           </el-button>
