@@ -13,12 +13,12 @@
       </el-table-column>
       <el-table-column align="center" label="昵称">
         <template scope="scope">
-          <span>{{scope.row.nickName }}</span>
+          <span>{{scope.row.nickName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="手机号">
         <template scope="scope">
-          <span>{{scope.row.phone }}</span>
+          <span>{{scope.row.phone}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="有效时间" width="310">

@@ -58,26 +58,26 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" ref="temp" label-width="100px">
-        <el-form-item label="版本">
+        <el-form-item label="版本" class="red-star">
           <el-input v-model="temp.version"></el-input>
         </el-form-item>
-        <el-form-item label="版本号">
+        <el-form-item label="版本号" class="red-star">
           <el-input v-model="temp.versionNumber"></el-input>
         </el-form-item>
-        <el-form-item label="客户端类型">
+        <el-form-item label="客户端类型" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.clientType" :label="1">IOS</el-radio>
             <el-radio class="radio" v-model="temp.clientType" :label="2">Android</el-radio>
           </div>
         </el-form-item>
-        <el-form-item label="升级类型">
+        <el-form-item label="升级类型" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.upgradeType" :label="1">不提示升级</el-radio>
             <el-radio class="radio" v-model="temp.upgradeType" :label="2">建议升级</el-radio>
             <el-radio class="radio" v-model="temp.upgradeType" :label="3">强制升级</el-radio>
           </div>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" class="red-star">
           <el-input type="textarea" :rows="2" v-model="temp.description"></el-input>
         </el-form-item>
         <el-form-item label="Android包">
@@ -87,7 +87,6 @@
             :action="FILE_API"
             :file-list="fileList"
             :on-remove="handleRemove"
-            :before-upload="beforeFileUpload"
             :on-success="handleFileSuccess">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -141,12 +140,6 @@
     methods: {
       handleRemove(file, fileList) {  // 清空上传文件列表
         this.fileList = []
-      },
-      beforeFileUpload(file) {
-        if (this.fileList.length > 0) {
-          this.$message.error('最多只能上传一个文件')
-          return false
-        }
       },
       handleFileSuccess(res, file) {
         if (res.code === ERR_OK) {
