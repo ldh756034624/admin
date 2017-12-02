@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
@@ -39,7 +40,7 @@
           </el-button>
           <el-button size="small" type="info" @click="handleWithdraw(scope.row.userId)">提现明细
           </el-button>
-          <el-button size="small" type="success" @click="handleBankCard(scope.row.userId)">银行卡
+          <el-button size="small" type="success" @click="handleUserInfo(scope.row.userId)">用户信息
           </el-button>
         </template>
       </el-table-column>
@@ -93,8 +94,8 @@
       handleWithdraw(id) {
         this.$router.push({path: '/finance/withdrawDetail', query: {id}})
       },
-      handleBankCard(id) {
-        this.$router.push({path: '/finance/bankCard', query: {id}})
+      handleUserInfo(id) {
+        this.$router.push({path: '/finance/userInfo', query: {id}})
       },
     }
   }
