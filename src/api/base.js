@@ -125,9 +125,32 @@ export function updateVer(data) {    // 编辑版本
   })
 }
 
-export function delVer(id) {    // 编辑版本
+export function delVer(id) {    // 删除版本
   return fetch({
     url: '/basis/version/' + id,
     method: 'delete'
+  })
+}
+
+export function createWhiteList(data) {    // 新建白名单
+  return fetch({
+    url: '/basis/white_list',
+    method: 'post',
+    data
+  })
+}
+
+export function updateWhiteList(data) {    // 编辑白名单
+  return fetch({
+    url: '/basis/white_list',
+    method: 'put',
+    data
+  })
+}
+
+export function cancelWhiteList(id) {    // 取消白名单
+  return fetch({
+    url: `/basis/white_list/${id}/status`,
+    method: 'put'
   })
 }

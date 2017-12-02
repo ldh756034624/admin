@@ -21,9 +21,9 @@
           <span>{{scope.row.phone }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="有效时间">
+      <el-table-column align="center" label="有效时间" width="310">
         <template scope="scope">
-          <span>{{scope.row.openId}}至{{scope.row.openId}}</span>
+          <span>{{scope.row.startTime | formatDateTime}}至{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="加入时间">
@@ -43,9 +43,9 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDeblocking(scope.row.userId)">编辑
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleDeblocking(scope.row.userId)">取消
+          <el-button size="small" type="danger" class="btn btn-sm btn-info" @click="handleCancel(scope.row.id)">取消
           </el-button>
         </template>
       </el-table-column>
@@ -62,8 +62,8 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
-        <el-form-item label="手机号" prop="title">
+      <el-form :model="temp" ref="temp" label-width="100px">
+        <el-form-item label="手机号" class="red-star">
           <el-input v-model="temp.phone"></el-input>
         </el-form-item>
         <el-form-item label="有效时间" class="red-star">
@@ -75,7 +75,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input type="textarea" :rows="2" v-model="temp.sort"></el-input>
+          <el-input type="textarea" :rows="2" v-model="temp.cause"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -89,32 +89,21 @@
 </template>
 
 <script>
-  import {addFunction, upadateFunction, getTableData, delFunction} from '@/api/community_content'
-  import {isPhone} from '@/utils/validate'
+  import {getTableData, createWhiteList, updateWhiteList, cancelWhiteList} from '@/api/base'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
-        id: null,   // 上页面传入id
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          enable: 1,
-          id: null,
-          icon: null,
-          sort: null,
-          title: null,
-          url: null,
-          urlType: 1,
-          fontColor: null
+          cause: null,
+          phone: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
         dialogStatus: '',
-        rules: {
-          title: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-        },
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20
@@ -126,59 +115,20 @@
       }
     },
     created() {
-      this.id = this.$route.query.id    // 带参id
       this.getTableData()
     },
     methods: {
-      handleEnable(row) {  // 启用禁用
-        let newRow = Object.assign({}, row)
-        let desc = newRow.enable == 0 ? '启用' : '禁用'
-        if (newRow.enable == 0) {
-          newRow.enable = 1
-        } else {
-          newRow.enable = 0
-        }
-        newRow.bannerTypeId = newRow.bannerType.id
-        this.$confirm(`是否${desc}`, '提示', {
+      handleCancel(id) { // 取消白名单
+        this.$confirm('确定将此项移出白名单？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          upadateFunction(newRow).then(res => {
-            if (res.code === ERR_OK) {
-              this.getTableData()
-              this.$message.success('操作成功')
-            }
-          })
-        })
-      },
-      beforeHandleImg(file) {      // 头像上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
-        if (!isJPG) {
-          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
-        }
-        return isJPG
-      },
-      handleImgSuccess(res, file) {      // 图片上传成功后
-        if (res.code === 0) {
-          this.$message.success('上传头像成功')
-          this.temp.icon = res.data
-          console.log(res.data)
-        } else {
-          this.$message.error('上传失败，请重试')
-        }
-      },
-      handleDele(id) { // 删除当前条目
-        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delFunction(id).then(res => {
+          cancelWhiteList(id).then(res => {
             if (res.code === ERR_OK) {
               this.$message({
                 type: 'success',
-                message: '删除成功!'
+                message: '操作成功!'
               })
               this.getTableData()
             }
@@ -190,8 +140,9 @@
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
       },
       getTableData() {
-        getTableData('/community/banner/page/' + this.id, this.listQuery).then(res => {   // 获取tableData数据
-          if (res.code === 0) {
+        getTableData('/basis/white_list').then(res => {   // 获取tableData数据
+          if (res.code === ERR_OK) {
+            console.log(res.data)
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
@@ -205,44 +156,29 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()    // 清空原有表单
-        this.dateRange = []
         this.dateRange.push(new Date(row.startTime))   // 初始化时间
         this.dateRange.push(new Date(row.endTime))
         this.temp = Object.assign(this.temp, row)   // 赋值
-        this.temp.bannerTypeId = row.bannerType.id
-        row.url ? this.temp.urlType = 1 : this.temp.urlType = 0
-
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          enable: 1,
-          id: this.id,
-          icon: null,
-          sort: null,
-          title: null,
-          url: null,
-          urlType: 1,
-          fontColor: null
+          cause: null,
+          phone: null
         }
+        this.dateRange = []
       },
       create() {    // 创建新功能
         if (!this.temp.startTime || !this.temp.endTime) {
           this.$message.error('请选择时间范围')
           return
         }
-        this.temp.bannerTypeId = this.id
-        this.temp.urlType === 0 && (this.temp.url = '')
-        this.$refs.temp.validate(valid => {
-          if (valid) {
-            addFunction(this.temp).then(res => {
-              if (res.code === ERR_OK) {
-                this.getTableData()
-                this.dialogFormVisible = false
-                this.$message.success('创建成功')
-              }
-            })
+        createWhiteList(this.temp).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible = false
+            this.$message.success('创建成功')
           }
         })
       },
@@ -251,21 +187,12 @@
           this.$message.error('请选择时间范围')
           return
         }
-        this.temp.urlType === 0 && (this.temp.url = '')
-        upadateFunction(this.temp).then(res => {
+        updateWhiteList(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
-        })
-      }
-    },
-    watch: {
-      'temp.sort'(newVal, oldVal) {
-        this.$nextTick(() => {
-          this.temp.sort = newVal.replace(/\D+/, '')
-          console.log(this.temp.sort)
         })
       }
     }
