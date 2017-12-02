@@ -110,7 +110,7 @@
   export default {
     data() {
       return {
-        fileList:[],
+        fileList: [],
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           version: null,
@@ -186,7 +186,7 @@
         })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        if(row.packageUrl) {
+        if (row.packageUrl) {
           this.fileList = [{name: row.packageName, url: row.packageUrl}]
         }
         this.temp = Object.assign(this.temp, row)   // 赋值
@@ -204,7 +204,7 @@
         })
       },
       hasFile() { //　是否有升级包上传
-        if(this.fileList.length === 0) {
+        if (this.fileList.length === 0) {
           this.temp.packageUrl = null
           this.temp.packageName = null
         }
