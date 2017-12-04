@@ -65,6 +65,7 @@
       <el-form :model="temp" ref="temp" label-width="100px">
         <el-form-item label="手机号" class="red-star">
           <el-input v-model="temp.phone"></el-input>
+          <span>姓名：{{nickName}}</span>
         </el-form-item>
         <el-form-item label="有效时间" class="red-star">
           <el-date-picker
@@ -89,12 +90,13 @@
 </template>
 
 <script>
-  import {getTableData, createWhiteList, updateWhiteList, cancelWhiteList} from '@/api/base'
+  import {getTableData, createWhiteList, updateWhiteList, cancelWhiteList, getNickName} from '@/api/base'
 
   const ERR_OK = 0
   export default {
     data() {
       return {
+        nickName: '', // 用户名称
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           cause: null,
@@ -194,6 +196,19 @@
             this.$message.success('保存成功')
           }
         })
+      }
+    },
+    watch: {
+      'temp.phone'(newVal) {
+        if (newVal.length !== 11) {
+          this.nickName = ''
+        } else {
+          getNickName({phone: newVal}).then(res => {
+            if (res.code == ERR_OK) {
+              res.data && (this.nickName = res.data)
+            }
+          })
+        }
       }
     }
   }
