@@ -154,3 +154,11 @@ export function cancelWhiteList(id) {    // 取消白名单
     method: 'put'
   })
 }
+
+export function getNickName(params) {    // 获取table列表,通用
+  return fetch({
+    url: '/basis/user/nick_name',
+    method: 'get',
+    params
+  })
+}
