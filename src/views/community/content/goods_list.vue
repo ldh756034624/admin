@@ -110,9 +110,6 @@
         <el-form-item label="价格" class="red-star">
           <el-input class="w30" v-model="temp.price"></el-input>
         </el-form-item>
-        <el-form-item label="V币兑换" class="red-star">
-          <el-input class="w30" v-model="temp.vCoinsRate"></el-input>
-        </el-form-item>
         <el-form-item label="内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.description" @getData="getCk"></ckeditor>
         </el-form-item>
@@ -181,8 +178,7 @@
           price: null,
           realPrice: null,
           status: 1,
-          stock: null,
-          vCoinsRate: null
+          stock: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -309,8 +305,7 @@
           code: null,
           realPrice: null,
           status: 1,
-          stock: null,
-          vCoinsRate: null
+          stock: null
         }
       },
       create() {    // 创建新功能
