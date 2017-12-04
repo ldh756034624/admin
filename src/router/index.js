@@ -45,6 +45,7 @@ const withdraw = _import('finance/withdraw')
 const withDrawDetail= _import('finance/withdraw_detail')
 const userInfo = _import('finance/user_info')
 const moneyDetail = _import('finance/money_detail')
+const vExchange = _import('finance/v_exchange')
 const vDetail = _import('finance/v_detail')
 
 /*基础设置*/
@@ -153,6 +154,7 @@ export const asyncRouterMap = [
       {path: 'customer', component: customer, name: '用户管理', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
       {path: 'transfer', component: transfer, name: '转账管理', meta_name: 'transfer'},
+      {path: 'vExchange', component: vExchange, name: 'V币兑换', meta_name: 'vExchange'},
       {path: 'transfered', component: transfered, name: '已操作转账', meta_name: 'transfered', hidden: true},
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
       {path: 'withDrawDetail', component: withDrawDetail, name: '提现明细', meta_name: 'withDrawDetail', hidden: true},

@@ -3,7 +3,8 @@
     <div class="userInfo">
       <div class="avatar-wrapper" v-if="userInfo">
         <img :src="userInfo.avatar" class="avatar" width="100" height="100">
-        <el-tag type="success" v-if="userInfo.isAdmin">管理员</el-tag>
+        <el-tag type="success">{{userInfo.isAdmin}}</el-tag>
+        <el-tag type="success">{{userInfo.status}}</el-tag>
       </div>
       <div class="info-wrapper">
         <div class="left">
