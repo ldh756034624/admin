@@ -1,6 +1,32 @@
 <template>
   <div class="app-container">
     <!-- 搜索 -->
+    <div class="filter-container">
+      <el-form inline>
+        <el-form-item label="订单编号">
+          <el-input type="text" v-model="listQuery.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input type="text" v-model="listQuery.code"></el-input>
+        </el-form-item>
+        <el-form-item label="下单时间">
+          <el-date-picker
+            v-model="dateRange"
+            @change="dateRangeChange"
+            type="daterange"
+            placeholder="选择日期范围">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <el-button-group style="margin-bottom: 5px;">
+      <el-button type="warning">待发货</el-button>
+      <el-button type="info">配送中</el-button>
+      <el-button type="success">已完成</el-button>
+    </el-button-group>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
         <template scope="scope">
@@ -164,6 +190,15 @@
       this.getExpressCompany()
     },
     methods: {
+      dateRangeChange() {      // 获取时间范围
+        if (!this.dateRange[0] || !this.dateRange[1]) {
+          delete this.listQuery.startTime
+          delete this.listQuery.endTime
+          return
+        }
+        this.listQuery.startTime = new Date(this.dateRange[0]).getTime()
+        this.listQuery.endTime = new Date(this.dateRange[1]).getTime()
+      },
       getExpressCompany() {  // 获取所有物流公司
         getTableData('/order/supportExpress').then(res => {
           if (res.code === 0) {
