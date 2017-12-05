@@ -23,12 +23,12 @@ const hongbaoPeople = _import('activity/hongbao_people')
 
 
 /*社区管理*/
-const functionAssort = _import('community/content/function_assort')
-const functionList = _import('community/content/function_list')
-const articleAssort = _import('community/content/article_assort')
-const articleList = _import('community/content/article_list')
-const announceList = _import('community/content/announce_list')
-const singlePage = _import('community/content/single_page')
+const functionAssort = _import('community/function_assort')
+const functionList = _import('community/function_list')
+const articleAssort = _import('community/article_assort')
+const articleList = _import('community/article_list')
+const announceList = _import('community/announce_list')
+const singlePage = _import('community/single_page')
 
 /*交易管理*/
 const goodsList = _import('deal/goods_list')
@@ -199,21 +199,6 @@ export const asyncRouterMap = [
       {path: 'message', component: message, name: '短信发送日志', meta_name: 'message'},
     ]
   },
-  // {
-  //   path: '/systems',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   name: '系统设置',
-  //   meta_name: 'Systems',
-  //   icon: 'zujian',
-  //   children: [
-  //     {path: 'menus', component: systemMenus, name: '菜单管理', meta_name: 'systemMenus'},
-  //     {path: 'roles', component: systemRoles, name: '角色管理', meta_name: 'systemRoles'},
-  //     {path: 'users', component: systemUsers, name: '管理员', meta_name: 'systemUsers'},
-  //     {path: 'department', component: systemDepartment, name: '部门管理', meta_name: 'systemDepartment'},
-  //     {path: 'menus/action/:id', component: systemAction, name: 'actions', hidden: true, meta_name: 'systemAction'}
-  //   ]
-  // },
   {path: '*', redirect: '/404', hidden: true}
 ]
 
