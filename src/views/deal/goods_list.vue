@@ -2,48 +2,9 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <div class="filter-container">
-        <el-form :model="temp" label-width="100px">
-          <el-form-item label="商品名称" class="red-star">
-            <span>滴滴代驾券30元</span>
-          </el-form-item>
-          <el-form-item label="数据" class="red-star">
-            <el-input class="w30" :rows="5" type="textarea" v-model="temp.data"></el-input>
-          </el-form-item>
-          <el-form-item label="导入数据" class="red-star">
-            <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">导入
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-      <hr>
-      <div class="filter-container">
-        <el-form inline>
-          <el-form-item label="userID">
-            <el-input type="text" v-model="listQuery.userId"></el-input>
-          </el-form-item>
-          <el-form-item label="批次">
-            <el-select v-model="listQuery.status" placeholder="请选择">
-              <el-option label="全部" :value="0"></el-option>
-              <el-option label="是" :value="1"></el-option>
-              <el-option label="否" :value="2"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="listQuery.status" placeholder="请选择">
-              <el-option label="全部" :value="0"></el-option>
-              <el-option label="是" :value="1"></el-option>
-              <el-option label="否" :value="2"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
-      <router-link to="/community/goodsAssort">
+      <router-link to="/deal/goodsAssort">
         <el-button class="filter-item" type="primary" style="margin-left:10px" icon="menu">分类管理</el-button>
       </router-link>
     </div>
@@ -53,42 +14,59 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="券号">
+      <el-table-column align="center" label="商品名称">
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态">
-        <template scope="scope">
-          <span>{{scope.row.status === 2 ? '下架' : '上架'}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="批次">
+      <el-table-column align="center" label="商品编码">
         <template scope="scope">
           <span>{{scope.row.code}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="userID">
+      <el-table-column align="center" label="商品类型">
         <template scope="scope">
           <span>{{scope.row.goodsType.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="导入时间">
+      <el-table-column align="center" label="商品价格">
+        <template scope="scope">
+          <span>{{scope.row.price}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="库存">
+        <template scope="scope">
+          <span>{{scope.row.stock}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="开始时间">
         <template scope="scope">
           <span>{{scope.row.startTime | formatDateTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="发放时间">
+      <el-table-column align="center" label="结束时间">
         <template scope="scope">
           <span>{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="商品状态">
+        <template scope="scope">
+          <span>{{scope.row.status === 2 ? '下架' : '上架'}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button v-if="scope.row.status === 0" size="small" type="success" @click="changeStatus(scope.row.id, 1)">启用
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">禁用
+          <el-button v-if="scope.row.status === 2" size="small" type="success" @click="changeStatus(scope.row.id, 1)">上架
           </el-button>
+          <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">下架
+          </el-button>
+          <router-link :to="{path: '/deal/insertGoodsData', query: {goodsId: scope.row.id, goodsName: scope.row.name}}"
+                       v-if="scope.row.goodsType.allowImport === 2">
+            <el-button size="small" type="success" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">导入数据
+            </el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -132,9 +110,6 @@
         </el-form-item>
         <el-form-item label="价格" class="red-star">
           <el-input class="w30" v-model="temp.price"></el-input>
-        </el-form-item>
-        <el-form-item label="V币兑换" class="red-star">
-          <el-input class="w30" v-model="temp.vCoinsRate"></el-input>
         </el-form-item>
         <el-form-item label="内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.description" @getData="getCk"></ckeditor>
@@ -204,8 +179,7 @@
           price: null,
           realPrice: null,
           status: 1,
-          stock: null,
-          vCoinsRate: null
+          stock: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -264,27 +238,9 @@
         if (res.code === 0) {
           this.$message.success('上传成功')
           this.temp.img = res.data
-          console.log(res.data)
         } else {
           this.$message.error('上传失败，请重试')
         }
-      },
-      handleDele(id) { // 删除当前条目
-        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delFunction(id).then(res => {
-            if (res.code === ERR_OK) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.getTableData()
-            }
-          })
-        })
       },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
@@ -296,6 +252,7 @@
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            console.log(datas.data)
           }
         })
       },
@@ -332,8 +289,7 @@
           code: null,
           realPrice: null,
           status: 1,
-          stock: null,
-          vCoinsRate: null
+          stock: null
         }
       },
       create() {    // 创建新功能
