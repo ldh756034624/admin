@@ -21,7 +21,6 @@ const activityList = _import('activity/activity_list')
 const hongbao = _import('activity/hongbao')
 const hongbaoPeople = _import('activity/hongbao_people')
 
-
 /*社区管理*/
 const functionAssort = _import('community/function_assort')
 const functionList = _import('community/function_list')

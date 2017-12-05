@@ -5,7 +5,7 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
       <router-link to="/deal/goodsAssort">
-        <el-button class="filter-item" type="primary" style="margin-left:10px"icon="menu">分类管理</el-button>
+        <el-button class="filter-item" type="primary" style="margin-left:10px" icon="menu">分类管理</el-button>
       </router-link>
     </div>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
@@ -62,7 +62,8 @@
           </el-button>
           <el-button v-else size="small" type="danger" @click="changeStatus(scope.row.id, 2)">下架
           </el-button>
-          <router-link to="/deal/insertGoodsData">
+          <router-link :to="{path: '/deal/insertGoodsData', query: {goodsId: scope.row.id, goodsName: scope.row.name}}"
+                       v-if="scope.row.goodsType.allowImport === 2">
             <el-button size="small" type="success" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">导入数据
             </el-button>
           </router-link>
@@ -237,27 +238,9 @@
         if (res.code === 0) {
           this.$message.success('上传成功')
           this.temp.img = res.data
-          console.log(res.data)
         } else {
           this.$message.error('上传失败，请重试')
         }
-      },
-      handleDele(id) { // 删除当前条目
-        this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          delFunction(id).then(res => {
-            if (res.code === ERR_OK) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.getTableData()
-            }
-          })
-        })
       },
       dateRangeChange() {      // 获取时间范围
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
@@ -269,6 +252,7 @@
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            console.log(datas.data)
           }
         })
       },
