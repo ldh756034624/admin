@@ -29,7 +29,7 @@ export function logout() {
 
 export function getDashboard() {
   return fetch({
-    url: '/basis/statistics/lottery',
+    url: '/basis/statistics',
     method: 'get'
   })
 }

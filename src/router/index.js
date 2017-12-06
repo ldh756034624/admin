@@ -180,24 +180,24 @@ export const asyncRouterMap = [
       {path: 'params', component: params, name: '参数配置', meta_name: 'params'},
       {path: 'backCard', component: backCard, name: '银行卡管理', meta_name: 'backCard'},
       {path: 'admins', component: admins, name: '管理员', meta_name: 'admins'},
-      {path: 'roles', component: roles, name: '角色管理', meta_name: 'roles'},
-      {path: 'sysUsers', component: sysUsers, name: '系统用户', meta_name: 'sysUsers'},
+      // {path: 'roles', component: roles, name: '角色管理', meta_name: 'roles'},
+      // {path: 'sysUsers', component: sysUsers, name: '系统用户', meta_name: 'sysUsers'},
       {path: 'version', component: version, name: '版本管理', meta_name: 'version'},
       {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'}
     ]
   },
-  {
-    path: '/log',
-    component: Layout,
-    redirect: 'noredirect',
-    name: '日志管理',
-    meta_name: 'Log',
-    icon: 'zujian',
-    children: [
-      {path: 'withdrawApi', component: withdrawApi, name: '提现接口日志', meta_name: 'withdrawApi'},
-      {path: 'message', component: message, name: '短信发送日志', meta_name: 'message'},
-    ]
-  },
+  // {
+  //   path: '/log',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: '日志管理',
+  //   meta_name: 'Log',
+  //   icon: 'zujian',
+  //   children: [
+  //     {path: 'withdrawApi', component: withdrawApi, name: '提现接口日志', meta_name: 'withdrawApi'},
+  //     {path: 'message', component: message, name: '短信发送日志', meta_name: 'message'},
+  //   ]
+  // },
   {path: '*', redirect: '/404', hidden: true}
 ]
 
