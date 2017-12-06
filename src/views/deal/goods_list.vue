@@ -91,7 +91,7 @@
         </el-form-item>
         <el-form-item label="类型" class="red-star">
           <el-select v-model="temp.goodsTypeId" placeholder="活动区域">
-            <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
+            <el-option v-for="item in select" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="图标" class="red-star">
@@ -150,24 +150,7 @@
   export default {
     data() {
       return {
-        select: [
-          {
-            label: '手机卡',
-            val: 1
-          },
-          {
-            label: '滴滴卡',
-            val: 2
-          },
-          {
-            label: '实物',
-            val: 3
-          },
-          {
-            label: 'V币',
-            val: 4
-          },
-        ],
+        select: [],
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           img: null,
@@ -200,9 +183,17 @@
       }
     },
     created() {
+      this.getGoodsType()
       this.getTableData()
     },
     methods: {
+      getGoodsType() {
+        getTableData('/transaction/goods_type/enable').then(res => {
+          if (res.code === ERR_OK) {
+            this.select = res.data
+          }
+        })
+      },
       getCk(val) {
         this.temp.description = val
       },
