@@ -4,10 +4,10 @@
     <div class="filter-container">
       <el-form inline>
         <el-form-item label="订单编号">
-          <el-input type="text" v-model="listQuery.phone"></el-input>
+          <el-input type="text" v-model="listQuery.no"></el-input>
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input type="text" v-model="listQuery.code"></el-input>
+          <el-input type="text" v-model="listQuery.phone"></el-input>
         </el-form-item>
         <el-form-item label="下单时间">
           <el-date-picker
@@ -22,11 +22,11 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-button-group style="margin-bottom: 5px;">
-      <el-button type="warning">待发货</el-button>
-      <el-button type="info">配送中</el-button>
-      <el-button type="success">已完成</el-button>
-    </el-button-group>
+    <el-radio-group v-model="listQuery.status">
+      <el-radio-button :label="1">待发货</el-radio-button>
+      <el-radio-button :label="2">配送中</el-radio-button>
+      <el-radio-button :label="3">已完成</el-radio-button>
+    </el-radio-group>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
         <template scope="scope">
@@ -65,7 +65,7 @@
       </el-table-column>
       <el-table-column align="center" label="订单状态">
         <template scope="scope">
-          <span>{{scope.row.status && '已完成'}}</span>
+          <span>{{scope.row.statusDesc}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -179,9 +179,15 @@
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
+        dateRange: null,
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20
+          pageSize: 20,
+          no: null,
+          phone: null,
+          startTime: null,
+          endTime: null,
+          status: 1
         }
       }
     },
@@ -190,6 +196,15 @@
       this.getExpressCompany()
     },
     methods: {
+      getTableData() {
+        getTableData('/order/list', this.listQuery).then(res => {   // 获取tableData数据
+          if (res.code === 0) {
+            let datas = res.data
+            this.total = datas.total
+            this.tableData = datas.data
+          }
+        })
+      },
       dateRangeChange() {      // 获取时间范围
         if (!this.dateRange[0] || !this.dateRange[1]) {
           delete this.listQuery.startTime
@@ -211,15 +226,6 @@
               select.push(tmp)
             })
             this.select = select
-          }
-        })
-      },
-      getTableData() {
-        getTableData('/order/list', this.listQuery).then(res => {   // 获取tableData数据
-          if (res.code === 0) {
-            let datas = res.data
-            this.total = datas.total
-            this.tableData = datas.data
           }
         })
       },
@@ -258,6 +264,11 @@
             this.$message.success('保存成功')
           }
         })
+      }
+    },
+    watch: {
+      'listQuery.status'() {
+        this.getTableData()
       }
     }
   }
