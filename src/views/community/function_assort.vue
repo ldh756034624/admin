@@ -16,6 +16,11 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="位置">
+        <template scope="scope">
+          <span>{{scope.row.locationDesc}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="数量">
         <template scope="scope">
           <span>{{scope.row.bannerCount}}</span>
@@ -68,9 +73,15 @@
 
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
-      <el-form :model="temp" ref="temp" :rules="rules" label-width="100px">
+      <el-form :model="temp" ref="temp" label-width="100px">
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="temp.name"></el-input>
+        </el-form-item>
+        <el-form-item label="功能位置(todo)" class="red-star">
+          <el-select v-model="temp.location" placeholder="请选择">
+            <el-option v-for="item in selectList" :label="item.val" :value="item.key">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="标识" prop="code">
           <el-input v-model="temp.code"></el-input>
@@ -102,7 +113,6 @@
 
 <script>
   import {addFn, upadateFn, getTableData, banSort} from '@/api/community_content'
-  import {isPhone} from '@/utils/validate'
 
   const ERR_OK = 0
   export default {
@@ -113,16 +123,14 @@
         temp: {           // 弹窗内容数据对象
           enable: '1',
           name: null,
-          id: null
+          id: null,
+          location: 1
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
         dialogStatus: '',
-        rules: {
-          name: [{required: true, message: '请输入分类名称', trigger: 'blur'}],
-          code: [{required: true, message: '请输入标识', trigger: 'blur'}]
-        },
+        selectList: {},
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
@@ -134,9 +142,27 @@
       }
     },
     created() {
+      this.getLocations()
       this.getTableData()
     },
     methods: {
+      getTableData() {
+        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
+          if (res.code === 0) {
+            let datas = res.data
+            this.total = datas.total
+            this.tableData = datas.data
+          }
+        })
+      },
+      getLocations() {  // 获取分类列表
+        getTableData('/community/banner_type/location').then(res => {
+          res.data.forEach(item => {
+            item.key = parseFloat(item.key)
+          })
+          this.selectList = res.data
+        })
+      },
       handleBan(id) {
         banSort(id).then(res => {
           if (res.code === ERR_OK) {
@@ -156,15 +182,6 @@
         }
         this.temp.startTime = new Date(this.dateRange[0]).getTime()
         this.temp.endTime = new Date(this.dateRange[1]).getTime()
-      },
-      getTableData() {
-        getTableData('/community/banner_type/page', this.listQuery).then(res => {   // 获取tableData数据
-          if(res.code === 0) {
-            let datas = res.data
-            this.total = datas.total
-            this.tableData = datas.data
-          }
-        })
       },
       handleCreate() {    // 点击创建新功能按钮
         this.resetTemp()    // 清空原有表单
@@ -186,7 +203,8 @@
         this.temp = {
           name: null,
           enable: '1',
-          id: null
+          id: null,
+          location: 1
         }
         this.dateRange = []
       },

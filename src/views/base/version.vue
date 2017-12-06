@@ -140,6 +140,8 @@
     methods: {
       handleRemove(file, fileList) {  // 清空上传文件列表
         this.fileList = []
+        this.temp.packageUrl = null
+        this.temp.packageName = null
       },
       handleFileSuccess(res, file) {
         if (res.code === ERR_OK) {
@@ -221,6 +223,13 @@
               this.getTableData()
             }
           })
+        })
+      }
+    },
+    watch: {
+      'temp.versionNumber'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.temp.versionNumber = newVal.replace(/\D+/, '')
         })
       }
     }
