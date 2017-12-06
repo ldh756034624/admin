@@ -16,6 +16,11 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="位置">
+        <template scope="scope">
+          <span>{{scope.row.locationDesc}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="数量">
         <template scope="scope">
           <span>{{scope.row.bannerCount}}</span>
