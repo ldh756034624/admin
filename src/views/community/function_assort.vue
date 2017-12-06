@@ -77,7 +77,7 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        <el-form-item label="功能位置(todo)" class="red-star">
+        <el-form-item label="功能位置" class="red-star">
           <el-select v-model="temp.location" placeholder="请选择">
             <el-option v-for="item in selectList" :label="item.val" :value="item.key">
             </el-option>
