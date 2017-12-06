@@ -18,17 +18,17 @@
       </el-table-column>
       <el-table-column align="center" label="手机号">
         <template scope="scope">
-          <span>{{scope.row.phone}}</span>
+          <span>{{scope.row.tel}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="V币">
         <template scope="scope">
-          <span>{{scope.row.bankName}}</span>
+          <span>{{scope.row.vb}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="兑换酒元">
         <template scope="scope">
-          <span>{{scope.row.bankCardNo}}</span>
+          <span>{{scope.row.money}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="时间" width="200">
@@ -65,7 +65,8 @@
         total: null,        // 数据总数
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20
+          pageSize: 20,
+          phone: null
         }
       }
     },
@@ -74,7 +75,7 @@
     },
     methods: {
       getTableData() {
-        getTableData('/finance/withdraw_record/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/finance/vb/exchange_record', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total

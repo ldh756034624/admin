@@ -52,6 +52,12 @@
         <el-form-item label="分类标识" class="red-star">
           <el-input v-model="temp.code"></el-input>
         </el-form-item>
+        <el-form-item label="是否实物" class="red-star">
+          <div class="checkitem">
+            <el-radio class="radio" v-model="temp.real" :label="0">否</el-radio>
+            <el-radio class="radio" v-model="temp.real" :label="1">是</el-radio>
+          </div>
+        </el-form-item>
         <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.status" :label="1">启用</el-radio>
@@ -87,7 +93,8 @@
           name: null,
           status: 1,
           code: null,
-          allowImport: 1
+          allowImport: 1,
+          real: 0
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -121,7 +128,8 @@
           name: null,
           status: 1,
           code: null,
-          allowImport: 1
+          allowImport: 1,
+          real: 0
         }
       },
       handleCreate() {    // 点击创建新功能按钮
