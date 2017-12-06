@@ -123,21 +123,21 @@
         <el-form-item label="联系方式">
           <span>{{temp.userPhone}}</span>
         </el-form-item>
-        <el-form-item v-if="temp.orderType == 3" label="收货地址">
+        <el-form-item v-if="temp.orderType == 1" label="收货地址">
           <el-input class="w30" v-model="temp.userAddres"></el-input>
         </el-form-item>
-        <el-form-item v-if="temp.orderType == 3" label="快递公司" prop="fontColor">
+        <el-form-item v-if="temp.orderType == 1" label="快递公司" prop="fontColor">
           <el-select v-model="temp.expressName" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.label"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="temp.orderType == 3" label="快递单号">
+        <el-form-item v-if="temp.orderType == 1" label="快递单号">
           <el-input class="w30" v-model="temp.logisticsNumber"></el-input>
         </el-form-item>
-        <el-form-item v-if="temp.orderType == 2" label="券号">
+        <el-form-item v-if="temp.didiCardNumber" label="券号">
           <span>{{temp.didiCardNumber}}</span>
         </el-form-item>
-        <el-form-item v-if="temp.orderType == 1" label="充值手机号">
+        <el-form-item v-if="temp.userPhone" label="充值手机号">
           <span>{{temp.userPhone}}</span>
         </el-form-item>
       </el-form>
