@@ -146,7 +146,7 @@
           this.batchList = res.data
         })
       },
-      handleInsert() {
+      handleInsert() {  // 导入数据
         if (this.insertData != '' || this.insertData != null) {
           let data = {
             goodsId: this.goodsId,
@@ -157,6 +157,7 @@
               this.$message.success('导入成功')
               this.insertData = null
               this.getTableData()
+              this.getBatch()
             }
           })
         }
@@ -193,7 +194,14 @@
           })
         })
       }
-    }
+    },
+    watch: {
+      'listQuery.userId'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.listQuery.userId = newVal.replace(/\D+/, '')
+        })
+      }
+    },
   }
 </script>
 

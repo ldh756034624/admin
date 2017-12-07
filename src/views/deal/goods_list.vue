@@ -304,6 +304,18 @@
         })
       }
     },
+    watch: {
+      'temp.realPrice'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.temp.realPrice = newVal.replace(/[^\d^\.]+/g, '')
+        })
+      },
+      'temp.price'(newVal, oldVal) {
+        this.$nextTick(() => {
+          this.temp.price = newVal.replace(/[^\d^\.]+/g, '')
+        })
+      }
+    },
     components: {
       Ckeditor
     }
