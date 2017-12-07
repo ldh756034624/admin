@@ -23,7 +23,7 @@
             <el-input type="text" v-model="listQuery.userId"></el-input>
           </el-form-item>
           <el-form-item label="券号">
-            <el-input type="text" v-model="listQuery.code"></el-input>
+            <el-input type="text" v-model="listQuery.no"></el-input>
           </el-form-item>
           <el-form-item label="批次">
             <el-select v-model="listQuery.batchNo" placeholder="请选择">
