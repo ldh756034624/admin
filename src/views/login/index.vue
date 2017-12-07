@@ -52,8 +52,8 @@
       };
       return {
         loginForm: {
-          name: '13580797769',
-          password: '123321'
+          name: '',
+          password: ''
         },
         loginRules: {
           phone: [
