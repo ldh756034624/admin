@@ -38,14 +38,14 @@
       </el-table-column>
       <el-table-column align="center" label="状态">
         <template scope="scope">
-          <span>{{scope.row.cause}}</span>
+          <span>{{scope.row.statusDesc}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="!scope.row.isExpired" size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="danger" class="btn btn-sm btn-info" @click="handleCancel(scope.row.id)">取消
+          <el-button v-if="!scope.row.isExpired && scope.row.status == 1" size="small" type="danger" class="btn btn-sm btn-info" @click="handleCancel(scope.row.id)">取消
           </el-button>
         </template>
       </el-table-column>
