@@ -54,8 +54,8 @@
         </el-form-item>
         <el-form-item label="是否实物" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.real" :label="0">否</el-radio>
-            <el-radio class="radio" v-model="temp.real" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.reality" :label="0">否</el-radio>
+            <el-radio class="radio" v-model="temp.reality" :label="1">是</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="状态" class="red-star">
@@ -94,7 +94,7 @@
           status: 1,
           code: null,
           allowImport: 1,
-          real: 0
+          reality: 0
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -129,7 +129,7 @@
           status: 1,
           code: null,
           allowImport: 1,
-          real: 0
+          reality: 0
         }
       },
       handleCreate() {    // 点击创建新功能按钮
