@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column align="center" label="路径">
         <template scope="scope">
-          <span>{{scope.row.directory}}</span>
+          <span>{{scope.row.url}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="预览">
