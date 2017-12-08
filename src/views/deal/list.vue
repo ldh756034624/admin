@@ -75,7 +75,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">查看
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">查看
           </el-button>
         </template>
       </el-table-column>
@@ -123,22 +123,22 @@
         <el-form-item label="联系方式">
           <span>{{temp.userPhone}}</span>
         </el-form-item>
-        <el-form-item v-if="temp.goodsType.reality == 1" label="收货地址">
+        <el-form-item v-if="temp.orderType == 1" label="收货地址">
           <el-input class="w30" v-model="temp.userAddres"></el-input>
         </el-form-item>
-        <el-form-item v-if="temp.goodsType.reality == 1" label="快递公司" prop="fontColor">
+        <el-form-item v-if="temp.orderType == 1" label="快递公司" prop="fontColor">
           <el-select v-model="temp.expressName" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.label"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="temp.goodsType.reality == 1" label="快递单号">
+        <el-form-item v-if="temp.orderType == 1" label="快递单号">
           <el-input class="w30" v-model="temp.logisticsNumber"></el-input>
         </el-form-item>
         <el-form-item v-if="temp.didiCardNumber != 'null'" label="券号">
           <span>{{temp.didiCardNumber}}</span>
         </el-form-item>
-        <el-form-item v-if="temp.userPhone" label="充值手机号">
-          <span>{{temp.userPhone}}</span>
+        <el-form-item v-if="temp.tel" label="充值手机号">
+          <span>{{temp.tel}}</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -165,9 +165,6 @@
           logisticsNumber: null,
           money: null,
           no: null,
-          goodsType: {
-            reality: 0
-          },
           orderType: null,
           payMethodDesc: null,
           payMethond: null,
@@ -232,12 +229,16 @@
           }
         })
       },
-      handleUpdate(row) {   // 点击编辑功能按钮
+      handleUpdate(id) {   // 点击编辑功能按钮
         this.resetTemp()
-        this.temp = Object.assign(this.temp, row)   // 赋值
-        console.log(this.temp)
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
+        getTableData(`/order/${id}`).then(res => {
+          if (res.code === 0) {
+            console.log(res.data)
+            this.temp = Object.assign(this.temp, res.data)   // 赋值
+            this.dialogStatus = 'update'
+            this.dialogFormVisible = true
+          }
+        })
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
@@ -249,9 +250,6 @@
           money: null,
           no: null,
           orderType: null,
-          goodsType: {
-            reality: 0
-          },
           payMethodDesc: null,
           payMethond: null,
           payMoney: null,
