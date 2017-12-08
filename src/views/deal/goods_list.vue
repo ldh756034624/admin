@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column align="center" label="商品价格">
         <template scope="scope">
-          <span>{{scope.row.realPrice}}</span>
+          <span>{{scope.row.price}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="库存">

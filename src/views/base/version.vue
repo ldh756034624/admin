@@ -78,9 +78,9 @@
           </div>
         </el-form-item>
         <el-form-item label="内容" class="red-star">
-          <el-input type="textarea" :rows="2" v-model="temp.description"></el-input>
+          <el-input type="textarea" :rows="4" v-model="temp.description"></el-input>
         </el-form-item>
-        <el-form-item label="Android包">
+        <el-form-item label="Android包" v-if="temp.clientType == 2">
           <el-upload
             class="upload-demo"
             drag
