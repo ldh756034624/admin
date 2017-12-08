@@ -33,11 +33,11 @@ Vue.component('icon-svg', IconSvg)
 const whiteList = ['/login']
 
 Vue.filter('formatDate', val => {   // 只有日期
-  return formatDate(new Date(val), 'yyyy-MM-dd')
+  return formatDate(val, 'yyyy-MM-dd')
 })
 
 Vue.filter('formatDateTime', val => {   // 有日期和时间
-  return formatDate(new Date(val), 'yyyy-MM-dd hh:mm:ss')
+  return formatDate(val, 'yyyy-MM-dd hh:mm:ss')
 })
 
 // Vue.directive('numberOnly', { // 只允许输入数字
