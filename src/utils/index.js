@@ -54,6 +54,10 @@ export function formatTime(time, option) {
 }
 
 export function formatDate (date, fmt) {    // wd时间格式化
+  if (!date) {
+    return '无'
+  }
+  date = new Date(date)
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
   }

@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column align="center" label="结束时间">
         <template scope="scope">
-          <span>{{scope.row.endTime | formatDateTime}}</span>
+          <span>{{scope.row.startTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="商品状态">
@@ -257,8 +257,11 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.dateRange = []
-        this.dateRange.push(new Date(row.startTime))   // 初始化时间
-        this.dateRange.push(new Date(row.endTime))
+        let startTime = row.startTime ? new Date(row.startTime) : null
+        let endTime = row.endTime ? new Date(row.endTime) : null
+
+        this.dateRange.push(startTime)   // 初始化时间
+        this.dateRange.push(endTime)
         row.goodsTypeId = row.goodsType.id
         this.temp = Object.assign(this.temp, row)   // 赋值
         console.log(this.temp)
