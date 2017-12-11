@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column align="center" label="商品价格">
         <template scope="scope">
-          <span>{{scope.row.price}}</span>
+          <span>{{scope.row.realPrice}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="库存">
@@ -106,10 +106,10 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="原价" class="red-star">
-          <el-input class="w30" v-model="temp.realPrice"></el-input>
+          <el-input class="w30" v-model="temp.price"></el-input>
         </el-form-item>
         <el-form-item label="价格" class="red-star">
-          <el-input class="w30" v-model="temp.price"></el-input>
+          <el-input class="w30" v-model="temp.realPrice"></el-input>
         </el-form-item>
         <el-form-item label="内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.description" @getData="getCk"></ckeditor>
