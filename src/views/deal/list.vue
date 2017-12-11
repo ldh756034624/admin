@@ -143,7 +143,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">关闭</el-button>
-        <el-button type="primary" @click="update" v-if="temp.orderType == 3">保存</el-button>
+        <el-button type="primary" @click="update" v-if="temp.orderType == 1">保存</el-button>
       </div>
     </el-dialog>
   </div>
