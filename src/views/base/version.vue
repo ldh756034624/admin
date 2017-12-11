@@ -66,8 +66,8 @@
         </el-form-item>
         <el-form-item label="客户端类型" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.clientType" :label="1">IOS</el-radio>
-            <el-radio class="radio" v-model="temp.clientType" :label="2">Android</el-radio>
+            <el-radio class="radio" v-model="temp.clientType" :label="1">Android</el-radio>
+            <el-radio class="radio" v-model="temp.clientType" :label="2">IOS</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="升级类型" class="red-star">
@@ -80,7 +80,7 @@
         <el-form-item label="内容" class="red-star">
           <el-input type="textarea" :rows="4" v-model="temp.description"></el-input>
         </el-form-item>
-        <el-form-item label="Android包" v-if="temp.clientType == 2">
+        <el-form-item label="Android包" v-if="temp.clientType == 1">
           <el-upload
             class="upload-demo"
             drag
