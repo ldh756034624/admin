@@ -132,7 +132,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-if="temp.orderType == 1" label="快递单号">
-          <el-input class="w30" v-model="temp.logisticsNumber"></el-input>
+          <el-input class="w30" v-model="temp.expressNum"></el-input>
         </el-form-item>
         <el-form-item v-if="temp.didiCardNumber != 'null'" label="券号">
           <span>{{temp.didiCardNumber}}</span>
@@ -162,7 +162,7 @@
           expressName: null,
           goods: null,
           id: null,
-          logisticsNumber: null,
+          expressNum: null,
           money: null,
           no: null,
           orderType: null,
@@ -246,7 +246,7 @@
           expressName: null,
           goods: null,
           id: null,
-          logisticsNumber: null,
+          expressNum: null,
           money: null,
           no: null,
           orderType: null,
