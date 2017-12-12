@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column align="center" label="结束时间">
         <template scope="scope">
-          <span>{{scope.row.startTime | formatDateTime}}</span>
+          <span>{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="商品状态">
