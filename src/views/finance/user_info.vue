@@ -35,7 +35,7 @@
               <span>{{extendsInfo.sex || '无'}}</span>
             </el-form-item>
             <el-form-item label="生日">
-              <span>{{extendsInfo.birthday || '无'}}</span>
+              <span>{{extendsInfo.birthday | formatDate}}</span>
             </el-form-item>
             <el-form-item label="学历">
               <span>{{extendsInfo.education || '无'}}</span>
