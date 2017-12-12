@@ -16,11 +16,6 @@
           <span>{{scope.row.version }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="版本号">
-        <template scope="scope">
-          <span>{{scope.row.versionNumber }}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="升级类型">
         <template scope="scope">
           <span>{{scope.row.upgradeTypeDesc }}</span>
@@ -60,9 +55,6 @@
       <el-form :model="temp" ref="temp" label-width="100px">
         <el-form-item label="版本" class="red-star">
           <el-input v-model="temp.version"></el-input>
-        </el-form-item>
-        <el-form-item label="版本号" class="red-star">
-          <el-input v-model="temp.versionNumber"></el-input>
         </el-form-item>
         <el-form-item label="客户端类型" class="red-star">
           <div class="checkitem">
@@ -114,7 +106,6 @@
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           version: null,
-          versionNumber: null,
           clientType: 1,
           upgradeType: 1,
           description: null,
@@ -164,7 +155,6 @@
         this.fileList = []
         this.temp = {
           version: null,
-          versionNumber: null,
           clientType: 1,
           upgradeType: 1,
           description: null,
@@ -223,13 +213,6 @@
               this.getTableData()
             }
           })
-        })
-      }
-    },
-    watch: {
-      'temp.versionNumber'(newVal, oldVal) {
-        this.$nextTick(() => {
-          this.temp.versionNumber = newVal.replace(/\D+/, '')
         })
       }
     }
