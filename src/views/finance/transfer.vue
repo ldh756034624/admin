@@ -35,7 +35,7 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="序号" width="65">
+      <el-table-column align="center" label="序号">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
         </template>
@@ -55,12 +55,27 @@
           <span>{{scope.row.code }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="用户余额">
+        <template scope="scope">
+          <span>{{scope.row.balance}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="金额">
         <template scope="scope">
           <span>{{scope.row.money }}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="状态">
+        <template scope="scope">
+          <span>{{scope.row.status}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="发奖时间">
+        <template scope="scope">
+          <span>{{scope.row.transferTime | formatDateTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="转账时间">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
