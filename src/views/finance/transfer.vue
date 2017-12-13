@@ -65,17 +65,7 @@
           <span>{{scope.row.money }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态">
-        <template scope="scope">
-          <span>{{scope.row.status}}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="发奖时间">
-        <template scope="scope">
-          <span>{{scope.row.transferTime | formatDateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="转账时间">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
