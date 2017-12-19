@@ -35,7 +35,7 @@
               <span>{{extendsInfo.sex || '无'}}</span>
             </el-form-item>
             <el-form-item label="生日">
-              <span>{{extendsInfo.birthday || '无'}}</span>
+              <span>{{extendsInfo.birthday | formatDate}}</span>
             </el-form-item>
             <el-form-item label="学历">
               <span>{{extendsInfo.education || '无'}}</span>
@@ -84,12 +84,12 @@
       </el-table-column>
       <el-table-column align="center" label="提现金额">
         <template scope="scope">
-          <span>{{scope.row.withdrawalsMoney }}</span>
+          <span>{{scope.row.withdrawMoney }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="提现次数">
         <template scope="scope">
-          <span>{{scope.row.withdrawalsCount }}</span>
+          <span>{{scope.row.withdrawCount }}</span>
         </template>
       </el-table-column>
     </el-table>
