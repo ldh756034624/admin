@@ -136,7 +136,7 @@
         upadateSinglePage(row).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
-            this.$message.success('修改成功')
+            this.$message.success('操作成功')
           }
         })
       },
