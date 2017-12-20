@@ -28,6 +28,7 @@
         this.$nextTick(() => {
           if (!this.editor) { // 防止重复实例化
             this.editor = CKEDITOR.replace("editor", {height: "300px", width: "100%", toolbar: "Full"})
+            window.parent.CKEDITOR = CKEDITOR
           }
           if (this.data || this.data != 0) {    // 初始化数据
             this.editor.setData(this.data)
