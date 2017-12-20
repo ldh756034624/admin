@@ -75,7 +75,7 @@
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="文章图片" class="red-star">
+        <el-form-item label="文章图片">
           <el-upload
             :action="IMGUP_API"
             :show-file-list="false"
@@ -216,7 +216,7 @@
         upadateArt(row).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
-            this.$message.success('修改成功')
+            this.$message.success('操作成功')
           }
         })
       },
