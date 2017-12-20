@@ -23,9 +23,17 @@
       </el-form>
     </div>
     <el-radio-group v-model="listQuery.status">
-      <el-radio-button :label="1">待发货</el-radio-button>
-      <el-radio-button :label="2">配送中</el-radio-button>
-      <el-radio-button :label="3">已完成</el-radio-button>
+      <el-radio-button :label="0">未确认</el-radio-button>
+      <el-radio-button :label="1">等待发货</el-radio-button>
+      <el-radio-button :label="2">等待收货</el-radio-button>
+      <el-radio-button :label="3">完成</el-radio-button>
+      <el-radio-button :label="4">交易成功</el-radio-button>
+      <el-radio-button :label="5">交易失败</el-radio-button>
+      <el-radio-button :label="6">退货中</el-radio-button>
+      <el-radio-button :label="7">受理中</el-radio-button>
+      <el-radio-button :label="8">不予退货</el-radio-button>
+      <el-radio-button :label="9">退货完成</el-radio-button>
+      <el-radio-button :label="10">提交成功</el-radio-button>
     </el-radio-group>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
@@ -187,7 +195,7 @@
           phone: null,
           startTime: null,
           endTime: null,
-          status: 1
+          status: 0
         }
       }
     },
