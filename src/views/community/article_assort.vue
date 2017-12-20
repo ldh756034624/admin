@@ -64,6 +64,9 @@
         <el-form-item label="排序">
           <el-input v-model="temp.sort"></el-input>
         </el-form-item>
+        <el-form-item label="标识" class="red-star">
+          <el-input v-model="temp.code"></el-input>
+        </el-form-item>
         <el-form-item label="是否启用" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="temp.enable" :label="1">启用</el-radio>
@@ -94,7 +97,8 @@
         temp: {           // 弹窗内容数据对象
           name: null,
           sort: null,
-          enable: 1
+          enable: 1,
+          code: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -143,7 +147,8 @@
         this.temp = {
           name: null,
           sort: null,
-          enable: 1
+          enable: 1,
+          code: null
         }
       },
       create() {    // 创建新功能
