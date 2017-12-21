@@ -158,7 +158,7 @@
           id: null,
           recommend: 1,
           sort: null,
-          startTime: null,
+          startTime: '',
           title: null,
           url: null,
           isPush: 0,
@@ -259,6 +259,7 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
+        row.startTime == 0 && (row.startTime = '')
         this.temp = Object.assign(this.temp, row)   // 赋值
         this.temp.articleTypeId = row.articleType.id
         if (row.url) {
@@ -278,7 +279,7 @@
           id: null,
           recommend: 1,
           sort: null,
-          startTime: null,
+          startTime: '',
           title: null,
           url: null,
           isPush: 0,

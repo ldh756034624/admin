@@ -130,7 +130,7 @@
           enable: 1,
           id: null,
           sort: null,
-          publishTime: null,
+          publishTime: '',
           title: null,
           url: null,
 //          isPush: 0,
@@ -206,10 +206,8 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
+        row.publishTime == 0 && (row.publishTime = '')
         this.temp = Object.assign(this.temp, row)   // 赋值
-//        if (row.url) {
-//          this.temp.isPush = 1
-//        }
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -222,10 +220,9 @@
           enable: 1,
           id: null,
           sort: null,
-          publishTime: null,
+          publishTime: '',
           title: null,
           url: null,
-//          isPush: 0,
           imgUrl: null,
           userName: null
         }
