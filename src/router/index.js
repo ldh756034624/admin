@@ -143,7 +143,7 @@ export const asyncRouterMap = [
     children: [
       {path: 'customer', component: customer, name: '用户管理', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
-      {path: 'transfer', component: transfer, name: '转账', meta_name: 'transfer'},
+      {path: 'transfer', component: transfer, name: '小品会', meta_name: 'transfer'},
       {path: 'vExchange', component: vExchange, name: 'V币兑换', meta_name: 'vExchange'},
       {path: 'transfered', component: transfered, name: '已操作转账', meta_name: 'transfered', hidden: true},
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
