@@ -26,14 +26,13 @@
       <el-radio-button :label="0">未确认</el-radio-button>
       <el-radio-button :label="1">等待发货</el-radio-button>
       <el-radio-button :label="2">等待收货</el-radio-button>
-      <el-radio-button :label="3">完成</el-radio-button>
+      <el-radio-button :label="3">已取消</el-radio-button>
       <el-radio-button :label="4">交易成功</el-radio-button>
       <el-radio-button :label="5">交易失败</el-radio-button>
-      <el-radio-button :label="6">退货中</el-radio-button>
-      <el-radio-button :label="7">受理中</el-radio-button>
+      <el-radio-button :label="6">退货受理中</el-radio-button>
+      <el-radio-button :label="7">退货中</el-radio-button>
       <el-radio-button :label="8">不予退货</el-radio-button>
       <el-radio-button :label="9">退货完成</el-radio-button>
-      <el-radio-button :label="10">提交成功</el-radio-button>
     </el-radio-group>
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
@@ -83,7 +82,11 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">查看
+          <el-button size="small" v-if="scope.row.status == 0" type="primary" @click="handleConfirm(scope.row.id, 1)">确认
+          </el-button>
+          <el-button size="small" v-if="scope.row.status == 0" type="danger" @click="handleConfirm(scope.row.id, 3)">取消
+          </el-button>
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">{{scope.row.status == 1 ? '发货' : '查看'}}
           </el-button>
         </template>
       </el-table-column>
@@ -151,14 +154,14 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">关闭</el-button>
-        <el-button type="primary" @click="update" v-if="temp.orderType == 1">保存</el-button>
+        <el-button type="primary" @click="update" v-if="temp.orderType == 1 && temp.status == 1">保存</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import {getTableData, updateOrder} from '@/api/order'
+  import {getTableData, updateOrder, orderConfirm} from '@/api/order'
 
   const ERR_OK = 0
   export default {
@@ -235,6 +238,21 @@
             })
             this.select = select
           }
+        })
+      },
+      handleConfirm(id ,type) { //todo 确认或者取消订单 1确认，3取消
+        let txt = type == 3 ? '取消' : '确认'
+        this.$confirm(`是否${txt}订单?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          orderConfirm(id, type).then((res) => {
+            if (res.code === 0) {
+              this.$message.success('操作成功')
+              this.getTableData()
+            }
+          })
         })
       },
       handleUpdate(id) {   // 点击编辑功能按钮

@@ -15,3 +15,13 @@ export function updateOrder(data) {    // 更新订单信息
     data
   })
 }
+
+export function orderConfirm(id, status) {  // 确认取消订单
+  return fetch({
+    url: `/order/${id}/status`,
+    method: 'post',
+    data: {
+      status
+    }
+  })
+}
