@@ -197,6 +197,7 @@
     },
     watch: {
       'listQuery.userId'(newVal, oldVal) {
+        (newVal || newVal == 0) && (newVal = newVal.toString())
         this.$nextTick(() => {
           this.listQuery.userId = newVal.replace(/\D+/, '')
         })

@@ -335,6 +335,7 @@
     },
     watch: {
       'temp.sort'(newVal, oldVal) {
+        (newVal || newVal == 0) && (newVal = newVal.toString())
         this.$nextTick(() => {
           this.temp.sort = newVal.replace(/\D+/, '')
         })
