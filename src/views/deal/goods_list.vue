@@ -256,12 +256,15 @@
         })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
+        this.resetTemp()    // 清空原有表单
         this.dateRange = []
         let startTime = row.startTime ? new Date(row.startTime) : null
         let endTime = row.endTime ? new Date(row.endTime) : null
-
         this.dateRange.push(startTime)   // 初始化时间
         this.dateRange.push(endTime)
+        if (!row.startTime && !row.endTime) {  //　如果都没时间，就给空数组
+          this.dateRange = null
+        }
         row.goodsTypeId = row.goodsType.id
         this.temp = Object.assign(this.temp, row)   // 赋值
         console.log(this.temp)
@@ -272,7 +275,7 @@
         })
       },
       resetTemp() {   // 重置弹出表格
-        this.dateRange = []
+        this.dateRange = null
         this.temp = {      // 清空内容数据对象
           img: null,
           name: null,
@@ -309,11 +312,13 @@
     },
     watch: {
       'temp.realPrice'(newVal, oldVal) {
+        (newVal || newVal == 0) && (newVal = newVal.toString())
         this.$nextTick(() => {
           this.temp.realPrice = newVal.replace(/[^\d^\.]+/g, '')
         })
       },
       'temp.price'(newVal, oldVal) {
+        (newVal || newVal == 0) && (newVal = newVal.toString())
         this.$nextTick(() => {
           this.temp.price = newVal.replace(/[^\d^\.]+/g, '')
         })
