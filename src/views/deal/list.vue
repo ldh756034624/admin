@@ -23,6 +23,7 @@
       </el-form>
     </div>
     <el-radio-group v-model="listQuery.status">
+      <el-radio-button :label="-1">全部</el-radio-button>
       <el-radio-button :label="0">未确认</el-radio-button>
       <el-radio-button :label="1">等待发货</el-radio-button>
       <el-radio-button :label="2">等待收货</el-radio-button>
@@ -37,7 +38,7 @@
     <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
         <template scope="scope">
-          <span>{{scope.row.no || '无'}}</span>
+          <span>{{scope.row.id || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="商品名称">
@@ -106,7 +107,7 @@
       <el-form :model="temp" label-width="100px">
         <h1 class="title">商品信息</h1>
         <el-form-item label="订单号">
-          <span>{{temp.no}}</span>
+          <span>{{temp.id}}</span>
         </el-form-item>
         <el-form-item label="商品名称">
           <span>{{temp.goods}}</span>
