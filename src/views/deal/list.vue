@@ -146,7 +146,7 @@
         <el-form-item v-if="temp.orderType == 1" label="快递单号">
           <el-input class="w30" v-model="temp.expressNum"></el-input>
         </el-form-item>
-        <el-form-item v-if="temp.didiCardNumber != 'null'" label="券号">
+        <el-form-item v-if="temp.didiCardNumber && temp.didiCardNumber != 'null'" label="券号">
           <span>{{temp.didiCardNumber}}</span>
         </el-form-item>
         <el-form-item v-if="temp.tel" label="充值手机号">
