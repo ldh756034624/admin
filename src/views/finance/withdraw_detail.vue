@@ -78,17 +78,17 @@ customer.vue
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
-          userId: null
         }
       }
     },
     created() {
-      this.listQuery.userId = this.$route.query.id
+      this.userId = this.$route.query.id
       this.getTableData()
     },
     methods: {
       getTableData() {
-        getTableData(`/finance/withdraw_record/page`, this.listQuery).then(res => {   // 获取tableData数据
+        let _this = this
+        getTableData(`/account/withdraw/flow/${_this.userId}`, this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
