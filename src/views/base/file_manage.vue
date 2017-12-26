@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column align="center" label="预览">
         <template scope="scope">
-          <span><img :src="scope.row.url" height="50" width="90"></span>
+          <span><img :src="scope.row.url" width="90"></span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
