@@ -8,7 +8,7 @@
         <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="menu">分类管理</el-button>
       </router-link>
     </div>
-    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -143,6 +143,7 @@
   export default {
     data() {
       return {
+        loading: false,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -241,11 +242,13 @@
         this.$router.push({path: '/community/fnlist', query: {id}})
       },
       getTableData() {
+        this.loading = true
         getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },

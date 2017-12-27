@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增</el-button>
     </div>
-    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :data="list" v-loading="loading" element-loading-text="拼命加载中" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -56,6 +56,7 @@
   export default {
     data() {
       return {
+        loading: false,
         list: null,
         permsDatas: null,  // 权限的数据
         total: null,

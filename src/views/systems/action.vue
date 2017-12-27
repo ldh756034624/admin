@@ -95,6 +95,7 @@
   export default {
     data() {
       return {
+        loading: false,
         list: null,
         waitMethods: null,
         listLoading: null,
