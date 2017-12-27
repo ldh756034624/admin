@@ -5,7 +5,7 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
     </div>
-    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -88,6 +88,7 @@
   export default {
     data() {
       return {
+        loading: false,
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           name: null,
@@ -115,11 +116,13 @@
     },
     methods: {
       getTableData() {
+        this.loading = true
         getTableData('/transaction/goods_type', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === ERR_OK) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },

@@ -10,7 +10,7 @@
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
     </div>
 
-    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :data="list" v-loading="loading" element-loading-text="拼命加载中" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.admin_id}}</span>
@@ -57,6 +57,7 @@
   export default {
     data() {
       return {
+        loading: false,
         list: null,
         total: null,
         typeArr: null,

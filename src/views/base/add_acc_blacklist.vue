@@ -25,7 +25,7 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleBlack">加入黑名单
       </el-button>
     </div>
-    <el-table :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
+    <el-table v-loading="loading" element-loading-text="拼命加载中"  :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
               style="width: 100%">
       <el-table-column
         type="selection"
@@ -72,6 +72,7 @@
   export default {
     data() {
       return {
+        loading: false,
         dateRange: null,  // 时间范围
         tableData: [],    // 表格数据
         total: null,        // 数据总数
@@ -112,11 +113,13 @@
         this.ids = ids
       },
       getTableData() {
+        this.loading = true
         getTableData('/account/rewardInfo', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },

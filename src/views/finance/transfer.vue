@@ -29,7 +29,7 @@
         已操作转账记录
       </el-button>
     </div>
-    <el-table :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" @selection-change="handleSelectionChange" border fit highlight-current-row
               style="width: 100%">
       <el-table-column
         type="selection"
@@ -90,6 +90,7 @@
   export default {
     data() {
       return {
+        loading: false,
         dateRange: null,  // 时间范围
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -126,11 +127,13 @@
         this.$router.push({path: '/finance/transfered'})
       },
       getTableData() {
+        this.loading = true
         getTableData('/finance/lottery/flow/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },

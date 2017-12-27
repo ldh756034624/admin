@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :data="list" v-loading="loading" element-loading-text="拼命加载中" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="id" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -96,6 +96,7 @@
   export default {
     data() {
       return {
+        loading: false,
         list: null,
         listLoading: null,
         dialogFormVisible: false,

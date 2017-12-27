@@ -8,7 +8,7 @@
   		<el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">添加</el-button>
   	</div>
 
-    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :data="list" v-loading="loading" element-loading-text="拼命加载中" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="用户ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -119,6 +119,7 @@
         }
       };
       return {
+        loading: false,
         list: null,
         total: null,
         listLoading: true,

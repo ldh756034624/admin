@@ -43,7 +43,7 @@
         </el-form>
       </div>
     </div>
-    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -108,6 +108,7 @@
   export default {
     data() {
       return {
+        loading: false,
         insertData: null, // 导入数据
         goodsName: null,  // 商品名称
         tableData: null,    // 表格数据
@@ -133,11 +134,13 @@
     },
     methods: {
       getTableData() {
+        this.loading = true
         getTableData('/transaction/card_coupons', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },

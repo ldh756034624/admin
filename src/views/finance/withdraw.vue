@@ -18,7 +18,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -132,6 +132,7 @@
   export default {
     data() {
       return {
+        loading: false,
         querySelect: [
           {
             label: '全部',
@@ -190,11 +191,13 @@
     },
     methods: {
       getTableData() {
+        this.loading = true
         getTableData('/finance/withdraw_record/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },

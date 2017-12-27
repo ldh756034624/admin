@@ -51,7 +51,7 @@
       </div>
     </div>
     <div class="title">银行卡</div>
-    <el-table :data="bankInfo" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="bankInfo" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -94,7 +94,7 @@
       </el-table-column>
     </el-table>
     <div class="title">收货地址</div>
-    <el-table :data="addressInfo" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="addressInfo" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -136,6 +136,7 @@
   export default {
     data() {
       return {
+        loading: false,
         userId: null,
         addressInfo: null,
         bankInfo: null,
@@ -149,12 +150,14 @@
     },
     methods: {
       getUserInfo() {  // 获取用户信息
+        this.loading = true
         getTableData('/user/info/' + this.userId).then(res => {   // 获取tableData数据
           if (res.code === ERR_OK) {
             this.addressInfo = res.data.userAddressInfoVOList // 地址信息
             this.bankInfo = res.data.userBankInfoVOList // 银行信息
             this.extendsInfo = res.data.userExtendsInfoVO // 额外信息
             this.userInfo = res.data.userInfoVO // 用户信息
+            this.loading = false
           }
         })
       }
