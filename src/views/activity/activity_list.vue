@@ -5,7 +5,8 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
     </div>
-    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
+              style="width: 100%">
       <el-table-column align="center" label="活动ID">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -113,31 +114,31 @@
           </el-tab-pane>
           <!--todo 以后有高级设置再加上-->
           <!--<el-tab-pane label="参与设置">-->
-            <!--<el-form-item label="每人总次数" label-width="150px">-->
-              <!--<div class="w50">-->
-                <!--<el-input v-model="temp.personTotalNumber" placeholder="请输入活动规则"></el-input>-->
-              <!--</div>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="每人每天次数" label-width="150px">-->
-              <!--<div class="w50">-->
-                <!--<el-input v-model="temp.personDailyNumber" placeholder="请输入活动规则"></el-input>-->
-              <!--</div>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="每人每天中奖次数" label-width="150px">-->
-              <!--<div class="w50">-->
-                <!--<el-input v-model="temp.personDailyTargetNumber" placeholder="请输入活动规则"></el-input>-->
-              <!--</div>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="中奖时间间隔" label-width="150px">-->
-              <!--<div class="w50">-->
-                <!--<el-input v-model="temp.targetPeriod" placeholder="请输入活动规则"></el-input>-->
-              <!--</div>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="参与频率" label-width="150px">-->
-              <!--<div class="w50">-->
-                <!--<el-input v-model="temp.participationFrequency" placeholder="请输入活动规则"></el-input>-->
-              <!--</div>-->
-            <!--</el-form-item>-->
+          <!--<el-form-item label="每人总次数" label-width="150px">-->
+          <!--<div class="w50">-->
+          <!--<el-input v-model="temp.personTotalNumber" placeholder="请输入活动规则"></el-input>-->
+          <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="每人每天次数" label-width="150px">-->
+          <!--<div class="w50">-->
+          <!--<el-input v-model="temp.personDailyNumber" placeholder="请输入活动规则"></el-input>-->
+          <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="每人每天中奖次数" label-width="150px">-->
+          <!--<div class="w50">-->
+          <!--<el-input v-model="temp.personDailyTargetNumber" placeholder="请输入活动规则"></el-input>-->
+          <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="中奖时间间隔" label-width="150px">-->
+          <!--<div class="w50">-->
+          <!--<el-input v-model="temp.targetPeriod" placeholder="请输入活动规则"></el-input>-->
+          <!--</div>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="参与频率" label-width="150px">-->
+          <!--<div class="w50">-->
+          <!--<el-input v-model="temp.participationFrequency" placeholder="请输入活动规则"></el-input>-->
+          <!--</div>-->
+          <!--</el-form-item>-->
           <!--</el-tab-pane>-->
           <!--todo 以后有高级设置再加上-->
           <!--<el-tab-pane label="高级设置">-->
@@ -164,6 +165,7 @@
   export default {
     data() {
       return {
+        loading: false,
         proData: null,    // 高级设置的值
         enable: '1',
         dateRange: null,  // 时间范围
@@ -238,11 +240,13 @@
       }
       ,
       getTableData() {
+        this.loading = true
         getTableData('/community/activity/page', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       }

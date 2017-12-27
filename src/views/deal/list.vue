@@ -35,7 +35,7 @@
       <el-radio-button :label="8">不予退货</el-radio-button>
       <el-radio-button :label="9">退货完成</el-radio-button>
     </el-radio-group>
-    <el-table :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
         <template scope="scope">
           <span>{{scope.row.id || '无'}}</span>
@@ -168,6 +168,7 @@
   export default {
     data() {
       return {
+        loading: false,
         select: [],
         temp: {           // 弹窗内容数据对象
           didiCardNumber: null,
@@ -209,11 +210,13 @@
     },
     methods: {
       getTableData() {
+        this.loading = true
         getTableData('/order/list', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+            this.loading = false
           }
         })
       },
