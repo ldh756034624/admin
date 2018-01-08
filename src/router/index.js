@@ -29,6 +29,10 @@ const articleList = _import('community/article_list')
 const announceList = _import('community/announce_list')
 const singlePage = _import('community/single_page')
 
+/*商品管理*/
+const hotel = _import('hotel/hotel')
+const room = _import('hotel/room')
+
 /*交易管理*/
 const goodsList = _import('deal/goods_list')
 const goodsAssort = _import('deal/goods_assort')
@@ -117,6 +121,17 @@ export const asyncRouterMap = [
       {path: 'article_list', component: articleList, name: '文章', meta_name: 'articleList'},
       {path: 'announce_list', component: announceList, name: '公告', meta_name: 'announceList'},
       {path: 'single_page', component: singlePage, name: '单网页', meta_name: 'singlePage'}
+    ]
+  },
+  {
+    path: '/goods',
+    component: Layout,
+    name: '商品管理',
+    meta_name: 'Goods',
+    icon: 'zujian',
+    children: [
+      {path: 'hotel', component: hotel, name: '酒店管理', meta_name: 'hotel'},
+      {path: 'room', component: room, name: '房间管理', meta_name: 'room', hidden: true},
     ]
   },
   {
