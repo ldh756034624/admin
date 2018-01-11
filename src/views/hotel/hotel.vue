@@ -14,37 +14,37 @@
       </el-table-column>
       <el-table-column align="center" label="酒店图片">
         <template scope="scope">
-          <img src="" width="150px">
+          <img :src="scope.row.images " width="150px">
         </template>
       </el-table-column>
       <el-table-column align="center" label="酒店名称">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.hotelName }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="房间数量">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.roomCount }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="酒店地址">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.detailAddress }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="酒店电话">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.hotelPhone }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="酒店评分">
         <template scope="scope">
-          <span>{{scope.row.createTime | formatDateTime}}</span>
+          <span>{{scope.row.grade }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="primary" @click="goRoom">
+          <el-button size="small" type="primary" @click="goRoom(scope.row.id)">
             房间
           </el-button>
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
@@ -68,40 +68,41 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
         <el-form-item label="酒店名称" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.hotelName"></el-input>
         </el-form-item>
         <el-form-item label="酒店电话" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.hotelPhone"></el-input>
         </el-form-item>
         <el-form-item label="酒店城市" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.city"></el-input>
         </el-form-item>
         <el-form-item label="酒店地址" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.detailAddress"></el-input>
         </el-form-item>
         <el-form-item label="酒店评分" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.grade"></el-input>
         </el-form-item>
-        <el-form-item label="预定时间">
+        <el-form-item label="预定时间" class="red-star">
           <el-date-picker
-            v-model="temp.publishTime"
-            type="date"
-            @change="dateChange"
-            placeholder="选择日期"
-            :picker-options="pickerOptions0">
+            v-model="dateRange"
+            @change="dateRangeChange"
+            type="daterange"
+            placeholder="选择日期范围">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="酒店图片">
+        <el-form-item label="酒店图片" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :on-success="handleImgSuccess"
+            :on-remove="handleImgRemove"
             list-type="picture-card"
+            :file-list="showFileList"
             :before-upload="beforeHandleImg">
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="酒店介绍" class="red-star">
-          <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
+          <ckeditor ref="ckeditor" :data="temp.hotelInfo" @getData="getCk"></ckeditor>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -115,7 +116,7 @@
 </template>
 
 <script>
-  import {getTableData, addAnnounce, upadateAnnounce, delAnnounce} from '@/api/community_content'
+  import {getTableData, addHotel, updateHotel} from '@/api/hotel'
   import Ckeditor from '@/components/ckeditor/ckeditor'
 
   const ERR_OK = 0
@@ -129,17 +130,18 @@
           }
         },
         dateRange: null,  // 时间范围
+        showFileList: [], // 展示出来的文件列表
         temp: {           // 弹窗内容数据对象
-          content: null,
-          enable: 1,
+          city: null,
+          detailAddress: null,
+          endReserveTime: null,
+          grade: null,
+          hotelInfo: null,
+          hotelName: null,
+          hotelPhone: null,
           id: null,
-          sort: null,
-          publishTime: '',
-          title: null,
-          url: null,
-//          isPush: 0,
-          imgUrl: null,
-          userName: null
+          images: [],
+          startReserveTime: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -159,34 +161,37 @@
       this.getTableData()
     },
     methods: {
-      dateChange(val) {
-        if (!val) {
-          this.temp.publishTime = 0
-          return
-        }
-        this.temp.publishTime = new Date(val).getTime()
+      dateRangeChange() {      // 获取时间范围
+        this.temp.startReserveTime = new Date(this.dateRange[0]).getTime()
+        this.temp.endReserveTime = new Date(this.dateRange[1]).getTime()
       },
-      beforeHandleImg(file) {      // 头像上传前
+      beforeHandleImg(file) {      // 图片上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {
-          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
+          this.$message.error('上传图片必须是 JPG,JPEG,PNG 格式!')
         }
         return isJPG
       },
-      handleImgSuccess(res, file) {      // 图片上传成功后
+      handleImgSuccess(res, file, fileList) {      // 图片上传成功后
         if (res.code === 0) {
           this.$message.success('上传成功')
-          this.temp.imgUrl = res.data
+          this.imgList = fileList
+          console.log('imgList', this.imgList)
         } else {
           this.$message.error('上传失败，请重试')
         }
       },
-      goRoom() {
-        this.$router.push('/goods/room')
+      // 删除图像
+      handleImgRemove(file, fileList) {
+        this.imgList = fileList
+        console.log('imgList', this.imgList)
+      },
+      goRoom(id) {
+        this.$router.push({path: '/goods/room', query: {id}})
       },
       getTableData() {
         this.loading = true
-        getTableData('/community/announcement/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/hotels', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -205,8 +210,14 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
-        row.publishTime == 0 && (row.publishTime = '')
         this.temp = Object.assign(this.temp, row)   // 赋值
+        this.temp.images = [this.temp.images]
+        this.temp.images.forEach((item, index) => {  // 图片列表
+          this.showFileList.push({
+            name: index,
+            url: item
+          })
+        })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -214,28 +225,37 @@
         })
       },
       resetTemp() {   // 重置弹出表格
+        this.dateRange = null  // 时间范围
+        this.showFileList = []
         this.temp = {      // 清空内容数据对象
-          content: null,
-          enable: 1,
+          city: null,
+          detailAddress: null,
+          endReserveTime: null,
+          grade: null,
+          hotelInfo: null,
+          hotelName: null,
+          hotelPhone: null,
           id: null,
-          sort: null,
-          publishTime: '',
-          title: null,
-          url: null,
-          imgUrl: null,
-          userName: null
+          images: [],
+          startReserveTime: null
         }
       },
       getCk(val) {
-        this.temp.content = val
+        this.temp.hotelInfo = val
       },
       getContent() {  // 获取editor组件的内容
         this.$refs.ckeditor.getData()
       },
       create() {    // 创建新功能
         this.getContent()
-        console.log(JSON.stringify(this.temp))
-        addAnnounce(this.temp).then(res => {
+        if (this.imgList.length > 0) {
+          this.imgList.forEach(item => {
+            this.temp.images.push(item.response.data)
+          })
+        } else {
+          this.$message.error('请选择图片')
+        }
+        addHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -262,21 +282,23 @@
       },
       update() {  // 确认编辑此条信息
         this.getContent()
-        upadateAnnounce(this.temp).then(res => {
+        if (this.imgList.length > 0) {
+          this.imgList.forEach(item => {
+            if (item.response.data) {
+              this.temp.images.push(item.response.data)
+            } else {
+              this.temp.images.push(item.url) // 编辑时候的图片
+            }
+          })
+        } else {
+          this.$message.error('请选择图片')
+        }
+        updateHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('修改成功')
           }
-        })
-      }
-    },
-    watch: {
-      'temp.sort'(newVal, oldVal) {
-        (newVal || newVal == 0) && (newVal = newVal.toString())
-        this.$nextTick(() => {
-          this.temp.sort = newVal.replace(/\D+/, '')
-          console.log(this.temp.sort)
         })
       }
     },
