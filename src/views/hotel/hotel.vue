@@ -176,7 +176,6 @@
         if (res.code === 0) {
           this.$message.success('上传成功')
           this.imgList = fileList
-          console.log('imgList', this.imgList)
         } else {
           this.$message.error('上传失败，请重试')
         }
@@ -254,6 +253,7 @@
           })
         } else {
           this.$message.error('请选择图片')
+          return
         }
         addHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {
@@ -292,6 +292,7 @@
           })
         } else {
           this.$message.error('请选择图片')
+          return
         }
         updateHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {

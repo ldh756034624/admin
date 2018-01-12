@@ -14,32 +14,32 @@
       </el-table-column>
       <el-table-column align="center" label="房间名称">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.roomName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="床类型">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.bedSize}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="门市价">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.originalPrice}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="价格">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.realPrice}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="是否含早">
         <template scope="scope">
-          <span>{{scope.row.createTime | formatDateTime}}</span>
+          <span>{{scope.row.include}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.status}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -66,22 +66,24 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
         <el-form-item label="酒店名称" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <span>{{temp.hotelName}}</span>
         </el-form-item>
         <el-form-item label="房间名称" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.roomName"></el-input>
         </el-form-item>
         <el-form-item label="床型" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.bedSize"></el-input>
         </el-form-item>
         <el-form-item label="是否含早" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.include"></el-input>
         </el-form-item>
-        <el-form-item label="房间图片">
+        <el-form-item label="房间图片" class="red-star">
           <el-upload
             :action="IMGUP_API"
             :on-success="handleImgSuccess"
+            :on-remove="handleImgRemove"
             list-type="picture-card"
+            :file-list="showFileList"
             :before-upload="beforeHandleImg">
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -111,6 +113,7 @@
   export default {
     data() {
       return {
+        showFileList: [], // 展示出来的文件列表
         loading: false,
         pickerOptions0: {
           disabledDate(time) {
@@ -119,16 +122,15 @@
         },
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          content: null,
-          enable: 1,
+          bedSize: null,
+          hotelId: null,
           id: null,
-          sort: null,
-          publishTime: '',
-          title: null,
-          url: null,
-//          isPush: 0,
-          imgUrl: null,
-          userName: null
+          image: null,
+          include: null,
+          originalPrice: null,
+          realPrice: null,
+          roomName: null,
+          typeName: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -136,7 +138,8 @@
         dialogStatus: '',
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
-          pageSize: 20
+          pageSize: 20,
+          hotelId: this.$route.query.id // 酒店id
         },
         textMap: {
           update: '编辑',
@@ -162,13 +165,18 @@
         }
         return isJPG
       },
-      handleImgSuccess(res, file) {      // 图片上传成功后
+      handleImgSuccess(res, file, fileList) {      // 图片上传成功后
         if (res.code === 0) {
           this.$message.success('上传成功')
-          this.temp.imgUrl = res.data
+          this.imgList = fileList
         } else {
           this.$message.error('上传失败，请重试')
         }
+      },
+      // 删除图像
+      handleImgRemove(file, fileList) {
+        this.imgList = fileList
+        console.log('imgList', this.imgList)
       },
       actionArtAssort(row) {  // 启用禁用
         console.log()
@@ -182,7 +190,7 @@
       },
       getTableData() {
         this.loading = true
-        getTableData('/community/announcement/page', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/hotel/rooms', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -201,7 +209,12 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
-        row.publishTime == 0 && (row.publishTime = '')
+        this.temp.images.forEach((item, index) => {  // 图片列表
+          this.showFileList.push({
+            name: index,
+            url: item
+          })
+        })
         this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -211,15 +224,15 @@
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          content: null,
-          enable: 1,
+          bedSize: null,
+          hotelId: null,
           id: null,
-          sort: null,
-          publishTime: '',
-          title: null,
-          url: null,
-          imgUrl: null,
-          userName: null
+          image: null,
+          include: null,
+          originalPrice: null,
+          realPrice: null,
+          roomName: null,
+          typeName: null
         }
       },
       getCk(val) {
@@ -230,6 +243,14 @@
       },
       create() {    // 创建新功能
         this.getContent()
+        if (this.imgList.length > 0) {
+          this.imgList.forEach(item => {
+            this.temp.images.push(item.response.data)
+          })
+        } else {
+          this.$message.error('请选择图片')
+          return
+        }
         console.log(JSON.stringify(this.temp))
         addAnnounce(this.temp).then(res => {
           if (res.code === ERR_OK) {
@@ -258,6 +279,18 @@
       },
       update() {  // 确认编辑此条信息
         this.getContent()
+        if (this.imgList.length > 0) {
+          this.imgList.forEach(item => {
+            if (item.response.data) {
+              this.temp.images.push(item.response.data)
+            } else {
+              this.temp.images.push(item.url) // 编辑时候的图片
+            }
+          })
+        } else {
+          this.$message.error('请选择图片')
+          return
+        }
         upadateAnnounce(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
