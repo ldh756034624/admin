@@ -45,6 +45,9 @@ const userInfo = _import('finance/user_info')
 const moneyDetail = _import('finance/money_detail')
 const vExchange = _import('finance/v_exchange')
 const vDetail = _import('finance/v_detail')
+const recharge = _import('finance/recharge')
+const rDetail = _import('finance/r_detail')
+const rechargeAdd = _import('finance/recharge_add')
 
 /*基础设置*/
 const accountBlacklist = _import('base/account_blacklist')
@@ -98,7 +101,7 @@ export const asyncRouterMap = [
     meta_name: 'Activity',
     icon: 'zujian',
     children: [
-      {path: 'activityList', component: activityList, name: '活动列表', meta_name: 'activityList'},
+      {path: 'activityList', component: activityList, name: '活动列表', meta_name: 'activityList', hidden: true},
       {path: 'hongbao', component: hongbao, name: '抢红包', meta_name: 'hongbao'},
       {path: 'hongbaoPeople', component: hongbaoPeople, name: '参与列表', meta_name: 'hongbaoPeople', hidden: true}
     ]
@@ -143,6 +146,9 @@ export const asyncRouterMap = [
     children: [
       {path: 'customer', component: customer, name: '用户管理', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
+      {path: 'recharge', component: recharge, name: '充值管理', meta_name: 'recharge'},
+      {path: 'rechargeAdd', component: rechargeAdd, name: '导入充值', meta_name: 'rechargeAdd', hidden: true},
+      {path: 'rDetail', component: rDetail, name: '充值明细', meta_name: 'rDetail', hidden: true},
       {path: 'transfer', component: transfer, name: '小品会', meta_name: 'transfer'},
       {path: 'vExchange', component: vExchange, name: 'V币兑换', meta_name: 'vExchange'},
       {path: 'transfered', component: transfered, name: '已操作转账', meta_name: 'transfered', hidden: true},

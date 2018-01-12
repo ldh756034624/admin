@@ -29,3 +29,19 @@ export function retransfer(id) {    // 重新转账
     method: 'put'
   })
 }
+
+export function batchImport(data) {    // 导入批次
+  return fetch({
+    url: `/batch/import`,
+    method: 'POST',
+    data
+  })
+}
+
+export function batchRecharge(data) {    // 转账
+  return fetch({
+    url: `/batch/recharge`,
+    method: 'POST',
+    data
+  })
+}
