@@ -112,7 +112,8 @@
       ondown () {
         getTableData('/batch/template').then(res => {   // 获取tableData数据
           if (res.code === 0) {
-            window.open(res.msg)
+            // const newTab = window.open('about:blank')
+            window.location.href = res.msg
           }
         })
       }
