@@ -120,11 +120,11 @@
     },
     methods: {
       beforeHandleImg(file) {      // 头像上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
-        if (!isJPG) {
-          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
-        }
-        return isJPG
+//        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+//        if (!isJPG) {
+//          this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
+//        }
+        return true
       },
       handleImgSuccess(res, file) {      // 图片上传成功后
         if (res.code === 0) {
