@@ -38,7 +38,7 @@
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="订单编号">
         <template scope="scope">
-          <span>{{scope.row.id || '无'}}</span>
+          <span>{{scope.row.no || '无'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="商品名称">
