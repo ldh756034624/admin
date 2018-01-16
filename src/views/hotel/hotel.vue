@@ -14,7 +14,7 @@
       </el-table-column>
       <el-table-column align="center" label="酒店图片">
         <template scope="scope">
-          <img :src="scope.row.images " width="150px">
+          <img :src="item" width="150px" v-for="item in scope.row.images">
         </template>
       </el-table-column>
       <el-table-column align="center" label="酒店名称">
@@ -83,12 +83,25 @@
           <el-input class="w30" v-model="temp.grade"></el-input>
         </el-form-item>
         <el-form-item label="预定时间" class="red-star">
-          <el-date-picker
-            v-model="dateRange"
-            @change="dateRangeChange"
-            type="daterange"
-            placeholder="选择日期范围">
-          </el-date-picker>
+          <el-time-select
+            placeholder="起始时间"
+            v-model="temp.startReserveTime"
+            :picker-options="{
+             start: '00:00',
+            step: '00:15',
+            end: '23:59'
+            }">
+          </el-time-select>
+          <el-time-select
+            placeholder="结束时间"
+            v-model="temp.endReserveTime"
+            :picker-options="{
+            start: '00:00',
+            step: '00:15',
+            end: '23:59',
+            minTime: temp.startReserveTime
+            }">
+          </el-time-select>
         </el-form-item>
         <el-form-item label="酒店图片" class="red-star">
           <el-upload
@@ -116,7 +129,7 @@
 </template>
 
 <script>
-  import {getTableData, addHotel, updateHotel} from '@/api/hotel'
+  import {getTableData, addHotel, updateHotel, changeHotelStatus} from '@/api/hotel'
   import Ckeditor from '@/components/ckeditor/ckeditor'
 
   const ERR_OK = 0
@@ -124,12 +137,7 @@
     data() {
       return {
         loading: false,
-        pickerOptions0: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7;
-          }
-        },
-        dateRange: null,  // 时间范围
+        bookTime: null,  // 预定时间范围
         showFileList: [], // 展示出来的文件列表
         temp: {           // 弹窗内容数据对象
           city: null,
@@ -161,10 +169,6 @@
       this.getTableData()
     },
     methods: {
-      dateRangeChange() {      // 获取时间范围
-        this.temp.startReserveTime = new Date(this.dateRange[0]).getTime()
-        this.temp.endReserveTime = new Date(this.dateRange[1]).getTime()
-      },
       beforeHandleImg(file) {      // 图片上传前
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
         if (!isJPG) {
@@ -210,7 +214,6 @@
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
         this.temp = Object.assign(this.temp, row)   // 赋值
-        this.temp.images = [this.temp.images]
         this.temp.images.forEach((item, index) => {  // 图片列表
           this.showFileList.push({
             name: index,
@@ -247,7 +250,7 @@
       },
       create() {    // 创建新功能
         this.getContent()
-        if (this.imgList.length > 0) {
+        if (this.imgList && this.imgList.length > 0) {
           this.imgList.forEach(item => {
             this.temp.images.push(item.response.data)
           })
@@ -263,13 +266,13 @@
           }
         })
       },
-      handleDel(id) { // 删除公告
+      handleDel(hotelId, status) { // 更改状态
         this.$confirm(`确定删除?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delAnnounce(id).then(res => {
+          changeHotelStatus({hotelId, status}).then(res => {
             if (res.code === ERR_OK) {
               this.$message({
                 type: 'success',
@@ -282,17 +285,14 @@
       },
       update() {  // 确认编辑此条信息
         this.getContent()
-        if (this.imgList.length > 0) {
+        if (this.imgList && this.imgList.length > 0) {
           this.imgList.forEach(item => {
-            if (item.response.data) {
+            if (item.response) {
               this.temp.images.push(item.response.data)
             } else {
               this.temp.images.push(item.url) // 编辑时候的图片
             }
           })
-        } else {
-          this.$message.error('请选择图片')
-          return
         }
         updateHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {

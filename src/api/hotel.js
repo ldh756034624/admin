@@ -23,3 +23,11 @@ export function updateHotel(data) {    // 编辑酒店
     data
   })
 }
+
+export function changeHotelStatus(data) {    // 修改酒店状态
+  return fetch({
+    url: '/hotel/status',
+    method: 'put',
+    data
+  })
+}
