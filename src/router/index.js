@@ -28,6 +28,8 @@ const articleAssort = _import('community/article_assort')
 const articleList = _import('community/article_list')
 const announceList = _import('community/announce_list')
 const singlePage = _import('community/single_page')
+const feedback = _import('community/feedback')
+const sign = _import('community/sign')
 
 /*商品管理*/
 const hotel = _import('hotel/hotel')
@@ -123,7 +125,9 @@ export const asyncRouterMap = [
       {path: 'article_assort', component: articleAssort, name: '文章分类', meta_name: 'articleAssort', hidden: true},
       {path: 'article_list', component: articleList, name: '文章', meta_name: 'articleList'},
       {path: 'announce_list', component: announceList, name: '公告', meta_name: 'announceList'},
-      {path: 'single_page', component: singlePage, name: '单网页', meta_name: 'singlePage'}
+      {path: 'single_page', component: singlePage, name: '单网页', meta_name: 'singlePage'},
+      {path: 'sign', component: sign, name: '签到', meta_name: 'sign'},
+      {path: 'feedback', component: feedback, name: '反馈', meta_name: 'feedback'}
     ]
   },
   {
