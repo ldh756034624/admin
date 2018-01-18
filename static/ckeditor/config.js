@@ -8,6 +8,6 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
   // 图片上传
-  config.filebrowserImageUploadUrl = "https://console-test-h9.thy360.com/h9/admin/common/file/ckeditor/upload"
+  config.filebrowserImageUploadUrl = "https://console-testnew-h9.thy360.com/h9/admin/common/file/ckeditor/upload"
   config.image_previewText=' '; //预览区域显示内容
 };
