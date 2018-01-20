@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增酒店
       </el-button>
     </div>
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
@@ -49,7 +49,8 @@
           </el-button>
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
+          <el-button size="small" :type="scope.row.status == 0 ? 'success' : 'warning'" @click="handleDel(scope.row.id,scope.row.status)">
+              {{scope.row.status == 0 ? '启用' : '禁用'}}
           </el-button>
         </template>
       </el-table-column>
@@ -151,6 +152,7 @@
           images: [],
           startReserveTime: null
         },
+        imgList:[], //上传图片张数
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
@@ -170,7 +172,12 @@
     },
     methods: {
       beforeHandleImg(file) {      // 图片上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+        let isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+        if(this.imgList.length>8){
+          this.$message.warning("图片最多可上传8张")
+          isJPG = false
+          return isJPG
+        }
         if (!isJPG) {
           this.$message.error('上传图片必须是 JPG,JPEG,PNG 格式!')
         }
@@ -184,12 +191,13 @@
           this.$message.error('上传失败，请重试')
         }
       },
+     
       // 删除图像
       handleImgRemove(file, fileList) {
         this.imgList = fileList
-        console.log('imgList', this.imgList)
       },
       goRoom(id) {
+        console.log(id)
         this.$router.push({path: '/goods/room', query: {id}})
       },
       getTableData() {
@@ -233,7 +241,7 @@
           city: null,
           detailAddress: null,
           endReserveTime: null,
-          grade: null,
+          grade: 5,
           hotelInfo: null,
           hotelName: null,
           hotelPhone: null,
@@ -267,7 +275,12 @@
         })
       },
       handleDel(hotelId, status) { // 更改状态
-        this.$confirm(`确定删除?`, '提示', {
+        if(status === 1){
+            status = 0
+          }else{
+            status = 1
+          }
+        this.$confirm(status==0?`确定禁用?`:`确定启用?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -286,6 +299,7 @@
       update() {  // 确认编辑此条信息
         this.getContent()
         if (this.imgList && this.imgList.length > 0) {
+          this.temp.images = []
           this.imgList.forEach(item => {
             if (item.response) {
               this.temp.images.push(item.response.data)

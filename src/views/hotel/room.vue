@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
+      <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增房间
       </el-button>
     </div>
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
@@ -46,8 +46,8 @@
         <template scope="scope">
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button size="small" :type="scope.row.enable == 0 ? 'success' : 'warning'"
-                     @click="handleEnable(scope.row)">{{scope.row.enable == 0 ? '启用' : '禁用'}}
+          <el-button size="small" :type="scope.row.status == 0 ? 'success' : 'warning'"
+                     @click="handleEnable(scope.row.id,scope.row.status)">{{scope.row.status == 0 ? '启用' : '禁用'}}
           </el-button>
         </template>
       </el-table-column>
@@ -106,9 +106,7 @@
 </template>
 
 <script>
-  import {getTableData, addAnnounce, upadateAnnounce, delAnnounce} from '@/api/community_content'
-  import Ckeditor from '@/components/ckeditor/ckeditor'
-
+  import { changeRoomaStatus, getTableData } from '@/api/hotel'
   const ERR_OK = 0
   export default {
     data() {
@@ -125,7 +123,7 @@
           bedSize: null,
           hotelId: null,
           id: null,
-          image: null,
+          images: [],
           include: null,
           originalPrice: null,
           realPrice: null,
@@ -179,7 +177,6 @@
         console.log('imgList', this.imgList)
       },
       actionArtAssort(row) {  // 启用禁用
-        console.log()
         row.enable === 0 ? row.enable = 1 : row.enable = 0
         upadateAnnounce(row).then(res => {
           if (res.code === ERR_OK) {
@@ -203,9 +200,6 @@
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs.ckeditor.clearData()
-        })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
@@ -218,16 +212,13 @@
         this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs.ckeditor.setData()
-        })
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
           bedSize: null,
           hotelId: null,
           id: null,
-          image: null,
+          images: [],
           include: null,
           originalPrice: null,
           realPrice: null,
@@ -238,13 +229,11 @@
       getCk(val) {
         this.temp.content = val
       },
-      getContent() {  // 获取editor组件的内容
-        this.$refs.ckeditor.getData()
-      },
       create() {    // 创建新功能
-        this.getContent()
-        if (this.imgList.length > 0) {
+        if (this.imgList && this.imgList.length > 0) {
+
           this.imgList.forEach(item => {
+             console.log(item.response.data)
             this.temp.images.push(item.response.data)
           })
         } else {
@@ -260,13 +249,19 @@
           }
         })
       },
-      handleDel(id) { // 删除公告
-        this.$confirm(`确定删除?`, '提示', {
+      handleEnable(roomId,status) { // 禁用公告
+        let hotelId = this.$route.query.id
+        if(status === 1){
+          status = 0
+        }else{
+          status = 1
+        }
+        this.$confirm(status==0?`确定禁用?`:`确定启用?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delAnnounce(id).then(res => {
+          changeRoomaStatus({hotelId, roomId, status}).then(res => {
             if (res.code === ERR_OK) {
               this.$message({
                 type: 'success',
@@ -278,7 +273,6 @@
         })
       },
       update() {  // 确认编辑此条信息
-        this.getContent()
         if (this.imgList.length > 0) {
           this.imgList.forEach(item => {
             if (item.response.data) {
@@ -310,7 +304,6 @@
       }
     },
     components: {
-      Ckeditor
     }
   }
 </script>
