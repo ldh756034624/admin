@@ -9,17 +9,17 @@
               style="width: 100%">
       <el-table-column align="center" label="排序" width="100">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.defaultSort}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="类别名">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态">
+      <el-table-column align="center" label="分类图标">
         <template scope="scope">
-          <img src="" alt="" width="150">
+          <img :src="scope.row.image" alt="" width="150">
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -45,12 +45,12 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="120px">
         <el-form-item label="分类名称" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.name"></el-input>
         </el-form-item>
         <el-form-item label="限制发帖" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">否</el-radio>
+            <el-radio class="radio" v-model="temp.limitState" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.limitState" :label="2">否</el-radio>
             <el-tooltip placement="right" class="el-tooltip">
               <div slot="content">选择是，则该板块只有管理员才能发帖</div>
               <el-button size="small" type="warning" class="el-icon-information"></el-button>
@@ -59,8 +59,8 @@
         </el-form-item>
         <el-form-item label="发帖审核" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">否</el-radio>
+            <el-radio class="radio" v-model="temp.examineState" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.examineState" :label="2">否</el-radio>
             <el-tooltip placement="right" class="el-tooltip">
               <div slot="content">用户发帖后将进入后台审核，管理员审核通过后才能显示</div>
               <el-button size="small" type="warning" class="el-icon-information"></el-button>
@@ -69,8 +69,8 @@
         </el-form-item>
         <el-form-item label="评论审核" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">否</el-radio>
+            <el-radio class="radio" v-model="temp.commentState  " :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.commentState  " :label="2">否</el-radio>
             <el-tooltip placement="right" class="el-tooltip">
               <div slot="content">用户评论后将进入后台审核，管理员审核通过后才能显示</div>
               <el-button size="small" type="warning" class="el-icon-information"></el-button>
@@ -79,18 +79,12 @@
         </el-form-item>
         <el-form-item label="是否允许评论" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.recommend" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">否</el-radio>
+            <el-radio class="radio" v-model="temp.admitsState" :label="1">是</el-radio>
+            <el-radio class="radio" v-model="temp.admitsState" :label="2">否</el-radio>
           </div>
         </el-form-item>
         <el-form-item label="版块介绍" class="red-star">
-          <el-input class="w30" type="textarea" rows="5" v-model="temp.title"></el-input>
-        </el-form-item>
-        <el-form-item label="启用" class="red-star">
-          <div class="checkitem">
-            <el-radio class="radio" v-model="temp.enable" :label="1">是</el-radio>
-            <el-radio class="radio" v-model="temp.enable" :label="0">否</el-radio>
-          </div>
+          <el-input class="w30" type="textarea" :rows=5 v-model="temp.content"></el-input>
         </el-form-item>
         <el-form-item label="板块图标">
           <el-upload
@@ -99,19 +93,19 @@
             :on-success="handleImgSuccess"
             list-type="picture-card"
             :before-upload="beforeHandleImg">
-            <img v-if="temp.imgUrl" :src="temp.imgUrl" class="avatar" width="148" height="148">
+            <img v-if="temp.image" :src="temp.image" class="avatar" width="148" height="148">
             <i v-else class="avatar-uploader-icon el-icon-plus"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="顺序" class="red-star">
-          <el-input class="w30" v-model="temp.userName"></el-input>
+          <el-input class="w30" v-model="temp.sort"></el-input>
         </el-form-item>
         <el-form-item label="默认排序" class="red-star">
           <div class="checkitem">
-            <el-radio class="radio" v-model="temp.recommend" :label="1">回复数</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">浏览数</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">最新发表</el-radio>
-            <el-radio class="radio" v-model="temp.recommend" :label="2">最后回复</el-radio>
+            <el-radio class="radio" v-model="temp.defaultSort" :label="1">回复数</el-radio>
+            <el-radio class="radio" v-model="temp.defaultSort" :label="2">浏览数</el-radio>
+            <el-radio class="radio" v-model="temp.defaultSort" :label="3">最新发表</el-radio>
+            <el-radio class="radio" v-model="temp.defaultSort" :label="4">最后回复</el-radio>
             <el-tooltip placement="right" class="el-tooltip">
               <div slot="content">
                 回复数：回复数最多的帖子排在最前面 <br>
@@ -135,10 +129,8 @@
 </template>
 
 <script>
-  import {getTableData, addArt, upadateArt, delArt} from '@/api/community_content'
+  import {getTableData, addPostAssort, delPostAssort, upadatePostAssort} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
-
-  import Ckeditor from '@/components/ckeditor/ckeditor'
 
   const ERR_OK = 0
   export default {
@@ -154,18 +146,15 @@
         enable: '1',
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
-          id: null,
-          recommend: 1,
-          sort: null,
-          startTime: '',
-          title: null,
-          url: null,
-          isPush: 0,
-          imgUrl: null,
-          userName: null
+          admitsState: 1,
+          commentState: 2,
+          content: "",
+          defaultSort: null,
+          examineState: 2,
+          image: null,
+          limitState: 2,
+          name: "",
+          sort: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -207,20 +196,10 @@
       handleImgSuccess(res, file) {      // 图片上传成功后
         if (res.code === 0) {
           this.$message.success('上传成功')
-          this.temp.imgUrl = res.data
+          this.temp.image = res.data
         } else {
           this.$message.error('上传失败，请重试')
         }
-      },
-      actionArtAssort(row) {  // 启用禁用
-        row.enable === 0 ? row.enable = 1 : row.enable = 0
-        row.articleTypeId = row.articleType.id
-        upadateArt(row).then(res => {
-          if (res.code === ERR_OK) {
-            this.getTableData()
-            this.$message.success('操作成功')
-          }
-        })
       },
       getArtType() {  // 获取文章所有类别
         let data = {
@@ -244,7 +223,7 @@
       },
       getTableData() {
         this.loading = true
-        getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/stick/types', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -257,50 +236,31 @@
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs.ckeditor.clearData()
-        })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
-        row.startTime == 0 && (row.startTime = '')
-        this.temp = Object.assign(this.temp, row)   // 赋值
-        this.temp.articleTypeId = row.articleType.id
-        if (row.url) {
-          this.temp.isPush = 1
-        }
+        this.temp = Object.assign(this.temp, row)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs.ckeditor.setData()
-        })
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
-          id: null,
-          recommend: 1,
-          sort: null,
-          startTime: '',
-          title: null,
-          url: null,
-          isPush: 0,
-          imgUrl: null,
-          userName: null
+          admitsState: 1,
+          commentState: 2,
+          content: "",
+          defaultSort: null,
+          examineState: 2,
+          image: null,
+          limitState: 2,
+          name: "",
+          sort: null
         }
       },
       getCk(val) {
         this.temp.content = val
       },
-      getContent() {  // 获取editor组件的内容
-        this.$refs.ckeditor.getData()
-      },
       create() {    // 创建新功能
-        this.getContent()
-        this.temp.isPush == false && delete this.temp.url
-        addArt(this.temp).then(res => {
+        addPostAssort(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -309,9 +269,8 @@
         })
       },
       update() {  // 确认编辑此条信息
-        this.getContent()
-        this.temp.isPush == false && delete this.temp.url
-        upadateArt(this.temp).then(res => {
+        upadatePostAssort(this.temp).then(res => {
+          console.log(this.temp)
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -319,13 +278,13 @@
           }
         })
       },
-      handleDel(id) { //删除
+      handleDel(stickTypeId) { //删除
         this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delArt(id).then(res => {
+          delPostAssort({stickTypeId}).then(res => {
             if (res.code === ERR_OK) {
               this.$message({
                 type: 'success',
@@ -344,9 +303,6 @@
           this.temp.sort = newVal.replace(/\D+/, '')
         })
       }
-    },
-    components: {
-      Ckeditor
     }
   }
 </script>

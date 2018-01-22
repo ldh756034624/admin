@@ -193,9 +193,49 @@ export function changeCommentStatus(data) {    // 改变评论状态
   })
 }
 
+export function addPost(data) {     //添加帖子
+  return fetch({
+    url: 'stick/addStick',
+    method: 'post',
+    data
+  })
+}
+
 export function delComment(data) { // 删除评论
   return fetch({
     url: '/stick/deleteComment',
+    method: 'post',
+    data
+  })
+}
+
+export function delPost(params) {     // 删除帖子
+  return fetch({
+    url: '/stick/delete',
+    method: 'post',
+    params
+  })
+}
+
+export function addPostAssort(data) {  //添加分类
+  return fetch({
+    url: 'stick/type',
+    method: "post",
+    data
+  })
+}
+
+export function delPostAssort(params) {  //删除分类
+  return fetch({
+    url: 'stick/typeState',
+    method: 'post',
+    params
+  })
+}
+
+export function upadatePostAssort(data) {
+  return fetch({
+    url: 'stick/updateType',
     method: 'post',
     data
   })
