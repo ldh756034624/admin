@@ -5,7 +5,7 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">帖子发布
       </el-button>
       <router-link to="/community/postAssort">
-        <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="menu">分类管理</el-button>
+        <el-button class="filter-item" type="primary" style="margin-left:10px" icon="menu">分类管理</el-button>
       </router-link>
     </div>
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
@@ -16,7 +16,7 @@
       </el-table-column>
       <el-table-column align="center" label="发布者">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.nickName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="标题">
@@ -26,27 +26,27 @@
       </el-table-column>
       <el-table-column align="center" label="分类">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.stickTypeName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="发帖时间">
         <template scope="scope">
-          <span>{{scope.row.createTime | formatDateTime}}</span>
+          <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="IP">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.ip}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="赞赏人数/金额">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <a class="blue" :href="scope.row.url || scope.row.jointUrl">{{scope.row.rewardCount}} / {{scope.row.rewardMoney}}</a>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.state === 1 ? "使用" : (scope.row.state === 2 ? "禁用" : "删除" ) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -78,13 +78,13 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
         <el-form-item label="帖子标题" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.title" placeholder="请输入帖子标题"></el-input>
         </el-form-item>
         <el-form-item label="马甲发布" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.userId" placeholder="请输入用户ID"></el-input>
         </el-form-item>
         <el-form-item label="选择分类" prop="fontColor" class="red-star">
-          <el-select v-model="temp.articleTypeId" placeholder="请选择">
+          <el-select v-model="temp.typeId" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-  import {getTableData, addArt, upadateArt, delArt} from '@/api/community_content'
+  import {getTableData, addPost, delPost } from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   import Ckeditor from '@/components/ckeditor/ckeditor'
@@ -122,18 +122,10 @@
         enable: '1',
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          articleTypeId: null,
-          content: null,
-          enable: 1,
-          id: null,
-          recommend: 1,
-          sort: null,
-          startTime: '',
+          content: "null",
           title: null,
-          url: null,
-          isPush: 0,
-          imgUrl: null,
-          userName: null
+          typeId: null,
+          userId: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -195,7 +187,7 @@
           pageNumber: 1,
           pageSize: 100
         }
-        getTableData('/article/category/list', data).then(res => {
+        getTableData('/stick/types', data).then(res => {
           if (res.code === 0) {
             res.data.data.forEach(item => {
               let tmp = {
@@ -212,7 +204,7 @@
       },
       getTableData() {
         this.loading = true
-        getTableData('/article/list', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/stick/allDetail', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
@@ -245,18 +237,10 @@
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
-          articleTypeId: null,
           content: null,
-          enable: 1,
-          id: null,
-          recommend: 1,
-          sort: null,
-          startTime: '',
           title: null,
-          url: null,
-          isPush: 0,
-          imgUrl: null,
-          userName: null
+          typeId: null,
+          userId: null
         }
       },
       getCk(val) {
@@ -267,8 +251,7 @@
       },
       create() {    // 创建新功能
         this.getContent()
-        this.temp.isPush == false && delete this.temp.url
-        addArt(this.temp).then(res => {
+        addPost(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -287,13 +270,13 @@
           }
         })
       },
-      handleDel(id) { //删除
+      handleDel(stickId) { //删除
         this.$confirm('此操作将永久删除该条, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delArt(id).then(res => {
+          delPost({stickId}).then(res => {
             if (res.code === ERR_OK) {
               this.$message({
                 type: 'success',
