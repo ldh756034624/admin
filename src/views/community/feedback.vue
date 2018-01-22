@@ -14,7 +14,7 @@
       </el-table-column>
       <el-table-column align="center" label="分类">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">

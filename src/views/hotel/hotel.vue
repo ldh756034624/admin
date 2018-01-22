@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="primary" @click="goRoom(scope.row.id)">
+          <el-button size="small" type="primary" @click="goRoom(scope.row.id,scope.row.hotelName)">
             房间
           </el-button>
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
@@ -88,7 +88,7 @@
             placeholder="起始时间"
             v-model="temp.startReserveTime"
             :picker-options="{
-             start: '00:00',
+            start: '08:00',
             step: '00:15',
             end: '23:59'
             }">
@@ -173,7 +173,7 @@
     methods: {
       beforeHandleImg(file) {      // 图片上传前
         let isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
-        if(this.imgList.length>8){
+        if(this.imgList.length > 8){
           this.$message.warning("图片最多可上传8张")
           isJPG = false
           return isJPG
@@ -196,9 +196,8 @@
       handleImgRemove(file, fileList) {
         this.imgList = fileList
       },
-      goRoom(id) {
-        console.log(id)
-        this.$router.push({path: '/goods/room', query: {id}})
+      goRoom(id, hotelName) {
+        this.$router.push({path: '/goods/room', query: {id, hotelName}})
       },
       getTableData() {
         this.loading = true
@@ -266,6 +265,10 @@
           this.$message.error('请选择图片')
           return
         }
+        if (this.temp.grade > 5){
+          this.$message.error('酒店评分不能大于5')
+          return
+        }
         addHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
@@ -307,6 +310,10 @@
               this.temp.images.push(item.url) // 编辑时候的图片
             }
           })
+        }
+        if (this.temp.grade > 5){
+          this.$message.error('酒店评分不能大于5')
+          return
         }
         updateHotel(this.temp).then(res => {
           if (res.code === ERR_OK) {

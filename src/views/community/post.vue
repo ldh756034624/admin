@@ -55,11 +55,11 @@
           </el-button>
           <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
           </el-button>
-          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">评论
+          <el-button size="small" type="primary" @click="handleDel(scope.row.id)">评论
           </el-button>
-          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">通过/不通过
+          <el-button size="small" type="success" @click="handleDel(scope.row.id)">通过/不通过
           </el-button>
-          <el-button size="small" type="danger" @click="handleDel(scope.row.id)">锁住
+          <el-button size="small"  @click="handleDel(scope.row.id)">锁住
           </el-button>
         </template>
       </el-table-column>
