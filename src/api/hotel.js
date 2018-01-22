@@ -32,6 +32,22 @@ export function changeHotelStatus(data) {    // 修改酒店状态
   })
 }
 
+export function addRoom(data) {       //添加酒店房间
+  return fetch({
+    url: '/hotel/room',
+    method: 'put',
+    data
+  })
+}
+
+export function upadateRoom(data) {    //编辑房间
+  return fetch({
+    url: '/hotel/room',
+    method: "put",
+    data
+  })
+}
+
 export function changeRoomaStatus(data) {   //修改房间状态
   return fetch({
     url: '/hotel/room/status',

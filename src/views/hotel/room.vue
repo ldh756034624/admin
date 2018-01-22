@@ -89,10 +89,10 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="市场价" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.originalPrice"></el-input>
         </el-form-item>
         <el-form-item label="专享价" class="red-star">
-          <el-input class="w30" v-model="temp.title"></el-input>
+          <el-input class="w30" v-model="temp.realPrice"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-  import { changeRoomaStatus, getTableData } from '@/api/hotel'
+  import { changeRoomaStatus, getTableData,addRoom, upadateRoom } from '@/api/hotel'
   const ERR_OK = 0
   export default {
     data() {
@@ -118,10 +118,9 @@
             return time.getTime() < Date.now() - 8.64e7;
           }
         },
-        dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
           bedSize: null,
-          hotelId: null,
+          hotelId: this.$route.query.id,
           id: null,
           images: [],
           include: null,
@@ -130,6 +129,7 @@
           roomName: null,
           typeName: null
         },
+        imgList:[], //上传图片张数
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
@@ -157,7 +157,12 @@
         this.temp.publishTime = new Date(val).getTime()
       },
       beforeHandleImg(file) {      // 头像上传前
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+        let isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+        if(this.imgList.length > 8){
+          this.$message.warning("图片最多可上传8张")
+          isJPG = false
+          return isJPG
+        }
         if (!isJPG) {
           this.$message.error('上传头像图片必须是 JPG,JPEG,PNG 格式!')
         }
@@ -200,9 +205,11 @@
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.temp.hotelName = this.$route.query.hotelName   //获取酒店名
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
+        console.log(this.temp.images)
         this.temp.images.forEach((item, index) => {  // 图片列表
           this.showFileList.push({
             name: index,
@@ -214,9 +221,10 @@
         this.dialogFormVisible = true
       },
       resetTemp() {   // 重置弹出表格
+        this.showFileList = []
         this.temp = {      // 清空内容数据对象
           bedSize: null,
-          hotelId: null,
+          hotelId: this.$route.query.id,
           id: null,
           images: [],
           include: null,
@@ -241,7 +249,7 @@
           return
         }
         console.log(JSON.stringify(this.temp))
-        addAnnounce(this.temp).then(res => {
+        addRoom(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -273,7 +281,8 @@
         })
       },
       update() {  // 确认编辑此条信息
-        if (this.imgList.length > 0) {
+        if (this.imgList && this.imgList.length > 0) {
+          this.temp.images = []
           this.imgList.forEach(item => {
             if (item.response.data) {
               this.temp.images.push(item.response.data)
@@ -285,7 +294,7 @@
           this.$message.error('请选择图片')
           return
         }
-        upadateAnnounce(this.temp).then(res => {
+        upadateRoom(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
