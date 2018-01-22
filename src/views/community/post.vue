@@ -5,10 +5,12 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">帖子发布
       </el-button>
       <router-link to="/community/postAssort">
-        <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="menu">分类管理</el-button>
+        <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="menu">分类管理
+        </el-button>
       </router-link>
     </div>
-    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
+              style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
@@ -41,7 +43,7 @@
       </el-table-column>
       <el-table-column align="center" label="赞赏人数/金额">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span class="blue" @click="handleRewards(scope.row.id)">{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
@@ -55,11 +57,11 @@
           </el-button>
           <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
           </el-button>
-          <el-button size="small" type="primary" @click="handleDel(scope.row.id)">评论
+          <el-button size="small" type="primary" @click="handleComment(scope.row.id)">评论
           </el-button>
           <el-button size="small" type="success" @click="handleDel(scope.row.id)">通过/不通过
           </el-button>
-          <el-button size="small"  @click="handleDel(scope.row.id)">锁住
+          <el-button size="small" @click="handleDel(scope.row.id)">锁住
           </el-button>
         </template>
       </el-table-column>
@@ -303,6 +305,14 @@
             }
           })
         })
+      },
+      // 跳转查看赞赏
+      handleRewards(id) {
+        this.$router.push({path: '/community/rewardList', query: {id}})
+      },
+      // 跳转评论查看
+      handleComment(id) {
+        this.$router.push({path: '/community/comment', query: {id}})
       }
     },
     watch: {
@@ -318,3 +328,10 @@
     }
   }
 </script>
+
+<style scoped lang="less">
+  .blue {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+</style>

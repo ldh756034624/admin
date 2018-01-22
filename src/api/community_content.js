@@ -184,3 +184,19 @@ export function upadateGoodsAssort(data) {    // 编辑商品分类
     data
   })
 }
+
+export function changeCommentStatus(data) {    // 改变评论状态
+  return fetch({
+    url: '/stick/commentState',
+    method: 'post',
+    data
+  })
+}
+
+export function delComment(data) { // 删除评论
+  return fetch({
+    url: '/stick/deleteComment',
+    method: 'post',
+    data
+  })
+}
