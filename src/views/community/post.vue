@@ -5,12 +5,8 @@
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">帖子发布
       </el-button>
       <router-link to="/community/postAssort">
-        <<<<<<< HEAD
         <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="menu">分类管理
         </el-button>
-        =======
-        <el-button class="filter-item" type="primary" style="margin-left:10px" icon="menu">分类管理</el-button>
-        >>>>>>> 301c6f5c1fbdfd81ac4efe50c519eb73f1b013f0
       </router-link>
     </div>
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
@@ -47,8 +43,7 @@
       </el-table-column>
       <el-table-column align="center" label="赞赏人数/金额">
         <template scope="scope">
-          <a class="blue"
-             :href="scope.row.url || scope.row.jointUrl">{{scope.row.rewardCount}} / {{scope.row.rewardMoney}}</a>
+          <span class="blue" @click="handleRewards(scope.row.id)">{{scope.row.rewardCount}} / {{scope.row.rewardMoney}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="状态">
