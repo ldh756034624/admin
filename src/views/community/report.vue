@@ -57,7 +57,7 @@
     methods: {
       getTableData() {
         this.loading = true
-        getTableData('h9/admin/stick/getReport', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('/stick/getReport', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
