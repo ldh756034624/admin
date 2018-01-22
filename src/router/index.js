@@ -32,7 +32,7 @@ const feedback = _import('community/feedback')
 const sign = _import('community/sign')
 const post = _import('community/post')
 const postAssort = _import('community/post_assort')
-
+const report = _import('community/report')
 
 /*商品管理*/
 const hotel = _import('hotel/hotel')
@@ -132,7 +132,8 @@ export const asyncRouterMap = [
       {path: 'post', component: post, name: '帖子管理', meta_name: 'post'},
       {path: 'postAssort', component: postAssort, name: '帖子分类', meta_name: 'postAssort', hidden: true},
       {path: 'sign', component: sign, name: '签到', meta_name: 'sign'},
-      {path: 'feedback', component: feedback, name: '反馈', meta_name: 'feedback'}
+      {path: 'feedback', component: feedback, name: '反馈', meta_name: 'feedback'},
+      {path: 'report', component: report, name: '举报', meta_name: 'report'}
     ]
   },
   {
