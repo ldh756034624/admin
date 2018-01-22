@@ -7,29 +7,29 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="标题">
+      <el-table-column align="center" label="反馈类型">
         <template scope="scope">
-          <a class="blue" :href="scope.row.url || scope.row.jointUrl">{{scope.row.title}}</a>
+          <span>{{scope.row.adviceType}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="分类">
+      <el-table-column align="center" label="内容">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.advice}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态">
+      <el-table-column align="center" label="联系方式">
         <template scope="scope">
-          <span>{{scope.row.enable === 0 ? '禁用' : '启用'}}</span>
+          <span>{{scope.row.connect}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="是否推荐">
+      <el-table-column align="center" label="用户ID" width="100">
         <template scope="scope">
-          <span>{{scope.row.recommend === 1 ? '是' : '否'}}</span>
+          <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="排序" width="100">
+      <el-table-column align="center" label="IP">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.ip}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="时间">
@@ -72,7 +72,7 @@
     methods: {
       getTableData() {
         this.loading = true
-        getTableData('stick/getReport', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('h9/admin/userAdvice', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
