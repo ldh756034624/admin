@@ -7,32 +7,17 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="反馈类型">
+      <el-table-column align="center" label="帖子标题">
         <template scope="scope">
-          <span>{{scope.row.adviceType}}</span>
+          <a class="blue" :href="scope.row.url || scope.row.jointUrl">{{scope.row.title}}</a>
         </template>
       </el-table-column>
       <el-table-column align="center" label="内容">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.content}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="联系方式">
-        <template scope="scope">
-          <span>{{scope.row.connect}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="用户ID" width="100">
-        <template scope="scope">
-          <span>{{scope.row.userId}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="IP">
-        <template scope="scope">
-          <span>{{scope.row.ip}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="时间">
+      <el-table-column align="center" label="举报时间">
         <template scope="scope">
           <span>{{scope.row.createTime | formatDateTime}}</span>
         </template>
@@ -72,7 +57,7 @@
     methods: {
       getTableData() {
         this.loading = true
-        getTableData('h9/admin/userAdvice', this.listQuery).then(res => {   // 获取tableData数据
+        getTableData('h9/admin/stick/getReport', this.listQuery).then(res => {   // 获取tableData数据
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
