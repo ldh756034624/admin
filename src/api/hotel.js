@@ -24,11 +24,11 @@ export function updateHotel(data) {    // 编辑酒店
   })
 }
 
-export function changeHotelStatus(data) {    // 修改酒店状态
+export function changeHotelStatus(params) {    // 修改酒店状态
   return fetch({
     url: '/hotel/status',
     method: 'put',
-    data
+    params
   })
 }
 
@@ -48,11 +48,11 @@ export function upadateRoom(data) {    //编辑房间
   })
 }
 
-export function changeRoomaStatus(data) {   //修改房间状态
+export function changeRoomaStatus(params) {   //修改房间状态
   return fetch({
     url: '/hotel/room/status',
     method: 'put',
-    data
+    params
   })
 }
 
