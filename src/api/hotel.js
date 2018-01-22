@@ -24,18 +24,26 @@ export function updateHotel(data) {    // 编辑酒店
   })
 }
 
-export function changeHotelStatus(params) {    // 修改酒店状态
+export function changeHotelStatus(data) {    // 修改酒店状态
   return fetch({
     url: '/hotel/status',
     method: 'put',
-    params
+    data
   })
 }
 
-export function changeRoomaStatus(params) {   //修改房间状态
+export function changeRoomaStatus(data) {   //修改房间状态
   return fetch({
     url: '/hotel/room/status',
     method: 'put',
-    params
+    data
+  })
+}
+
+export function changeHotelOrder(data) {   //修改订单状态
+  return fetch({
+    url: '/hotel/order/status',
+    method: 'put',
+    data
   })
 }
