@@ -9,7 +9,7 @@
               style="width: 100%">
       <el-table-column align="center" label="排序" width="100">
         <template scope="scope">
-          <span>{{scope.row.defaultSort}}</span>
+          <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="类别名">
@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row)">编辑
+          <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">编辑
           </el-button>
           <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除
           </el-button>
@@ -237,11 +237,25 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleUpdate(row) {   // 点击编辑功能按钮
+      handleUpdate(id) {   // 点击编辑功能按钮
         this.resetTemp()
-        this.temp = Object.assign(this.temp, row)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
+        getTableData('/stick/typeDetail/'+ id).then(res =>{
+          if(res.code === 0){
+            this.temp.admitsState = res.data.admitsState
+            this.temp.commentState = res.data.commentState
+            this.temp.content = res.data.content
+            this.temp.defaultSort = res.data.defaultSort
+            this.temp.examineState = res.data.examineState
+            this.temp.image = res.data.image
+            this.temp.limitState = res.data.limitState
+            this.temp.name = res.data.name
+            this.temp.sort = res.data.sort
+            this.temp.state = res.data.state
+            this.temp.stickTypeId = res.data.id
+          }
+        })
       },
       resetTemp() {   // 重置弹出表格
         this.temp = {      // 清空内容数据对象
@@ -269,8 +283,8 @@
         })
       },
       update() {  // 确认编辑此条信息
+        console.log(this.temp)
         upadatePostAssort(this.temp).then(res => {
-          console.log(this.temp)
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
@@ -296,14 +310,15 @@
         })
       }
     },
-    watch: {
-      'temp.sort'(newVal, oldVal) {
-        (newVal || newVal == 0) && (newVal = newVal.toString())
-        this.$nextTick(() => {
-          this.temp.sort = newVal.replace(/\D+/, '')
-        })
-      }
-    }
+    // watch: {
+    //   'temp.sort'(newVal, oldVal) {
+    //     console.log(newVal,oldVal)
+    //     (newVal || newVal == 0) && (newVal = newVal.toString())
+    //     this.$nextTick(() => {
+    //       this.temp.sort = newVal.replace(/\D+/, '')
+    //     })
+    //   }
+    // }
   }
 </script>
 

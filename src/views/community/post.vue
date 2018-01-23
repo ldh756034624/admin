@@ -227,10 +227,9 @@
       handleUpdate(row) {   // 点击编辑功能按钮
         this.temp = {}
         this.temp.content = row.content
-        this.temp.userId = row.userId
         this.temp.title = row.title
         this.temp.typeId = row.typeId 
-        this.temp.stickId = row.stickTypeId
+        this.temp.stickId = row.id
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
