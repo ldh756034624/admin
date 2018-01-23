@@ -217,6 +217,30 @@ export function delPost(params) {     // 删除帖子
   })
 }
 
+export function upadatePost(data){    //修改帖子状态
+  return fetch({
+    url: '/stick/updateStick',
+    method: 'post',
+    data
+  })
+}
+
+export function passPost(params){      //帖子通过
+  return fetch({
+    url:'stick/examine',
+    method: 'post',
+    params
+  })
+}
+
+export function lockPost(params){      //锁定帖子
+  return fetch({
+    url:'/stick/lock',
+    method:'post',
+    params
+  })
+}
+
 export function addPostAssort(data) {  //添加分类
   return fetch({
     url: 'stick/type',
@@ -233,7 +257,7 @@ export function delPostAssort(params) {  //删除分类
   })
 }
 
-export function upadatePostAssort(data) {
+export function upadatePostAssort(data) {   //编辑分类
   return fetch({
     url: 'stick/updateType',
     method: 'post',

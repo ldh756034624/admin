@@ -59,9 +59,9 @@
           </el-button>
           <el-button size="small" type="primary" @click="handleComment(scope.row.id)">评论
           </el-button>
-          <el-button size="small" type="success" @click="handleDel(scope.row.id)">通过/不通过
+          <el-button size="small" :type="scope.row.operationState === 1 ? 'success' : ''" @click="handlePass(scope.row.id)">{{scope.row.operationState === 1 ? "通过" : "不通过"}}
           </el-button>
-          <el-button size="small" @click="handleDel(scope.row.id)">锁住
+          <el-button size="small" :type="scope.row.lockState === 1 ? '' : 'success'" @click="handlelock(scope.row.id)">{{scope.row.lockState === 1 ? "解锁" : "锁住"}}
           </el-button>
         </template>
       </el-table-column>
@@ -83,7 +83,7 @@
           <el-input class="w30" v-model="temp.title" placeholder="请输入帖子标题"></el-input>
         </el-form-item>
         <el-form-item label="马甲发布" class="red-star">
-          <el-input class="w30" v-model="temp.userId" placeholder="请输入用户ID"></el-input>
+          <el-input class="w30" :disabled="dialogStatus == 'update'" v-model="temp.userId" placeholder="请输入用户ID"></el-input>
         </el-form-item>
         <el-form-item label="选择分类" prop="fontColor" class="red-star">
           <el-select v-model="temp.typeId" placeholder="请选择">
@@ -105,7 +105,7 @@
 </template>
 
 <script>
-  import {getTableData, addPost, delPost} from '@/api/community_content'
+  import {getTableData, addPost, delPost, upadatePost, lockPost, passPost} from '@/api/community_content'
   import {isPhone} from '@/utils/validate'
 
   import Ckeditor from '@/components/ckeditor/ckeditor'
@@ -124,10 +124,11 @@
         enable: '1',
         dateRange: null,  // 时间范围
         temp: {           // 弹窗内容数据对象
-          content: "null",
+          content: null,
           title: null,
           typeId: null,
-          userId: null
+          userId: null,
+          stickId: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -184,7 +185,7 @@
           }
         })
       },
-      getArtType() {  // 获取文章所有类别
+      getArtType() {  // 获取所有类别
         let data = {
           pageNumber: 1,
           pageSize: 100
@@ -224,13 +225,12 @@
         })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.resetTemp()
-        row.startTime == 0 && (row.startTime = '')
-        this.temp = Object.assign(this.temp, row)   // 赋值
-        this.temp.articleTypeId = row.articleType.id
-        if (row.url) {
-          this.temp.isPush = 1
-        }
+        this.temp = {}
+        this.temp.content = row.content
+        this.temp.userId = row.userId
+        this.temp.title = row.title
+        this.temp.typeId = row.typeId 
+        this.temp.stickId = row.stickTypeId
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -242,7 +242,8 @@
           content: null,
           title: null,
           typeId: null,
-          userId: null
+          userId: null,
+          stickId: null
         }
       },
       getCk(val) {
@@ -263,13 +264,47 @@
       },
       update() {  // 确认编辑此条信息
         this.getContent()
-        this.temp.isPush == false && delete this.temp.url
-        upadateArt(this.temp).then(res => {
+        upadatePost(this.temp).then(res => {
           if (res.code === ERR_OK) {
             this.getTableData()
             this.dialogFormVisible = false
             this.$message.success('保存成功')
           }
+        })
+      },
+      handlelock(stickId){   //修改上锁状态
+        this.$confirm('是否锁住此贴子?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          lockPost({stickId}).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+              this.getTableData()
+            }
+          })
+        })
+      },
+
+      handlePass(stickId){       //是否通过帖子
+        this.$confirm('是否通过此贴?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          passPost({stickId}).then(res => {
+            if (res.code === ERR_OK) {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+              this.getTableData()
+            }
+          })
         })
       },
       handleDel(stickId) { //删除
