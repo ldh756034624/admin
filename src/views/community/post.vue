@@ -85,12 +85,12 @@
         <el-form-item label="马甲发布" class="red-star">
           <el-input class="w30" :disabled="dialogStatus == 'update'" v-model="temp.userId" placeholder="请输入用户ID"></el-input>
         </el-form-item>
-        <el-form-item label="选择分类" prop="fontColor" class="red-star">
+        <el-form-item label="选择分类" class="red-star">
           <el-select v-model="temp.typeId" placeholder="请选择">
             <el-option v-for="item in select" :label="item.label" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="帖子内容" prop="fontColor" class="red-star">
+        <el-form-item label="帖子内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.content" @getData="getCk"></ckeditor>
         </el-form-item>
       </el-form>
@@ -225,11 +225,12 @@
         })
       },
       handleUpdate(row) {   // 点击编辑功能按钮
-        this.temp = {}
+        this.resetTemp()
         this.temp.content = row.content
         this.temp.title = row.title
         this.temp.typeId = row.typeId 
         this.temp.stickId = row.id
+        this.temp.userId = row.userId
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -290,7 +291,6 @@
       },
 
       handlePass(stickId, operationState){       //是否通过帖子
-        console.log(operationState)
         this.$confirm(operationState === 1 ? '是否通过此贴?' : '是否不通过此贴?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
