@@ -173,8 +173,8 @@
     methods: {
       beforeHandleImg(file) {      // 图片上传前
         let isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
-        if(this.imgList.length > 8){
-          this.$message.warning("图片最多可上传8张")
+        if(this.imgList.length > 9){
+          this.$message.warning("图片最多可上传9张")
           isJPG = false
           return isJPG
         }

@@ -158,8 +158,8 @@
       },
       beforeHandleImg(file) {      // 头像上传前
         let isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
-        if(this.imgList.length > 8){
-          this.$message.warning("图片最多可上传8张")
+        if(this.imgList.length > 9){
+          this.$message.warning("图片最多可上传9张")
           isJPG = false
           return isJPG
         }
@@ -209,13 +209,13 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
-        console.log(this.temp.images)
         this.temp.images.forEach((item, index) => {  // 图片列表
           this.showFileList.push({
             name: index,
             url: item
           })
         })
+        console.log(this.showFileList)
         this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
