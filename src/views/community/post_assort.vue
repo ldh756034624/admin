@@ -7,7 +7,7 @@
     </div>
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
               style="width: 100%">
-      <el-table-column align="center" label="排序" width="100">
+      <el-table-column align="center" label="ID" width="100">
         <template scope="scope">
           <span>{{scope.row.id}}</span>
         </template>
