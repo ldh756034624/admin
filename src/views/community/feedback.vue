@@ -14,7 +14,7 @@
       </el-table-column>
       <el-table-column align="center" label="内容">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.advice}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="联系方式">

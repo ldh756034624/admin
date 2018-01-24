@@ -48,7 +48,7 @@
       </el-table-column>
       <el-table-column align="center" label="状态">
         <template scope="scope">
-          <span>{{scope.row.state === 1 ? "使用" : (scope.row.state === 2 ? "禁用" : "删除" ) }}</span>
+          <span>{{scope.row.operationState === 1 ? "不通过" : "通过" }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
