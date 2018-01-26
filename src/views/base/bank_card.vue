@@ -11,6 +11,11 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="Code">
+        <template scope="scope">
+          <span>{{scope.row.code}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="名称">
         <template scope="scope">
           <span>{{scope.row.bankName}}</span>
@@ -47,6 +52,9 @@
       <el-form :model="temp" ref="temp" :rules="rules" label-width="100px" class="form30">
         <el-form-item label="名称" class="red-star">
           <el-input class="w30" v-model="temp.bankName"></el-input>
+        </el-form-item>
+        <el-form-item label="Code" class="red-star">
+          <el-input class="w30" v-model="temp.code"></el-input>
         </el-form-item>
         <el-form-item label="图标" class="red-star">
           <el-upload
@@ -91,7 +99,8 @@
           bankImg: null,
           bankName: null,
           color: null,
-          status: 1
+          status: 1,
+          code: null
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -173,7 +182,8 @@
           bankImg: null,
           bankName: null,
           color: null,
-          status: 1
+          status: 1,
+          code: null
         }
       },
       create() {    // 创建新功能
