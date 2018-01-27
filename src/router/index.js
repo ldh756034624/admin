@@ -48,6 +48,7 @@ const vDetail = _import('finance/v_detail')
 const recharge = _import('finance/recharge')
 const rDetail = _import('finance/r_detail')
 const rechargeAdd = _import('finance/recharge_add')
+const transferRecords = _import('finance/transferRecords')
 
 /*基础设置*/
 const accountBlacklist = _import('base/account_blacklist')
@@ -147,6 +148,7 @@ export const asyncRouterMap = [
       {path: 'customer', component: customer, name: '用户管理', meta_name: 'customer'},
       {path: 'withdraw', component: withdraw, name: '提现管理', meta_name: 'withdraw'},
       {path: 'recharge', component: recharge, name: '充值管理', meta_name: 'recharge'},
+      {path: 'transferRecords', component: transferRecords, name: '转账记录', meta_name: 'transferRecords'},
       {path: 'rechargeAdd', component: rechargeAdd, name: '导入充值', meta_name: 'rechargeAdd', hidden: true},
       {path: 'rDetail', component: rDetail, name: '充值明细', meta_name: 'rDetail', hidden: true},
       {path: 'transfer', component: transfer, name: '小品会', meta_name: 'transfer'},
