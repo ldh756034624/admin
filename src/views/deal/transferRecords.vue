@@ -80,6 +80,10 @@
       return {
         querySelect: [
           {
+            label: '全部',
+            value: 0 
+          },
+          {
             label: '直接转账',
             value: 1
           },
@@ -99,8 +103,8 @@
           fontColor: [{required: true, message: '请输入颜色', trigger: 'blur'}]
         },
         listQuery: {  // 关键字查询，翻页等数据
-          page: 1,
-          limit: 20,
+          pageNumber: 1,
+          pageSize: 20,
           type: null,
           originPhone: null,
           targetPhone: null,
