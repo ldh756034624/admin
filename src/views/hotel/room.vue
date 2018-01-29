@@ -179,7 +179,6 @@
       // 删除图像
       handleImgRemove(file, fileList) {
         this.imgList = fileList
-        console.log('imgList', this.imgList)
       },
       actionArtAssort(row) {  // 启用禁用
         row.enable === 0 ? row.enable = 1 : row.enable = 0
@@ -209,13 +208,13 @@
       },
       handleUpdate(row) {   // 点击编辑功能按钮
         this.resetTemp()
+        this.temp = Object.assign(this.temp, row)   // 赋值
         this.temp.images.forEach((item, index) => {  // 图片列表
           this.showFileList.push({
             name: index,
             url: item
           })
         })
-        console.log(this.showFileList)
         this.temp = Object.assign(this.temp, row)   // 赋值
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -241,7 +240,6 @@
         if (this.imgList && this.imgList.length > 0) {
 
           this.imgList.forEach(item => {
-             console.log(item.response.data)
             this.temp.images.push(item.response.data)
           })
         } else {
@@ -284,7 +282,7 @@
         if (this.imgList && this.imgList.length > 0) {
           this.temp.images = []
           this.imgList.forEach(item => {
-            if (item.response.data) {
+            if (item.response) {
               this.temp.images.push(item.response.data)
             } else {
               this.temp.images.push(item.url) // 编辑时候的图片

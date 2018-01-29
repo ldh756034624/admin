@@ -87,6 +87,7 @@
           <el-time-select
             placeholder="起始时间"
             v-model="temp.startReserveTime"
+            :editable="false"
             :picker-options="{
             start: '08:00',
             step: '00:15',
@@ -96,8 +97,9 @@
           <el-time-select
             placeholder="结束时间"
             v-model="temp.endReserveTime"
+            :editable="false"
             :picker-options="{
-            start: '00:00',
+            start: '08:00',
             step: '00:15',
             end: '23:59',
             minTime: temp.startReserveTime
@@ -194,6 +196,7 @@
      
       // 删除图像
       handleImgRemove(file, fileList) {
+        console.log(fileList)
         this.imgList = fileList
       },
       goRoom(id, hotelName) {
@@ -310,6 +313,9 @@
               this.temp.images.push(item.url) // 编辑时候的图片
             }
           })
+        } else {
+          this.$message.error('请选择图片')
+          return
         }
         if (this.temp.grade > 5){
           this.$message.error('酒店评分不能大于5')
