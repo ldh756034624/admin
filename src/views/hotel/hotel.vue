@@ -175,6 +175,7 @@
     methods: {
       beforeHandleImg(file) {      // 图片上传前
         let isJPG = file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png'
+        this.imgList = [];
         if(this.imgList.length > 9){
           this.$message.warning("图片最多可上传9张")
           isJPG = false
@@ -196,8 +197,10 @@
      
       // 删除图像
       handleImgRemove(file, fileList) {
-        console.log(fileList)
         this.imgList = fileList
+        if(this.dialogStatus == 'update'){
+          this.temp.images = fileList
+        }
       },
       goRoom(id, hotelName) {
         this.$router.push({path: '/goods/room', query: {id, hotelName}})
@@ -215,6 +218,7 @@
       },
       handleCreate() {    // 点击创建新功能按钮
         this.resetTemp()    // 清空原有表单
+        this.imgList = []   //初始化上传图片列表
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -313,7 +317,8 @@
               this.temp.images.push(item.url) // 编辑时候的图片
             }
           })
-        } else {
+        }
+        if(this.temp.images && this.temp.images.length === 0 ){
           this.$message.error('请选择图片')
           return
         }

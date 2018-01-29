@@ -179,6 +179,9 @@
       // 删除图像
       handleImgRemove(file, fileList) {
         this.imgList = fileList
+        if(this.dialogStatus == 'update'){
+          this.temp.images = fileList
+        }
       },
       actionArtAssort(row) {  // 启用禁用
         row.enable === 0 ? row.enable = 1 : row.enable = 0
@@ -203,6 +206,7 @@
       handleCreate() {    // 点击创建新功能按钮
         this.resetTemp()    // 清空原有表单
         this.dialogStatus = 'create'
+        this.imgList = []   //初始化上传图片列表
         this.dialogFormVisible = true
         this.temp.hotelName = this.$route.query.hotelName   //获取酒店名
       },
@@ -288,7 +292,8 @@
               this.temp.images.push(item.url) // 编辑时候的图片
             }
           })
-        } else {
+        } 
+        if(this.temp.images && this.temp.images.length === 0 ){
           this.$message.error('请选择图片')
           return
         }
