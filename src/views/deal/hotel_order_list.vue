@@ -204,7 +204,7 @@
 </template>
 
 <script>
-  import {getTableData, changeHotelOrder} from '@/api/order'
+  import {getTableData, HotelRefund} from '@/api/deal'
 
   const ERR_OK = 0
   export default {
@@ -298,7 +298,7 @@
             hotelOrderId: id,
             status: type
           }
-          changeHotelOrder(data).then((res) => {
+          HotelRefund(data).then((res) => {
             if (res.code === 0) {
               this.$message.success('操作成功')
               this.getTableData()

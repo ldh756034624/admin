@@ -22,3 +22,11 @@ export function changeBatchStatus(id) {    // 改变批次状态，启用禁用
     method: 'put'
   })
 }
+
+export function HotelRefund(data){
+  return fetch({
+    url:'/hotel/order/status',
+    method:'put',
+    data
+  })
+}

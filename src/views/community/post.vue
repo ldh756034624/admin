@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column align="center" label="标题">
         <template scope="scope">
-          <a class="blue" :href="scope.row.url || scope.row.jointUrl">{{scope.row.title}}</a>
+          <span>{{scope.row.title}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="分类">

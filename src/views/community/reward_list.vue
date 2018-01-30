@@ -9,22 +9,22 @@
       </el-table-column>
       <el-table-column align="center" label="打赏者">
         <template scope="scope">
-          <span>{{scope.row.adviceType}}</span>
+          <span>{{scope.row.nickName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="打赏者ID">
         <template scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="金额">
         <template scope="scope">
-          <span>{{scope.row.connect}}</span>
+          <span>{{scope.row.reward}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="支付方式">
         <template scope="scope">
-          <span>{{scope.row.userId}}</span>
+          <span>{{scope.row.payMethod}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="IP">
