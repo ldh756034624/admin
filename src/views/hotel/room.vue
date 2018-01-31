@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column align="center" label="状态">
         <template scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.status ? '启用': '禁用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -292,7 +292,7 @@
               this.temp.images.push(item.url) // 编辑时候的图片
             }
           })
-        } 
+        }
         if(this.temp.images && this.temp.images.length === 0 ){
           this.$message.error('请选择图片')
           return
