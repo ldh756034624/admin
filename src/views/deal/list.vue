@@ -83,10 +83,10 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button size="small" v-if="scope.row.status == 0" type="primary" @click="handleConfirm(scope.row.id, 1)">确认
+          <!-- <el-button size="small" v-if="scope.row.status == 0" type="primary" @click="handleConfirm(scope.row.id, 1)">确认
           </el-button>
           <el-button size="small" v-if="scope.row.status == 0" type="danger" @click="handleConfirm(scope.row.id, 3)">取消
-          </el-button>
+          </el-button> -->
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">{{scope.row.status == 1 ? '发货' : '查看'}}
           </el-button>
         </template>

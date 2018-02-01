@@ -46,8 +46,7 @@ const goodsAssort = _import('deal/goods_assort')
 const insertGoodsData = _import('deal/insert_goods_data')
 const orderList = _import('deal/list')
 const hotelOrderList = _import('deal/hotel_order_list')
-const shareTransfer = _import('deal/transfer')
-
+const transferRecords = _import('deal/transferRecords')
 /*财务管理*/
 const customer = _import('finance/customer')
 const transfer = _import('finance/transfer')
@@ -166,7 +165,7 @@ export const asyncRouterMap = [
       {path: 'insertGoodsData', component: insertGoodsData, name: '导入数据', meta_name: 'insertGoodsData', hidden: true},
       {path: 'orderList', component: orderList, name: '订单', meta_name: 'orderList'},
       {path: 'hotelOrderList', component: hotelOrderList, name: '酒店', meta_name: 'hotelOrderList'},
-      {path: 'shareTransfer', component: shareTransfer, name: '转账记录-只是页面', meta_name: 'shareTransfer'}
+      {path: 'transferRecords', component: transferRecords, name: '转账记录', meta_name: 'transferRecords'}
     ]
   },
   {
