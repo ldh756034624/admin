@@ -4,6 +4,9 @@
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="margin-left:10px" @click="handleCreate" icon="edit">新增
       </el-button>
+          <el-select v-model="listQuery.localtion" @change="getTableData">
+            <el-option v-for="item in selectList" :label="item.val" :value="item.key"></el-option>
+          </el-select>
     </div>
     <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="ID" width="65">
@@ -21,11 +24,11 @@
           <span>{{scope.row.locationDesc}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="数量">
+      <!-- <el-table-column align="center" label="数量">
         <template scope="scope">
           <span>{{scope.row.bannerCount}}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column align="center" label="开始时间">
         <template scope="scope">
           <span>{{scope.row.startTime | formatDateTime}}</span>
@@ -83,8 +86,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="标识" prop="code">
-          <el-input v-model="temp.code"></el-input>
+        <el-form-item label="标识">
+          <el-select v-model="temp.code" placeholder="请选择">
+            <el-option v-for="item in bannertype" :label="item.val" :value="item.val" :key="item.key">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="上线时间" class="red-star">
           <el-date-picker
@@ -125,8 +131,10 @@
           enable: '1',
           name: null,
           id: null,
-          location: 1
+          location: 1,
+          code: ''
         },
+        bannertype: [],
         tableData: null,    // 表格数据
         total: null,        // 数据总数
         dialogFormVisible: false,
@@ -135,6 +143,7 @@
         listQuery: {  // 关键字查询，翻页等数据
           pageNumber: 1,
           pageSize: 20,
+          localtion: ''
         },
         textMap: {
           update: '编辑',
@@ -144,6 +153,7 @@
     },
     created() {
       this.getLocations()
+      this.getType()
       this.getTableData()
     },
     methods: {
@@ -164,6 +174,11 @@
             item.key = parseFloat(item.key)
           })
           this.selectList = res.data
+        })
+      },
+      getType() {  // 获取type
+        getTableData('/community/banner_type/type').then(res => {
+          this.bannertype = res.data
         })
       },
       handleBan(id) {
@@ -206,6 +221,7 @@
         this.temp = {
           name: null,
           enable: '1',
+          code: '',
           id: null,
           location: 1
         }
