@@ -88,7 +88,7 @@
         </el-form-item>
         <el-form-item label="标识">
           <el-select v-model="temp.code" placeholder="请选择">
-            <el-option v-for="item in bannertype" :label="item.val" :value="item.val" :key="item.key">
+            <el-option v-for="item in bannertype" :label="item.val" :value="item.key" :key="item.key">
             </el-option>
           </el-select>
         </el-form-item>
