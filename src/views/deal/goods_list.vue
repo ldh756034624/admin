@@ -39,6 +39,11 @@
           <span>{{scope.row.stock}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="单位">
+        <template scope="scope">
+          <span>{{scope.row.unit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="开始时间">
         <template scope="scope">
           <span>{{scope.row.startTime | formatDateTime}}</span>
@@ -111,6 +116,9 @@
         <el-form-item label="价格" class="red-star">
           <el-input class="w30" v-model="temp.realPrice"></el-input>
         </el-form-item>
+        <el-form-item label="单位" class="red-star">
+          <el-input class="w30" v-model="temp.unit"></el-input>
+        </el-form-item>
         <el-form-item label="内容" class="red-star">
           <ckeditor ref="ckeditor" :data="temp.description" @getData="getCk"></ckeditor>
         </el-form-item>
@@ -163,7 +171,8 @@
           price: null,
           realPrice: null,
           status: 1,
-          stock: null
+          stock: null,
+          unit: null,
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -288,7 +297,8 @@
           code: null,
           realPrice: null,
           status: 1,
-          stock: null
+          stock: null,
+          unit: null
         }
       },
       create() {    // 创建新功能
