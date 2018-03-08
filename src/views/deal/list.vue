@@ -89,6 +89,9 @@
           </el-button> -->
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">{{scope.row.status == 1 ? '发货' : '查看'}}
           </el-button>
+          <!--todo -->
+          <el-button size="small" v-if="listQuery.status === 1" type="danger" @click="handleConfirm(scope.row.id, 3)">取消
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,9 +108,21 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog title="订单详情" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <h1 class="title">商品信息</h1>
+        <h1 class="title">基本信息</h1>
         <el-form-item label="订单号">
           <span>{{temp.id}}</span>
+        </el-form-item>
+        <el-form-item label="供应商">
+          <span>{{temp.goods}}xxxxxxx</span>
+        </el-form-item>
+        <el-form-item label="订单状态">
+          <span>{{temp.goods}}xxxxxxx</span>
+        </el-form-item>
+        <el-form-item label="订单来源">
+          <span>{{temp.goods}}xxxxxxx</span>
+        </el-form-item>
+        <el-form-item label="订单创建时间">
+          <span>{{temp.goods}}xxxxxxx</span>
         </el-form-item>
         <el-form-item label="商品名称">
           <span>{{temp.goods}}</span>
@@ -118,12 +133,29 @@
         <el-form-item label="下单时间">
           <span>{{temp.createTime | formatDateTime}}</span>
         </el-form-item>
+        <h1 class="title">商品信息</h1>
+        <div class="goods-info">
+          <img src="" class="cover">
+          <div class="name">
+            <p>车载充电器 <span>x1个</span></p>
+            <p>15.00酒元</p>
+          </div>
+        </div>
         <h1 class="title">支付信息</h1>
+        <el-form-item label="支付金额">
+          <span>{{temp.payMoney}}</span>
+        </el-form-item>
         <el-form-item label="支付方式">
           <span>{{temp.payMethodDesc}}</span>
         </el-form-item>
-        <el-form-item label="支付金额">
-          <span>{{temp.payMoney}}</span>
+        <el-form-item label="微信支付">
+          <span>{{temp.goods}}xxxxxxx</span>
+        </el-form-item>
+        <el-form-item label="微信流水号">
+          <span>{{temp.goods}}xxxxxxx</span>
+        </el-form-item>
+        <el-form-item label="酒元支付">
+          <span>{{temp.goods}}xxxxxxx</span>
         </el-form-item>
         <el-form-item label="支付状态">
           <span>{{temp.payStatusDesc}}</span>
@@ -314,5 +346,15 @@
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
     font-size: 20px;
+  }
+  .goods-info{
+    display: flex;
+    font-size: 14px;
+    color: #666;
+    .cover{
+      height: 50px;
+      width: 50px;
+      margin-right: 15px;
+    }
   }
 </style>

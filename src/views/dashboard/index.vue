@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="bd">
-      <ul>
+      <ul style="overflow: hidden;">
         <li class="item" v-for="item in list">
           <div class="title">{{item.name}}</div>
           <div class="content">
@@ -10,6 +10,35 @@
           </div>
         </li>
       </ul>
+      <div class="hr">
+        资金统计
+      </div>
+      <div class="calc">
+        <div class="filter-container">
+          <el-form inline>
+            <el-form-item label="">
+              <el-date-picker
+                v-model="dateRange"
+                @change="dateRangeChange"
+                type="daterange"
+                placeholder="选择日期范围">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button class="filter-item" type="primary" @click="getTableData" icon="search">统计</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <ul style="overflow: hidden;">
+          <li class="item" v-for="item in list">
+            <div class="title">{{item.name}}</div>
+            <div class="content">
+              <div class="count">{{item.value}}</div>
+              <div class="desc">{{item.desc}}</div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -83,5 +112,11 @@
         }
       }
     }
+  }
+
+  .hr{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 20px;
   }
 </style>
