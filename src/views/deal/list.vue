@@ -113,16 +113,16 @@
           <span>{{temp.id}}</span>
         </el-form-item>
         <el-form-item label="供应商">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.supplier }}</span>
         </el-form-item>
         <el-form-item label="订单状态">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.status }}</span>
         </el-form-item>
         <el-form-item label="订单来源">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.orderFrom }}</span>
         </el-form-item>
         <el-form-item label="订单创建时间">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.createTime | formatDateTime}}</span>
         </el-form-item>
         <el-form-item label="商品名称">
           <span>{{temp.goods}}</span>
@@ -130,15 +130,12 @@
         <el-form-item label="用户ID">
           <span>{{temp.userId || '无'}}</span>
         </el-form-item>
-        <el-form-item label="下单时间">
-          <span>{{temp.createTime | formatDateTime}}</span>
-        </el-form-item>
         <h1 class="title">商品信息</h1>
-        <div class="goods-info">
-          <img src="" class="cover">
+        <div class="goods-info" v-for="item in temp.goodsList">
+          <img :src="item.goodsImg" class="cover">
           <div class="name">
-            <p>车载充电器 <span>x1个</span></p>
-            <p>15.00酒元</p>
+            <p>{{item.goodsName}} <span>x{{item.goodsCount}}个</span></p>
+            <p>{{item.goodsPrice}}酒元</p>
           </div>
         </div>
         <h1 class="title">支付信息</h1>
@@ -149,13 +146,13 @@
           <span>{{temp.payMethodDesc}}</span>
         </el-form-item>
         <el-form-item label="微信支付">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.payMoney4wx }}</span>
         </el-form-item>
         <el-form-item label="微信流水号">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.wxOrderId }}</span>
         </el-form-item>
         <el-form-item label="酒元支付">
-          <span>{{temp.goods}}xxxxxxx</span>
+          <span>{{temp.payMoney4Balance }}</span>
         </el-form-item>
         <el-form-item label="支付状态">
           <span>{{temp.payStatusDesc}}</span>
@@ -219,7 +216,13 @@
           userAddres: null,
           userId: null,
           userName: null,
-          userPhone: null
+          userPhone: null,
+          supplier: null,
+          orderFrom: null,
+          payMoney4wx: null,
+          wxOrderId: null,
+          payMoney4Balance: null,
+          goodsList: [] // 物品详情
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -297,6 +300,7 @@
           if (res.code === 0) {
             console.log(res.data)
             this.temp = Object.assign(this.temp, res.data)   // 赋值
+            console.log(this.temp)
             this.dialogStatus = 'update'
             this.dialogFormVisible = true
           }
@@ -320,7 +324,13 @@
           userAddres: null,
           userId: null,
           userName: null,
-          userPhone: null
+          userPhone: null,
+          supplier: null,
+          orderFrom: null,
+          payMoney4wx: null,
+          wxOrderId: null,
+          payMoney4Balance: null,
+          goodsList: [] // 物品详情
         }
       },
       update() {  // 确认编辑此条信息
