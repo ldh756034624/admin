@@ -60,6 +60,7 @@ const vDetail = _import('finance/v_detail')
 const recharge = _import('finance/recharge')
 const rDetail = _import('finance/r_detail')
 const rechargeAdd = _import('finance/recharge_add')
+const wxPay = _import('finance/wx_pay')
 
 /*基础设置*/
 const accountBlacklist = _import('base/account_blacklist')
@@ -74,6 +75,7 @@ const roles = _import('base/roles')
 const sysUsers = _import('base/sys_users')
 const version = _import('base/version')
 const fileManage = _import('base/file_manage')
+const wxReply = _import('base/wx_reply')
 
 /*日志管理*/
 const withdrawApi = _import('log/withdraw_api')
@@ -187,7 +189,8 @@ export const asyncRouterMap = [
       {path: 'moneyDetail', component: moneyDetail, name: '钱包明细', meta_name: 'moneyDetail', hidden: true},
       {path: 'withDrawDetail', component: withDrawDetail, name: '提现明细', meta_name: 'withDrawDetail', hidden: true},
       {path: 'vDetail', component: vDetail, name: 'V币明细', meta_name: 'vDetail', hidden: true},
-      {path: 'userInfo', component: userInfo, name: '用户信息', meta_name: 'userInfo', hidden: true}
+      {path: 'userInfo', component: userInfo, name: '用户信息', meta_name: 'userInfo', hidden: true},
+      {path: 'wxPay', component: wxPay, name: '微信支付对账', meta_name: 'wxPay'},
     ]
   },
   {
@@ -221,7 +224,8 @@ export const asyncRouterMap = [
       // {path: 'roles', component: roles, name: '角色管理', meta_name: 'roles'},
       // {path: 'sysUsers', component: sysUsers, name: '系统用户', meta_name: 'sysUsers'},
       {path: 'version', component: version, name: '版本管理', meta_name: 'version'},
-      {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'}
+      {path: 'fileManage', component: fileManage, name: '文件管理', meta_name: 'fileManage'},
+      {path: 'wxReply', component: wxReply, name: '公众号自动回复', meta_name: 'wxReply'}
     ]
   },
   // {

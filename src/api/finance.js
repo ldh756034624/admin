@@ -45,3 +45,10 @@ export function batchRecharge(data) {    // 转账
     data
   })
 }
+
+export function exportExcel() {    // 导出excel
+  return fetch({
+    url: `/order/wx/export`,
+    method: 'put'
+  })
+}
