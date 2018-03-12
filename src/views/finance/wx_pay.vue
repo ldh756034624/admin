@@ -21,11 +21,12 @@
         </el-form-item>
         <el-form-item>
           <el-button class="filter-item" type="primary" @click="getTableData" icon="search">查询</el-button>
-          <el-button class="filter-item" type="primary" @click="getTableData">导出Excel</el-button>
+          <el-button class="filter-item" type="primary" @click="handleExport">导出Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table v-loading="loading" element-loading-text="拼命加载中"  :data="tableData" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border fit highlight-current-row
+              style="width: 100%">
       <el-table-column align="center" label="微信订单编号">
         <template scope="scope">
           <span>{{scope.row.wxOrderNo }}</span>
@@ -70,7 +71,7 @@
 </template>
 
 <script>
-  import {getTableData} from '@/api/finance'
+  import {getTableData, exportExcel} from '@/api/finance'
 
   const ERR_OK = 0
   export default {
@@ -108,6 +109,23 @@
       this.getTableData()
     },
     methods: {
+      // 导出excel
+      handleExport() {
+
+
+        this.$confirm(`是否导出Excel?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          exportExcel().then(res => {
+            if (res.code === 0) {
+              let datas = res.data
+              window.location.href = datas
+            }
+          })
+        })
+      },
       dateRangeChange() {      // 获取时间范围
         if (!this.dateRange[0] || !this.dateRange[1]) {
           delete this.listQuery.startTime
