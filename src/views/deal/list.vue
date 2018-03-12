@@ -66,6 +66,16 @@
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="微信支付金额">
+        <template scope="scope">
+          <span>{{scope.row.payMoney4wx || 0.00}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="酒元支付金额">
+        <template scope="scope">
+          <span>{{scope.row.payMoney4Balance || 0.00}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="快递名称">
         <template scope="scope">
           <span>{{scope.row.expressName || '无'}}</span>
@@ -90,7 +100,7 @@
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">{{scope.row.status == 1 ? '发货' : '查看'}}
           </el-button>
           <!--todo -->
-          <el-button size="small" v-if="listQuery.status === 1" type="danger" @click="handleConfirm(scope.row.id, 3)">取消
+          <el-button size="small" v-if="scope.row.canRefund" type="danger" @click="handleRefund(scope.row.id)">退款
           </el-button>
         </template>
       </el-table-column>
@@ -191,7 +201,7 @@
 </template>
 
 <script>
-  import {getTableData, updateOrder, orderConfirm} from '@/api/order'
+  import {getTableData, updateOrder, orderConfirm, orderRefund} from '@/api/order'
 
   const ERR_OK = 0
   export default {
@@ -287,6 +297,20 @@
           type: 'warning'
         }).then(() => {
           orderConfirm(id, type).then((res) => {
+            if (res.code === 0) {
+              this.$message.success('操作成功')
+              this.getTableData()
+            }
+          })
+        })
+      },
+      handleRefund(id) { // 退款
+        this.$confirm(`确定退款?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          orderRefund(id).then((res) => {
             if (res.code === 0) {
               this.$message.success('操作成功')
               this.getTableData()

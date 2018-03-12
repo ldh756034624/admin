@@ -25,3 +25,10 @@ export function orderConfirm(id, status) {  // 确认取消订单
     }
   })
 }
+
+export function orderRefund(id) {  // 确认取消订单
+  return fetch({
+    url: `/order/refund/${id}`,
+    method: 'put',
+  })
+}

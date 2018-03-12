@@ -26,11 +26,19 @@ export function logout() {
   })
 }
 
-
 export function getDashboard() {
   return fetch({
     url: '/basis/statistics',
     method: 'get'
+  })
+}
+
+export function getDashboard1(params) {
+  console.log(params)
+  return fetch({
+    url: '/basis/sys/funds/info',
+    method: 'get',
+    params
   })
 }
 
