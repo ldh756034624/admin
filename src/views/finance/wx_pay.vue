@@ -138,11 +138,11 @@
       getTableData() {
         this.loading = true
         getTableData('/order/wx/list', this.listQuery).then(res => {   // 获取tableData数据
+          this.loading = false
           if (res.code === 0) {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
-            this.loading = false
           }
         })
       }
