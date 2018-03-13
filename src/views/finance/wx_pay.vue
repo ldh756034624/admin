@@ -111,14 +111,12 @@
     methods: {
       // 导出excel
       handleExport() {
-
-
         this.$confirm(`是否导出Excel?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          exportExcel().then(res => {
+          exportExcel(this.listQuery).then(res => {
             if (res.code === 0) {
               let datas = res.data
               window.location.href = datas
