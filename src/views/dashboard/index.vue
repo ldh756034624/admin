@@ -26,6 +26,7 @@
             </el-form-item>
             <el-form-item>
               <el-button class="filter-item" type="primary" @click="getD1" icon="search">统计</el-button>
+              <span style="color: red;">不选择时间则为全部</span>
             </el-form-item>
           </el-form>
         </div>

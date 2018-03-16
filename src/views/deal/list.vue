@@ -144,7 +144,7 @@
         <div class="goods-info" v-for="item in temp.goodsList">
           <img :src="item.goodsImg" class="cover">
           <div class="name">
-            <p>{{item.goodsName}} <span>x{{item.goodsCount}}个</span></p>
+            <p>{{item.goodsName}} <span>x{{item.goodsCount}}</span></p>
             <p>{{item.goodsPrice}}酒元</p>
           </div>
         </div>
