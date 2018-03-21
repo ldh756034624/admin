@@ -8,7 +8,7 @@
             <el-input type="text" v-model="listQuery.orderName"></el-input>
           </el-form-item>
           <el-form-item label="匹配类型">
-            <el-select v-model="listQuery.contentType">
+            <el-select v-model="listQuery.matchStrategy">
               <el-option v-for="item in querySelect1" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
@@ -229,7 +229,7 @@
           page: 1,
           limit: 20,
           orderName: null,
-          contentType: null,
+          matchStrategy: null,
           status: null
         },
         querySelect1: [], // 列表-规则的下拉数据
