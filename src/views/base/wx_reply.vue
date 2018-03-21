@@ -148,7 +148,7 @@
         </el-table-column>
         <el-table-column align="center" label="素材最后更新时间">
           <template scope="scope">
-            <span>{{scope.row.update_time | formatDateTime}}</span>
+            <span>{{scope.row.update_time * 1000 | formatDateTime}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="选择">
