@@ -101,7 +101,7 @@
             <el-option v-for="item in querySelect2" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关键词" class="red-star">
+        <el-form-item label="关键词" class="red-star" v-if="isShowKeyWords">
           <el-input v-model="temp.keyWord"></el-input>
         </el-form-item>
         <el-form-item label="回复类型" class="red-star">
@@ -200,6 +200,7 @@
     },
     data() {
       return {
+        isShowKeyWords: true, // 是否显示关键词输入框
         firstEdit: false,  // 第一次进来编辑，hack change
         materialDialog: false, // 选择素材弹出框
         materialList: [], // 素材列表
@@ -388,6 +389,17 @@
         })
       }
     },
+    watch: {
+      // 规则类型改变时
+      'temp.matchStrategy'(newVal, oldVal) {
+        if (newVal == 3 || newVal == 5) {
+          this.isShowKeyWords = false
+          this.temp.keyWord = null
+        } else {
+          this.isShowKeyWords = true
+        }
+      }
+    }
   }
 </script>
 
