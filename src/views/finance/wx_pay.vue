@@ -141,6 +141,9 @@
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
+          } else if (res.code === 1 && res.msg === '订单不存在') {
+            this.total = 0
+            this.tableData = null
           }
         })
       }
