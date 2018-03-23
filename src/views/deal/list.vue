@@ -73,7 +73,7 @@
       </el-table-column>
       <el-table-column align="center" label="酒元支付金额">
         <template scope="scope">
-          <span>{{scope.row.payMoney4Balance || 0.00}}</span>
+          <span>{{scope.row.payMoney4balance}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="快递名称">
@@ -144,7 +144,7 @@
         <div class="goods-info" v-for="item in temp.goodsList">
           <img :src="item.goodsImg" class="cover">
           <div class="name">
-            <p>{{item.goodsName}} <span>x{{item.goodsCount}}个</span></p>
+            <p>{{item.goodsName}} <span>x{{item.goodsCount}}</span></p>
             <p>{{item.goodsPrice}}酒元</p>
           </div>
         </div>

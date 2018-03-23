@@ -100,6 +100,9 @@
             placeholder="选择日期范围">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="排序">
+          <el-input v-model="temp.sort"></el-input>
+        </el-form-item>
         <el-form-item label="状态" class="red-star">
           <div class="checkitem">
             <el-radio class="radio" v-model="enable" label="1">启用</el-radio>
@@ -132,7 +135,8 @@
           name: null,
           id: null,
           location: 1,
-          code: ''
+          code: '',
+          sort: null
         },
         bannertype: [],
         tableData: null,    // 表格数据
@@ -223,7 +227,8 @@
           enable: '1',
           code: '',
           id: null,
-          location: 1
+          location: 1,
+          sort: null
         }
         this.dateRange = []
       },
