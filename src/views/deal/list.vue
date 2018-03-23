@@ -73,7 +73,7 @@
       </el-table-column>
       <el-table-column align="center" label="酒元支付金额">
         <template scope="scope">
-          <span>{{scope.row.payMoney4Balance || 0.00}}</span>
+          <span>{{scope.row.payMoney4balance}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="快递名称">
