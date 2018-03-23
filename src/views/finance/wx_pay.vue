@@ -136,13 +136,17 @@
       getTableData() {
         this.loading = true
         getTableData('/order/wx/list', this.listQuery).then(res => {   // 获取tableData数据
-          this.loading = false
-          if (res.code === 0) {
-            let datas = res.data
-            this.total = datas.total
-            this.tableData = datas.data
+            this.loading = false
+            if (res.code === 0) {
+              let datas = res.data
+              this.total = datas.total
+              this.tableData = datas.data
+            } else if (res.code === 1 && res.msg === '订单不存在') {
+              this.total = 0
+              this.tableData = null
+            }
           }
-        })
+        )
       }
     }
   }
