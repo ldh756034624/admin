@@ -4,10 +4,10 @@
     <div class="filter-container">
       <div class="filter-container">
         <el-form inline>
-          <el-form-item label="回复名">
+          <el-form-item label="规则名">
             <el-input type="text" v-model="listQuery.orderName"></el-input>
           </el-form-item>
-          <el-form-item label="匹配类型">
+          <el-form-item label="规则类型">
             <el-select v-model="listQuery.matchStrategy">
               <el-option v-for="item in querySelect1" :label="item.label" :value="item.value"></el-option>
             </el-select>
@@ -15,7 +15,7 @@
           <el-form-item label="状态">
             <el-select v-model="listQuery.status">
               <el-option label="全部" value=""></el-option>
-              <el-option label="启用" :value="1"></el-option>
+              <el-option label="使用中" :value="1"></el-option>
               <el-option label="禁用" :value="2"></el-option>
             </el-select>
           </el-form-item>
