@@ -392,7 +392,7 @@
     watch: {
       // 规则类型改变时
       'temp.matchStrategy'(newVal, oldVal) {
-        if (newVal == 5) {
+        if (newVal == 5 || newVal == 4) {
           this.isShowKeyWords = false
           this.temp.keyWord = null
         } else {
