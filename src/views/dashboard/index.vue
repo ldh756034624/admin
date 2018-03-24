@@ -26,34 +26,27 @@
             </el-form-item>
             <el-form-item>
               <el-button class="filter-item" type="primary" @click="getD1" icon="search">统计</el-button>
-              <span style="color: red;">不选择时间则为全部</span>
+              <span style="color:#337ab7;">不选择时间则为全部</span>
             </el-form-item>
           </el-form>
         </div>
         <ul style="overflow: hidden;">
           <li class="item">
-            <div class="title">余额总和</div>
-            <div class="content">
-              <div class="count">{{list1.balanceSum }}</div>
-              <div class="desc">单位（元）</div>
-            </div>
-          </li>
-          <li class="item">
-            <div class="title">订单总金额</div>
+            <div class="title">订单支付总金额</div>
             <div class="content">
               <div class="count">{{list1.orderMoneySum  }}</div>
               <div class="desc">单位（元）</div>
             </div>
           </li>
           <li class="item">
-            <div class="title">余额支付金额</div>
+            <div class="title">购买商品酒元支总金额</div>
             <div class="content">
               <div class="count">{{list1.payMoney4balanceSum  }}</div>
-              <div class="desc">单位（元）</div>
+              <div class="desc">单位（酒元）</div>
             </div>
           </li>
           <li class="item">
-            <div class="title">微信支付总金额 </div>
+            <div class="title">购买商品微信支金额</div>
             <div class="content">
               <div class="count">{{list1.payMoney4wxSum  }}</div>
               <div class="desc">单位（元）</div>
@@ -67,7 +60,14 @@
             </div>
           </li>
           <li class="item">
-            <div class="title">提现总金额</div>
+            <div class="title">酒元余额总和</div>
+            <div class="content">
+              <div class="count">{{list1.balanceSum }}</div>
+              <div class="desc">单位（酒元）</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="title">提现金额</div>
             <div class="content">
               <div class="count">{{list1.withdrawMoneySum  }}</div>
               <div class="desc">单位（元）</div>
