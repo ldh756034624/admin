@@ -83,11 +83,11 @@
             value: -1
           },
           {
-            label: '充值',
+            label: '微信充值',
             value: 1
           },
           {
-            label: '购买',
+            label: '购买商品',
             value: 2
           }
         ],
