@@ -30,3 +30,34 @@ export function activeGame(id) {    // 开启或者关闭活动
     method: 'put'
   })
 }
+
+export function addBigRich(data) {    // 增加大富贵期数
+  return fetch({
+    url: '/activity/bigRich',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateBigRich(data) {    // 编辑大富贵期数
+  return fetch({
+    url: '/activity/bigRich',
+    method: 'PUT',
+    data
+  })
+}
+
+export function enableBigRich(id, status) {    // 启用、禁用大富贵期数
+  return fetch({
+    url: `/activity/bigRich/${id}/${status}`,
+    method: 'PUT'
+  })
+}
+
+export function addBigRichUser(data) {    // 添加中奖人
+  return fetch({
+    url: '/activity/bigRich/user',
+    method: 'POST',
+    data
+  })
+}

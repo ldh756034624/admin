@@ -11,6 +11,13 @@ html {
   box-sizing: border-box;
 }
 
+.el-table .success-row {
+  background: #D9FFFF;
+}
+
+.el-table .err-row {
+  background: #FFB5B5;
+}
 *,
 *:before,
 *:after {
