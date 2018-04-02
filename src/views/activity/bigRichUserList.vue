@@ -30,7 +30,7 @@
                        label="订单号"
                        width="310">
         <template scope="scope">
-          <span>{{scope.row.startTime}}xxxx</span>
+          <span>{{scope.row.orderId}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
