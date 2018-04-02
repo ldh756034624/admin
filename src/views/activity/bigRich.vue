@@ -32,7 +32,8 @@
       <el-table-column align="center"
                        label="参与用户">
         <template scope="scope">
-          <span @click="handleUserList(scope.row.id)">{{scope.row.joinCount }}</span>
+          <span style="color:rgb(91,192,222); cursor:pointer;"
+                @click="handleUserList(scope.row.id,scope.row.joinCount)">{{scope.row.joinCount }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -62,13 +63,13 @@
       <el-table-column align="center"
                        label="活动状态">
         <template scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.activeStatus}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
                        label="启用/禁用">
         <template scope="scope">
-          <span>{{'xxxx'}}</span>
+          <span>{{scope.row.status}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -81,9 +82,9 @@
                      @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button size="small"
-                     type="success"
-                     v-if="scope.row.canEdit"
-                     @click="handleEnable(scope.row.id, scope.row.status)">启用、禁用
+                     :type="scope.row.statusInt == 1 ? 'danger' : 'success'"
+                     @click="handleEnable(scope.row.id, scope.row.statusInt)">
+            {{scope.row.statusInt == 1 ? '禁用' : '启用'}}
           </el-button>
           <el-button size="small"
                      type="success"
@@ -131,10 +132,10 @@
                       class="red-star">
           <div class="checkitem">
             <el-radio class="radio"
-                      v-model="temp.status"
+                      v-model="temp.statusInt"
                       :label="1">启用</el-radio>
             <el-radio class="radio"
-                      v-model="temp.status"
+                      v-model="temp.statusInt"
                       :label="0">禁用</el-radio>
           </div>
         </el-form-item>
@@ -198,8 +199,8 @@ export default {
         startTime: null,
         endTime: null,
         id: null,
-        status: 1,
-        startLotteryTime: null
+        startLotteryTime: null,
+        statusInt: 1
       },
       temp1: {
         // 添加中奖用户
@@ -238,7 +239,11 @@ export default {
         }
       })
     },
-    handleUserList(id) {
+    handleUserList(id, num) {
+      if (num == 0) {
+        this.$message.error("没有用户")
+        return
+      }
       this.$router.push({
         path: "/activity/bigRich/bigRichUserList",
         query: { id }
@@ -247,12 +252,13 @@ export default {
     // todo
     handleEnable(id, status) {
       // let desc = type === 2 ? "下架" : "上架"
-      this.$confirm(`是否此商品?`, "提示", {
+      let desc = status == 1 ? "禁用" : "启用"
+      this.$confirm(`是否${desc}此商品?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        enableBigRich(id, status).then(res => {
+        enableBigRich(id, status == 1 ? 0 : 1).then(res => {
           if (res.code === ERR_OK) {
             this.$message({
               type: "success",
@@ -297,7 +303,7 @@ export default {
         startTime: null,
         endTime: null,
         id: null,
-        status: 1,
+        statusInt: 1,
         startLotteryTime: null
       }
     },
@@ -309,6 +315,7 @@ export default {
     },
     create() {
       // 创建新功能
+      this.temp.status = this.temp.statusInt
       addBigRich(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
@@ -331,6 +338,8 @@ export default {
       // 确认编辑此条信息
       this.temp.startTime = +new Date(this.temp.startTime)
       this.temp.endTime = +new Date(this.temp.endTime)
+      this.temp.startLotteryTime = +new Date(this.temp.startLotteryTime)
+      this.temp.status = this.temp.statusInt
       updateBigRich(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
@@ -341,7 +350,7 @@ export default {
     },
     // 改变每行颜色
     tableRowClassName(row, index) {
-      if (row.status) {
+      if (row.statusInt != 1) {
         return "err-row"
       }
     }
