@@ -112,7 +112,8 @@
                ref="temp"
                label-width="100px"
                class="form30">
-        <el-form-item label="活动区间">
+        <el-form-item label="活动区间"
+                      class="red-star">
           <el-date-picker v-model="dateRange"
                           :disabled="dialogStatus === 'update' ? true : false"
                           @change="dateRangeChange"
