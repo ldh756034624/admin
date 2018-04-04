@@ -162,7 +162,7 @@
                label-width="100px"
                class="form30">
         <el-form-item label="开奖金额">
-          <el-input v-model="temp1.money"></el-input>
+          <el-input v-model="temp1.money" placeholder="元"></el-input>
         </el-form-item>
         <el-form-item label="添加用户">
           <el-input v-model="temp1.phone"></el-input>
