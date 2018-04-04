@@ -89,8 +89,8 @@
           <el-button size="small"
                      type="success"
                      class="btn btn-sm btn-info"
-                     v-if="scope.row.canAddUser "
-                     @click="handleUser(scope.row.id)">添加用户
+                     v-if="scope.row.canAddUser"
+                     @click="handleUser(scope.row.id, scope.row.winnerUser)">添加用户
           </el-button>
         </template>
       </el-table-column>
@@ -271,7 +271,8 @@ export default {
       })
     },
     // 添加中奖用户
-    handleUser(id) {
+    handleUser(id, winnerUser) {
+      this.winnerUser = winnerUser // 保存中奖用户
       this.temp1 = {
         activityId: id,
         money: null,
@@ -280,13 +281,31 @@ export default {
       this.dialogFormVisible1 = true
     },
     handleBigRichUser() {
-      addBigRichUser(this.temp1).then(res => {
-        if (res.code === ERR_OK) {
-          this.getTableData()
-          this.dialogFormVisible1 = false
-          this.$message.success("添加成功")
-        }
-      })
+      let addUser = function() {
+        addBigRichUser(this.temp1).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible1 = false
+            this.$message.success("添加成功")
+            this.winnerUser = null
+          }
+        })
+      }.bind(this)
+      if (this.winnerUser) {
+        this.$confirm(
+          `要覆盖之前添加的中奖用户数据吗？最终中奖已最后一次添加的用户为准！`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        ).then(() => {
+          addUser()
+        })
+      } else {
+        addUser()
+      }
     },
     dateTimeChange() {
       this.temp.startLotteryTime = +new Date(this.dateTime)
