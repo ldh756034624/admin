@@ -69,7 +69,7 @@
       <el-table-column align="center"
                        label="启用/禁用">
         <template scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.statusInt == 0? '禁用' : '启用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -162,7 +162,8 @@
                label-width="100px"
                class="form30">
         <el-form-item label="开奖金额">
-          <el-input v-model="temp1.money" placeholder="元"></el-input>
+          <el-input v-model="temp1.money"
+                    placeholder="元"></el-input>
         </el-form-item>
         <el-form-item label="添加用户">
           <el-input v-model="temp1.phone"></el-input>

@@ -61,3 +61,19 @@ export function addBigRichUser(data) {    // 添加中奖人
     data
   })
 }
+
+export function addProject(data) {    // 添加专题
+  return fetch({
+    url: '/goodsTopic/type',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateProject(data) {    // 编辑专题
+  return fetch({
+    url: '/goodsTopic/type',
+    method: 'PUT',
+    data
+  })
+}
