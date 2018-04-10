@@ -17,6 +17,7 @@
               element-loading-text="拼命加载中"
               :data="tableData"
               border
+              :row-class-name="tableRowClassName"
               fit
               highlight-current-row
               style="width: 100%">
@@ -96,7 +97,7 @@
           <el-button size="small"
                      type="success"
                      icon="caret-top"
-                     @click="handleDel(scope.row.topicModuleId)">赠送
+                     @click="handleGive(scope.row)">赠送
           </el-button>
           <el-button size="small"
                      type="info"
@@ -207,7 +208,7 @@
       </div>
     </el-dialog>
 
-    <!-- 弹出编辑和新增窗口1 -->
+    <!-- 弹出选择商品1 -->
     <el-dialog title="商品列表"
                :visible.sync="dialogFormVisible1"
                size="small">
@@ -269,6 +270,59 @@
       </div>
     </el-dialog>
 
+    <!-- 弹出赠送优惠券2 -->
+    <el-dialog title="商品列表"
+               :visible.sync="dialogFormVisible2"
+               size="small">
+      <div class="filter-container">
+        <el-form :model="temp"
+                 label-width="70px">
+          <el-form-item label="下载模板">
+            <el-button type="primary"
+                       icon="caret-bottom"
+                       @click="create">点击下载模板</el-button>
+          </el-form-item>
+          <el-form-item label="上传数据">
+            <el-upload class="upload-demo"
+                       :action="FILE_API"
+                       :on-success="handleFileSuccess"
+                       :on-preview="handlePreview"
+                       :on-remove="handleRemove"
+                       :file-list="fileList">
+              <el-button size="small"
+                         type="primary">点击上传</el-button>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-table :data="errGiveList"
+                border
+                fit
+                ref="goodsTable"
+                highlight-current-row
+                style="width: 100%">
+        <el-table-column align="center"
+                         label="ID"
+                         width="65">
+          <template scope="scope">
+            <span>{{scope.row.id}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         label="错误手机号">
+          <template scope="scope">
+            <span>{{scope.row.name }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button @click="handleCloseD2">取消</el-button>
+        <el-button type="primary"
+                   @click="handleConfirmD2">确定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -282,6 +336,7 @@ export default {
   },
   data() {
     return {
+      errGiveList: [], // 错误的赠送手机号
       dateRange: [], // 时间范围
       totalCoupon: null, // 总卷数
       tempAddedGoodList: [], // 当前页暂存的添加的商品列表
@@ -315,6 +370,7 @@ export default {
         pageNumber: 1,
         pageSize: 10
       },
+      dialogFormVisible2: false,
       dialogStatus: "",
       textMap: {
         update: "编辑",
@@ -323,6 +379,21 @@ export default {
     }
   },
   methods: {
+    // 关闭文件上传
+    handleCloseD2() {
+      this.dialogFormVisible2 = false
+    },
+    // 确定文件上传
+    handleConfirmD2() {
+      this.dialogFormVisible2 = false
+    },
+    // 文件上传成功后
+    handleFileSuccess(res, file) {
+      alert("succe")
+    },
+    handleGive(row) {
+      this.dialogFormVisible2 = true
+    },
     dateRangeChange() {
       // 获取时间范围
       this.temp.startTime = +new Date(this.dateRange[0])
@@ -448,6 +519,12 @@ export default {
         sentType: 1,
         startTime: null,
         title: null
+      }
+    },
+    // 控制表格颜色变化
+    tableRowClassName(row, index) {
+      if (row.status === "已过期") {
+        return "err-row"
       }
     }
   }
