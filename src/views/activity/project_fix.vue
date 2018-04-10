@@ -24,19 +24,20 @@
                        label="排序"
                        width="65">
         <template scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.row.sort}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
                        label="图片">
         <template scope="scope">
-          <span>{{scope.row.title}}</span>
+          <span><img :src="scope.row.img"
+                 height="50"></span>
         </template>
       </el-table-column>
       <el-table-column align="center"
                        label="商品数">
         <template scope="scope">
-          <span>{{scope.row.articleType.name}}</span>
+          <span>{{scope.row.goodsCount }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -53,12 +54,12 @@
                      type="info"
                      class="btn btn-sm btn-info"
                      icon="edit"
-                     @click="handleUpdate(scope.row)">编辑
+                     @click="handleUpdate(scope.row.topicModuleId)">编辑
           </el-button>
           <el-button size="small"
                      type="danger"
                      icon="delete"
-                     @click="handleDel">删除
+                     @click="handleDel(scope.row.topicModuleId)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -84,8 +85,8 @@
                      :on-success="handleImgSuccess"
                      list-type="picture-card"
                      :before-upload="beforeHandleImg">
-            <img v-if="temp.imgUrl"
-                 :src="temp.imgUrl"
+            <img v-if="temp.img"
+                 :src="temp.img"
                  class="avatar"
                  width="148"
                  height="148">
@@ -96,12 +97,12 @@
         <el-form-item label="添加商品">
           <el-button size="small"
                      type="primary"
-                     @click="handAdd">添加商品
+                     @click="handleAddGoods">添加商品
           </el-button>
         </el-form-item>
         <el-form-item label="已添加商品"
                       class="w50">
-          <el-table :data="tableData"
+          <el-table :data="addedGoodList"
                     border
                     fit
                     highlight-current-row
@@ -117,14 +118,13 @@
             <el-table-column align="center"
                              label="商品名称">
               <template scope="scope">
-                <span>{{scope.row.id}}</span>
+                <span>{{scope.row.name}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center"
                              label="排序">
               <template scope="scope">
-                <el-input @change="inutChange(e, scope.row)"
-                          v-model="scope.row.mySort"></el-input>
+                <el-input v-model="scope.row.sort"></el-input>
               </template>
             </el-table-column>
             <el-table-column align="center"
@@ -132,6 +132,7 @@
               <template scope="scope">
                 <el-button size="small"
                            icon="delete"
+                           @click="handleDelGood(scope.row)"
                            type="danger">移除</el-button>
               </template>
             </el-table-column>
@@ -139,7 +140,7 @@
         </el-form-item>
         <el-form-item label="排序">
           <el-input class="w30"
-                    v-model="temp.userName"></el-input>
+                    v-model="temp.sort"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer"
@@ -154,11 +155,78 @@
       </div>
     </el-dialog>
 
+    <!-- 弹出编辑和新增窗口1 -->
+    <el-dialog title="商品列表"
+               :visible.sync="dialogFormVisible1"
+               size="small">
+      <div class="filter-container">
+        <el-form inline>
+          <el-input type="text"
+                    class="w30"
+                    placeholder="请输入商品名或条码"
+                    v-model="listQuery1.key"></el-input>
+          <el-form-item>
+            <el-button class="filter-item"
+                       type="primary"
+                       @click="getTableData1"
+                       icon="search">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-table :data="tableData1"
+                border
+                fit
+                ref="goodsTable"
+                row-key="id"
+                @selection-change="handleSelectionChange"
+                highlight-current-row
+                style="width: 100%">
+        <el-table-column type="selection"
+                         :reserve-selection="true"
+                         width="55">
+        </el-table-column>
+        <el-table-column align="center"
+                         label="ID"
+                         width="65">
+          <template scope="scope">
+            <span>{{scope.row.id}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         label="商品名称">
+          <template scope="scope">
+            <span>{{scope.row.name }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <div class="pagination-container">
+        <el-pagination @current-change="getTableData1"
+                       :current-page.sync="listQuery1.pageNumber"
+                       :page-size="listQuery1.pageSize"
+                       layout="total, prev, pager, next"
+                       :total="total1">
+        </el-pagination>
+      </div>
+
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button @click="handleCloseD1">取消</el-button>
+        <el-button type="primary"
+                   @click="handleConfirmD1">确定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { getTableData } from "@/api/community_content"
+import {
+  getTableData,
+  addProjectModule,
+  updateProjectModule,
+  delProjectModule
+} from "@/api/activity"
 
 const ERR_OK = 0
 export default {
@@ -169,31 +237,36 @@ export default {
   },
   data() {
     return {
+      testList: [], // todo test
       name: null, // 专题名称
-      goodsSort: {},
+      tempAddedGoodList: [], // 当前页暂存的添加的商品列表
+      addedGoodList: [], // 当前模块已添加的商品列表
       loading: false,
+      // 弹窗内容数据对象
       temp: {
-        // 弹窗内容数据对象
-        articleTypeId: null,
-        content: null,
-        enable: 1,
-        id: null,
-        recommend: 1,
+        ids: [],
+        img: null,
         sort: null,
-        startTime: "",
-        title: null,
-        url: null,
-        isPush: 0,
-        imgUrl: null,
-        userName: null
+        topicModuleId: null,
+        topicTypeId: this.$route.query.id
       },
       tableData: null, // 表格数据
+      tableData1: null,
       total: null, // 数据总数
       dialogFormVisible: false,
       listQuery: {
         // 关键字查询，翻页等数据
         pageNumber: 1,
         pageSize: 20
+      },
+      tableData1: null, // 表格数据
+      total1: null, // 数据总数
+      dialogFormVisible1: false, // 第二个弹窗
+      listQuery1: {
+        // 关键字查询，翻页等数据
+        key: null,
+        pageNumber: 1,
+        pageSize: 10
       },
       dialogStatus: "",
       textMap: {
@@ -203,9 +276,53 @@ export default {
     }
   },
   methods: {
-    // 给商品输入排序时
-    inutChange() {
-      console.log(this.tableData)
+    // 删除已添加的商品
+    handleDelGood(row) {
+      let index = this.addedGoodList.indexOf(row)
+      this.addedGoodList.splice(index, 1)
+    },
+    // 关闭弹窗1
+    handleCloseD1() {
+      this.tempAddedGoodList = []
+      this.dialogFormVisible1 = false
+    },
+    // 确认弹窗1
+    handleConfirmD1() {
+      this.tempAddedGoodList.forEach(item => {
+        // 遍历临时添加的去重加入addedList
+        let addedIds = this.addedGoodList.map(i => {
+          return i.id
+        })
+        console.log("addedIds", addedIds)
+        item.id = Number(item.id)
+        if (addedIds.indexOf(item.id) === -1) {
+          this.addedGoodList.push(item)
+        }
+      })
+      this.setAddedGoodsProp(this.addedGoodList)
+      this.tempAddedGoodList = []
+      this.dialogFormVisible1 = false
+    },
+    // 动态设置添加的数据双相绑定
+    setAddedGoodsProp(arr) {
+      let self = this
+      if (arr.length > 0) {
+        arr.forEach(element => {
+          self.$set(element, "sort", element.sort)
+        })
+      }
+    },
+    // 点击添加商品按钮时，弹出选择框
+    handleAddGoods() {
+      this.dialogFormVisible1 = true
+      this.getTableData1()
+      this.$nextTick(() => {
+        this.$refs.goodsTable.clearSelection() // 清空之前的表格选择
+      })
+    },
+    // 多选时执行
+    handleSelectionChange(val) {
+      this.tempAddedGoodList = val
     },
     beforeHandleImg(file) {
       // 图片上传前
@@ -222,19 +339,15 @@ export default {
       // 图片上传成功后
       if (res.code === 0) {
         this.$message.success("上传成功")
-        this.temp.imgUrl = res.data
+        this.temp.img = res.data
       } else {
         this.$message.error("上传失败，请重试")
       }
     },
-    goList(id) {
-      // 跳转至功能列表
-      this.$router.push({ path: "/community/fnlist", query: { id } })
-    },
     getTableData() {
       let _this = this
       this.loading = true
-      getTableData(`/goodsTopic/module/${this.id}`, this.listQuery).then(
+      getTableData(`/goodsTopic/type/module/${this.id}`, this.listQuery).then(
         res => {
           // 获取tableData数据
           if (res.code === 0) {
@@ -254,39 +367,87 @@ export default {
         }
       )
     },
+    getTableData1() {
+      let _this = this
+      getTableData(`/community/goods/query`, this.listQuery1).then(res => {
+        // 获取tableData数据
+        if (res.code === 0) {
+          let datas = res.data
+          this.total1 = datas.total
+          this.tableData1 = datas.data
+        }
+      })
+    },
+    // 删除该模块
+    handleDel(id) {
+      this.$confirm(`是否删除该模块?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        delProjectModule(id).then(res => {
+          if (res.code === ERR_OK) {
+            this.$message({
+              type: "success",
+              message: `删除成功!`
+            })
+            this.getTableData()
+          }
+        })
+      })
+    },
     handleCreate() {
       // 点击创建新功能按钮
       this.resetTemp() // 清空原有表单
       this.dialogStatus = "create"
       this.dialogFormVisible = true
     },
-    handleUpdate(row) {
+    handleUpdate(id) {
       // 点击编辑功能按钮
-      this.resetTemp()
-      this.dialogStatus = "update"
-      this.dialogFormVisible = true
+      getTableData(`/goodsTopic/module/${id}`).then(res => {
+        if (res.code === ERR_OK) {
+          this.resetTemp()
+          this.addedGoodList = res.data.goodsList
+          this.setAddedGoodsProp(this.addedGoodList)
+          this.temp = Object.assign(this.temp, res.data)
+          this.temp.topicModuleId = id
+          this.dialogStatus = "update"
+          this.dialogFormVisible = true
+        }
+      })
     },
-    resetTemp() {
-      // 重置弹出表格
-      this.temp = {
-        // 清空内容数据对象
-        articleTypeId: null,
-        content: null,
-        enable: 1,
-        id: null,
-        recommend: 1,
-        sort: null,
-        startTime: "",
-        title: null,
-        url: null,
-        isPush: 0,
-        imgUrl: null,
-        userName: null
+    // 返回处理过的ids
+    hasSorted(arr) {
+      let ids = {} // 最终输出的ids
+      // 用于判断是否有没写排序的商品
+      function hasSort(elem) {
+        return !elem.sort
       }
+      // 按指定属性排序
+      function sort(prop) {
+        return function(a, b) {
+          let v1 = Number(a[prop])
+          let v2 = Number(b[prop])
+          return v1 - v2
+        }
+      }
+      if (arr.length > 0) {
+        if (arr.some(hasSort)) {
+          this.$message.error("请填写完整的商品排序")
+          return
+        } else {
+          let sortList = arr.sort(sort("sort"))
+          sortList.forEach((el, index) => {
+            ids[el.id] = el.sort
+          })
+        }
+      }
+      return ids
     },
+    // 创建新功能
     create() {
-      // 创建新功能
-      addArt(this.temp).then(res => {
+      this.temp.ids = this.hasSorted(this.addedGoodList)
+      addProjectModule(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
           this.dialogFormVisible = false
@@ -296,18 +457,26 @@ export default {
     },
     update() {
       // 确认编辑此条信息
-      upadateArt(this.temp).then(res => {
+      this.temp.ids = this.hasSorted(this.addedGoodList)
+      updateProjectModule(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
           this.dialogFormVisible = false
           this.$message.success("保存成功")
         }
       })
-    }
-  },
-  watch: {
-    goodsSort() {
-      console.log(this.goodsSort)
+    },
+    resetTemp() {
+      // 重置弹出表格
+      this.addedGoodList = []
+      this.temp = {
+        // 清空内容数据对象
+        ids: {},
+        img: "",
+        sort: null,
+        topicModuleId: null,
+        topicTypeId: this.$route.query.id
+      }
     }
   }
 }

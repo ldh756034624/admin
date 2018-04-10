@@ -77,3 +77,26 @@ export function updateProject(data) {    // 编辑专题
     data
   })
 }
+
+export function addProjectModule(data) {    // 添加专题模块
+  return fetch({
+    url: '/goodsTopic/module',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateProjectModule(data) {    // 编辑专题模块
+  return fetch({
+    url: '/goodsTopic/module',
+    method: 'PUT',
+    data
+  })
+}
+
+export function delProjectModule(id) {    // 删除专题模块
+  return fetch({
+    url: '/goodsTopic/module/del/' + id,
+    method: 'PUT'
+  })
+}
