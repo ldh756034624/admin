@@ -24,6 +24,7 @@ const bigRich = _import("activity/bigRich")
 const project = _import("activity/project")
 const projectFix = _import("activity/project_fix")
 const bigRichUserList = _import("activity/bigRichUserList")
+const coupon = _import("activity/coupon")
 
 /*社区管理*/
 const functionAssort = _import("community/function_assort")
@@ -165,6 +166,12 @@ export const asyncRouterMap = [
         name: "装修专题",
         meta_name: "projectFix",
         hidden: true
+      },
+      {
+        path: "coupon",
+        component: coupon,
+        name: "优惠券管理",
+        meta_name: "coupon"
       }
     ]
   },

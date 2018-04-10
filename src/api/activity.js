@@ -100,3 +100,19 @@ export function delProjectModule(id) {    // 删除专题模块
     method: 'PUT'
   })
 }
+
+export function addCoupon(data) {    // 添加优惠券
+  return fetch({
+    url: '/addCoupons',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateCoupon(data, id) {    // 编辑优惠券
+  return fetch({
+    url: `/updateCoupons/${id}`,
+    method: 'POST',
+    data
+  })
+}

@@ -2,24 +2,15 @@
   <div class="app-container">
     <!-- 搜索 -->
     <div class="filter-container">
-      <div>
-
-      </div>
       <div class="title">
-        当前专题：
-        <el-tag type="primary">{{name}}专场</el-tag>
+        优惠券数量：
+        <el-tag type="success">{{totalCoupon}}</el-tag>
       </div>
-      <router-link to="/activity/project">
-        <el-button type="primary"
-                   @click="handleCreate"
-                   icon="arrow-left">返回
-        </el-button>
-      </router-link>
       <el-button class="filter-item"
-                 style="margin-left:10px"
                  type="primary"
+                 style="margin-left:10px"
                  @click="handleCreate"
-                 icon="edit">新建装修板块
+                 icon="edit">新增
       </el-button>
     </div>
     <el-table v-loading="loading"
@@ -30,23 +21,66 @@
               highlight-current-row
               style="width: 100%">
       <el-table-column align="center"
-                       label="排序"
+                       label="ID"
                        width="65">
         <template scope="scope">
-          <span>{{scope.row.sort}}</span>
+          <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
-                       label="图片">
+                       label="标题">
         <template scope="scope">
-          <span><img :src="scope.row.img"
-                 height="50"></span>
+          <span>{{scope.row.title}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
-                       label="商品数">
+                       label="优惠券类型">
         <template scope="scope">
-          <span>{{scope.row.goodsCount }}</span>
+          <span>{{scope.row.couponType }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="使用范围">
+        <template scope="scope">
+          <span>{{scope.row.wide }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="制券张数">
+        <template scope="scope">
+          <span>{{scope.row.askCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="领取张数">
+        <template scope="scope">
+          <span>{{scope.row.askCount - scope.row.leftCount}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="剩余张数">
+        <template scope="scope">
+          <span>{{scope.row.leftCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="状态">
+        <template scope="scope">
+          <span>{{scope.row.status}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="生效时间">
+        <template scope="scope">
+          <el-icon name="time"></el-icon>
+          <span>{{scope.row.startTime | formatDateTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
+                       label="失效时间">
+        <template scope="scope">
+          <el-icon name="time"></el-icon>
+          <span>{{scope.row.endTime | formatDateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -60,23 +94,23 @@
                        label="操作">
         <template scope="scope">
           <el-button size="small"
+                     type="success"
+                     icon="caret-top"
+                     @click="handleDel(scope.row.topicModuleId)">赠送
+          </el-button>
+          <el-button size="small"
                      type="info"
                      class="btn btn-sm btn-info"
                      icon="edit"
-                     @click="handleUpdate(scope.row.topicModuleId)">编辑
-          </el-button>
-          <el-button size="small"
-                     type="danger"
-                     icon="delete"
-                     @click="handleDel(scope.row.topicModuleId)">删除
+                     @click="handleUpdate(scope.row)">编辑
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination-container">
       <el-pagination @current-change="getTableData"
-                     :current-page.sync="listQuery.pageNumber"
-                     :page-size="listQuery.pageSize"
+                     :current-page.sync="listQuery.page"
+                     :page-size="listQuery.limit"
                      layout="total, prev, pager, next"
                      :total="total">
       </el-pagination>
@@ -88,22 +122,28 @@
                size="full">
       <el-form :model="temp"
                label-width="100px">
-        <el-form-item label="模块图片">
-          <el-upload :action="IMGUP_API"
-                     :show-file-list="false"
-                     :on-success="handleImgSuccess"
-                     list-type="picture-card"
-                     :before-upload="beforeHandleImg">
-            <img v-if="temp.img"
-                 :src="temp.img"
-                 class="avatar"
-                 width="148"
-                 height="148">
-            <i v-else
-               class="avatar-uploader-icon el-icon-plus"></i>
-          </el-upload>
+        <el-form-item label="标题"
+                      class="red-star">
+          <el-input class="w30"
+                    v-model="temp.title"></el-input>
         </el-form-item>
-        <el-form-item label="添加商品">
+        <el-form-item label="优惠券类型"
+                      class="red-star">
+          <el-select v-model="temp.couponType"
+                     placeholder="请选择">
+            <el-option label="免单券"
+                       :value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="生效区间"
+                      class="red-star">
+          <el-date-picker v-model="dateRange"
+                          @change="dateRangeChange"
+                          type="datetimerange"
+                          placeholder="选择日期时间范围">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="使用范围">
           <el-button size="small"
                      type="primary"
                      @click="handleAddGoods">添加商品
@@ -118,7 +158,7 @@
                     stripe
                     style="width: 100%">
             <el-table-column align="center"
-                             label="ID"
+                             label="商品ID"
                              width="65">
               <template scope="scope">
                 <span>{{scope.row.id}}</span>
@@ -128,12 +168,6 @@
                              label="商品名称">
               <template scope="scope">
                 <span>{{scope.row.name}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center"
-                             label="排序">
-              <template scope="scope">
-                <el-input v-model="scope.row.sort"></el-input>
               </template>
             </el-table-column>
             <el-table-column align="center"
@@ -147,9 +181,18 @@
             </el-table-column>
           </el-table>
         </el-form-item>
-        <el-form-item label="排序">
+        <el-form-item label="制券张数"
+                      class="red-star">
           <el-input class="w30"
-                    v-model="temp.sort"></el-input>
+                    v-model="temp.askCount"></el-input>
+        </el-form-item>
+        <el-form-item label="发放方式"
+                      class="red-star">
+          <el-select v-model="temp.sentType"
+                     placeholder="请选择">
+            <el-option label="内部赠送"
+                       :value="1"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer"
@@ -230,34 +273,29 @@
 </template>
 
 <script>
-import {
-  getTableData,
-  addProjectModule,
-  updateProjectModule,
-  delProjectModule
-} from "@/api/activity"
+import { getTableData, addCoupon, updateCoupon } from "@/api/activity"
 
 const ERR_OK = 0
 export default {
   created() {
-    this.id = this.$route.query.id // 专题id
-    this.name = this.$route.query.name // 专题id
     this.getTableData()
   },
   data() {
     return {
-      testList: [], // todo test
-      name: null, // 专题名称
+      dateRange: [], // 时间范围
+      totalCoupon: null, // 总卷数
       tempAddedGoodList: [], // 当前页暂存的添加的商品列表
       addedGoodList: [], // 当前模块已添加的商品列表
       loading: false,
       // 弹窗内容数据对象
       temp: {
-        ids: [],
-        img: null,
-        sort: null,
-        topicModuleId: null,
-        topicTypeId: this.$route.query.id
+        askCount: null,
+        couponType: 1,
+        endTime: null,
+        goodIdList: null,
+        sentType: 1,
+        startTime: null,
+        title: null
       },
       tableData: null, // 表格数据
       tableData1: null,
@@ -265,8 +303,8 @@ export default {
       dialogFormVisible: false,
       listQuery: {
         // 关键字查询，翻页等数据
-        pageNumber: 1,
-        pageSize: 20
+        page: 1,
+        limit: 20
       },
       tableData1: null, // 表格数据
       total1: null, // 数据总数
@@ -285,6 +323,11 @@ export default {
     }
   },
   methods: {
+    dateRangeChange() {
+      // 获取时间范围
+      this.temp.startTime = +new Date(this.dateRange[0])
+      this.temp.endTime = +new Date(this.dateRange[1])
+    },
     // 删除已添加的商品
     handleDelGood(row) {
       let index = this.addedGoodList.indexOf(row)
@@ -302,24 +345,13 @@ export default {
         let addedIds = this.addedGoodList.map(i => {
           return i.id
         })
-        console.log("addedIds", addedIds)
         item.id = Number(item.id)
         if (addedIds.indexOf(item.id) === -1) {
           this.addedGoodList.push(item)
         }
       })
-      this.setAddedGoodsProp(this.addedGoodList)
       this.tempAddedGoodList = []
       this.dialogFormVisible1 = false
-    },
-    // 动态设置添加的数据双相绑定
-    setAddedGoodsProp(arr) {
-      let self = this
-      if (arr.length > 0) {
-        arr.forEach(element => {
-          self.$set(element, "sort", element.sort)
-        })
-      }
     },
     // 点击添加商品按钮时，弹出选择框
     handleAddGoods() {
@@ -333,48 +365,18 @@ export default {
     handleSelectionChange(val) {
       this.tempAddedGoodList = val
     },
-    beforeHandleImg(file) {
-      // 图片上传前
-      const isJPG =
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png"
-      if (!isJPG) {
-        this.$message.error("上传头像图片必须是 JPG,JPEG,PNG 格式!")
-      }
-      return isJPG
-    },
-    handleImgSuccess(res, file) {
-      // 图片上传成功后
-      if (res.code === 0) {
-        this.$message.success("上传成功")
-        this.temp.img = res.data
-      } else {
-        this.$message.error("上传失败，请重试")
-      }
-    },
     getTableData() {
-      let _this = this
       this.loading = true
-      getTableData(`/goodsTopic/type/module/${this.id}`, this.listQuery).then(
-        res => {
-          // 获取tableData数据
-          if (res.code === 0) {
-            let datas = res.data
-            this.total = datas.total
-            this.tableData = datas.data
-
-            // 动态绑定属性
-            // if (this.tableData.length > 0) {
-            //   this.tableData.forEach(element => {
-            //     _this.$set(element, "mySort", element.mySort)
-            //   })
-            // }
-
-            this.loading = false
-          }
+      getTableData(`/coupons`, this.listQuery).then(res => {
+        // 获取tableData数据
+        if (res.code === 0) {
+          let datas = res.data
+          this.totalCoupon = datas.count
+          this.total = datas.total
+          this.tableData = datas.data
+          this.loading = false
         }
-      )
+      })
     },
     getTableData1() {
       let _this = this
@@ -387,76 +389,33 @@ export default {
         }
       })
     },
-    // 删除该模块
-    handleDel(id) {
-      this.$confirm(`是否删除该模块?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        delProjectModule(id).then(res => {
-          if (res.code === ERR_OK) {
-            this.$message({
-              type: "success",
-              message: `删除成功!`
-            })
-            this.getTableData()
-          }
-        })
-      })
-    },
     handleCreate() {
       // 点击创建新功能按钮
       this.resetTemp() // 清空原有表单
       this.dialogStatus = "create"
       this.dialogFormVisible = true
     },
-    handleUpdate(id) {
+    handleUpdate(row) {
       // 点击编辑功能按钮
-      getTableData(`/goodsTopic/module/${id}`).then(res => {
-        if (res.code === ERR_OK) {
-          this.resetTemp()
-          this.addedGoodList = res.data.goodsList
-          this.setAddedGoodsProp(this.addedGoodList)
-          this.temp = Object.assign(this.temp, res.data)
-          this.temp.topicModuleId = id
-          this.dialogStatus = "update"
-          this.dialogFormVisible = true
-        }
-      })
+      this.resetTemp()
+      this.addedGoodList = [{ id: row.goodsId, name: row.goodsName }]
+      this.dateRange.push(row.startTime, row.endTime) // 初始化时间
+      this.temp = Object.assign(this.temp, row)
+      this.dialogStatus = "update"
+      this.dialogFormVisible = true
     },
     // 返回处理过的ids
     hasSorted(arr) {
-      let ids = {} // 最终输出的ids
-      // 用于判断是否有没写排序的商品
-      function hasSort(elem) {
-        return !elem.sort
-      }
-      // 按指定属性排序
-      function sort(prop) {
-        return function(a, b) {
-          let v1 = Number(a[prop])
-          let v2 = Number(b[prop])
-          return v1 - v2
-        }
-      }
-      if (arr.length > 0) {
-        if (arr.some(hasSort)) {
-          this.$message.error("请填写完整的商品排序")
-          return
-        } else {
-          let sortList = arr.sort(sort("sort"))
-          sortList.forEach((el, index) => {
-            ids[el.id] = el.sort
-          })
-        }
-      }
+      let ids = [] // 最终输出的ids
+      arr.forEach((el, index) => {
+        ids.push(el.id)
+      })
       return ids
     },
     // 创建新功能
     create() {
-      this.temp.ids = this.hasSorted(this.addedGoodList)
-      addProjectModule(this.temp).then(res => {
+      this.temp.goodIdList = this.hasSorted(this.addedGoodList)
+      addCoupon(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
           this.dialogFormVisible = false
@@ -466,8 +425,10 @@ export default {
     },
     update() {
       // 确认编辑此条信息
-      this.temp.ids = this.hasSorted(this.addedGoodList)
-      updateProjectModule(this.temp).then(res => {
+      this.temp.goodIdList = this.hasSorted(this.addedGoodList)
+      this.temp.startTime = +new Date(this.temp.startTime)
+      this.temp.endTime = +new Date(this.temp.endTime)
+      updateCoupon(this.temp, this.temp.id).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
           this.dialogFormVisible = false
@@ -478,13 +439,15 @@ export default {
     resetTemp() {
       // 重置弹出表格
       this.addedGoodList = []
+      this.dateRange = []
       this.temp = {
-        // 清空内容数据对象
-        ids: {},
-        img: "",
-        sort: null,
-        topicModuleId: null,
-        topicTypeId: this.$route.query.id
+        askCount: null,
+        couponType: 1,
+        endTime: null,
+        goodIdList: null,
+        sentType: 1,
+        startTime: null,
+        title: null
       }
     }
   }
