@@ -116,3 +116,11 @@ export function updateCoupon(data, id) {    // 编辑优惠券
     data
   })
 }
+
+export function sendCoupon(params) {    // 赠送优惠券
+  return fetch({
+    url: `/coupons/send`,
+    method: 'POST',
+    params
+  })
+}

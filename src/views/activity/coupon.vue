@@ -97,7 +97,7 @@
           <el-button size="small"
                      type="success"
                      icon="caret-top"
-                     @click="handleGive(scope.row)">赠送
+                     @click="handleGive(scope.row.id)">赠送
           </el-button>
           <el-button size="small"
                      type="info"
@@ -284,11 +284,12 @@
           </el-form-item>
           <el-form-item label="上传数据">
             <el-upload class="upload-demo"
-                       :action="FILE_API"
-                       :on-success="handleFileSuccess"
-                       :on-preview="handlePreview"
-                       :on-remove="handleRemove"
-                       :file-list="fileList">
+                       :action="`${fileURL}/coupons/file/${this.choosedCouponId}`"
+                       :headers="{token:token}"
+                       accept=".xls,.xlsx"
+                       :show-file-list="false"
+                       :before-upload="beforFileUp"
+                       :on-success="handleFileSuccess">
               <el-button size="small"
                          type="primary">点击上传</el-button>
             </el-upload>
@@ -297,6 +298,8 @@
       </div>
       <el-table :data="errGiveList"
                 border
+                v-loading="loading1"
+                element-loading-text="文件正在上传请稍等..."
                 fit
                 ref="goodsTable"
                 highlight-current-row
@@ -305,13 +308,19 @@
                          label="ID"
                          width="65">
           <template scope="scope">
-            <span>{{scope.row.id}}</span>
+            <span>{{scope.row.userId}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center"
                          label="错误手机号">
           <template scope="scope">
-            <span>{{scope.row.name }}</span>
+            <span>{{scope.row.phone }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         label="错误信息">
+          <template scope="scope">
+            <span>{{scope.row.msg }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -327,7 +336,13 @@
 </template>
 
 <script>
-import { getTableData, addCoupon, updateCoupon } from "@/api/activity"
+import {
+  getTableData,
+  addCoupon,
+  updateCoupon,
+  sendCoupon
+} from "@/api/activity"
+import store from "@/store"
 
 const ERR_OK = 0
 export default {
@@ -336,12 +351,17 @@ export default {
   },
   data() {
     return {
+      token: store.getters.token,
+      fileURL: process.env.BASE_API,
+      choosedCouponId: null, // 用于赠送卡券时使用的id
+      couponTempId: null, // 保存上传赠送excel后返回的id
       errGiveList: [], // 错误的赠送手机号
       dateRange: [], // 时间范围
       totalCoupon: null, // 总卷数
       tempAddedGoodList: [], // 当前页暂存的添加的商品列表
       addedGoodList: [], // 当前模块已添加的商品列表
       loading: false,
+      loading1: false, // 上传excel用的
       // 弹窗内容数据对象
       temp: {
         askCount: null,
@@ -381,17 +401,43 @@ export default {
   methods: {
     // 关闭文件上传
     handleCloseD2() {
+      this.resetCoupon()
       this.dialogFormVisible2 = false
     },
     // 确定文件上传
     handleConfirmD2() {
-      this.dialogFormVisible2 = false
+      let data = {
+        couponId: this.choosedCouponId,
+        tempId: this.couponTempId
+      }
+      sendCoupon(data).then(res => {
+        if (res.code === ERR_OK) {
+          this.$message.success("创建成功")
+          this.getTableData()
+          this.resetCoupon()
+          this.dialogFormVisible2 = false
+        }
+      })
+    },
+    resetCoupon() {
+      this.errGiveList = null
+      this.couponTempId = null
+      this.errGiveList = []
+    },
+    beforFileUp() {
+      this.loading1 = true
     },
     // 文件上传成功后
     handleFileSuccess(res, file) {
-      alert("succe")
+      if (res.code === ERR_OK) {
+        this.errGiveList = res.data.errorRecord
+        this.couponTempId = res.data.tempId
+        this.loading1 = false
+        this.$message.success("文件上传成功")
+      }
     },
-    handleGive(row) {
+    handleGive(id) {
+      this.choosedCouponId = id
       this.dialogFormVisible2 = true
     },
     dateRangeChange() {
