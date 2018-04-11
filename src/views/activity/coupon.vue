@@ -278,9 +278,11 @@
         <el-form :model="temp"
                  label-width="70px">
           <el-form-item label="下载模板">
-            <el-button type="primary"
-                       icon="caret-bottom"
-                       @click="create">点击下载模板</el-button>
+            <a href="https://cdn-h9.thy360.com/20180410174928-994322480/template.xlsx">
+              <el-button type="primary"
+                         icon="caret-bottom">点击下载模板</el-button>
+            </a>
+
           </el-form-item>
           <el-form-item label="上传数据">
             <el-upload class="upload-demo"
