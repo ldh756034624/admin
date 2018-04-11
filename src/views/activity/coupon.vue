@@ -278,7 +278,7 @@
         <el-form :model="temp"
                  label-width="70px">
           <el-form-item label="下载模板">
-            <a href="https://cdn-h9.thy360.com/20180410174928-994322480/template.xlsx">
+            <a :href="downTempUrl">
               <el-button type="primary"
                          icon="caret-bottom">点击下载模板</el-button>
             </a>
@@ -286,7 +286,7 @@
           </el-form-item>
           <el-form-item label="上传数据">
             <el-upload class="upload-demo"
-                       :action="`${fileURL}/coupons/file/${this.choosedCouponId}`"
+                       :action="`${fileURL}coupons/file/${this.choosedCouponId}`"
                        :headers="{token:token}"
                        accept=".xls,.xlsx"
                        :show-file-list="false"
@@ -350,9 +350,11 @@ const ERR_OK = 0
 export default {
   created() {
     this.getTableData()
+    this.getDownTempUrl()
   },
   data() {
     return {
+      downTempUrl: null, // 下载模板的链接
       token: store.getters.token,
       fileURL: process.env.BASE_API,
       choosedCouponId: null, // 用于赠送卡券时使用的id
@@ -401,6 +403,15 @@ export default {
     }
   },
   methods: {
+    //下载模板的链接
+    getDownTempUrl(){
+      let url = `/basis/global/config?type=1&code=couponTemplate`
+      getTableData(url).then(res =>{
+        if(res.code === ERR_OK) {
+          this.downTempUrl = res.data
+        }
+      })
+    },
     // 关闭文件上传
     handleCloseD2() {
       this.resetCoupon()
