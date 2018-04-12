@@ -47,6 +47,12 @@
         </template>
       </el-table-column>
       <el-table-column align="center"
+                       label="使用商品">
+        <template scope="scope">
+          <span>{{scope.row.goodsName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center"
                        label="制券张数">
         <template scope="scope">
           <span>{{scope.row.askCount }}</span>
@@ -95,11 +101,13 @@
                        label="操作">
         <template scope="scope">
           <el-button size="small"
+                     v-if="scope.row.canSend"
                      type="success"
                      icon="caret-top"
                      @click="handleGive(scope.row.id)">赠送
           </el-button>
           <el-button size="small"
+                     v-if="scope.row.canEdit"
                      type="info"
                      class="btn btn-sm btn-info"
                      icon="edit"
@@ -404,10 +412,10 @@ export default {
   },
   methods: {
     //下载模板的链接
-    getDownTempUrl(){
+    getDownTempUrl() {
       let url = `/basis/global/config?type=1&code=couponTemplate`
-      getTableData(url).then(res =>{
-        if(res.code === ERR_OK) {
+      getTableData(url).then(res => {
+        if (res.code === ERR_OK) {
           this.downTempUrl = res.data
         }
       })
@@ -447,6 +455,8 @@ export default {
         this.couponTempId = res.data.tempId
         this.loading1 = false
         this.$message.success("文件上传成功")
+      } else {
+        this.$message.error(res.msg)
       }
     },
     handleGive(id) {
@@ -582,7 +592,7 @@ export default {
     },
     // 控制表格颜色变化
     tableRowClassName(row, index) {
-      if (row.status === "已过期") {
+      if (row.status === "已过期" || row.status === "已失效") {
         return "err-row"
       }
     }
