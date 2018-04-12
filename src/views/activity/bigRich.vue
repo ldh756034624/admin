@@ -294,7 +294,7 @@ export default {
       }.bind(this)
       if (this.winnerUser) {
         this.$confirm(
-          `要覆盖之前添加的中奖用户数据吗？最终中奖已最后一次添加的用户为准！`,
+          `要覆盖之前添加的中奖用户数据吗？最终中奖以最后一次添加的用户为准！`,
           "提示",
           {
             confirmButtonText: "确定",
