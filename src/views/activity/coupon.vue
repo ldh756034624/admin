@@ -110,8 +110,8 @@
     </el-table>
     <div class="pagination-container">
       <el-pagination @current-change="getTableData"
-                     :current-page.sync="listQuery.page"
-                     :page-size="listQuery.limit"
+                     :current-page.sync="listQuery.pageNumber"
+                     :page-size="listQuery.pageSize"
                      layout="total, prev, pager, next"
                      :total="total">
       </el-pagination>
@@ -382,8 +382,8 @@ export default {
       dialogFormVisible: false,
       listQuery: {
         // 关键字查询，翻页等数据
-        page: 1,
-        limit: 20
+        pageNumber: 1,
+        pageSize: 20
       },
       tableData1: null, // 表格数据
       total1: null, // 数据总数
