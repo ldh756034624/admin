@@ -130,6 +130,8 @@
                :visible.sync="dialogFormVisible"
                size="full">
       <el-form :model="temp"
+               :rules="rules"
+               ref="validateForm"
                label-width="100px">
         <el-form-item label="标题"
                       class="red-star">
@@ -191,9 +193,10 @@
           </el-table>
         </el-form-item>
         <el-form-item label="制券张数"
+                      prop="z1"
                       class="red-star">
           <el-input class="w30"
-                    v-model="temp.askCount"></el-input>
+                    v-model.number="temp.askCount"></el-input>
         </el-form-item>
         <el-form-item label="发放方式"
                       class="red-star">
@@ -353,6 +356,7 @@ import {
   sendCoupon
 } from "@/api/activity"
 import store from "@/store"
+import { z1 } from "@/utils/validate"
 
 const ERR_OK = 0
 export default {
@@ -361,7 +365,20 @@ export default {
     this.getDownTempUrl()
   },
   data() {
+    var validateZ1 = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入制券张数"))
+      } else if (!z1(value)) {
+        // 正整数
+        callback(new Error("请输入正确的数字"))
+      } else {
+        callback()
+      }
+    }
     return {
+      rules: {
+        z1: [{ validator: validateZ1, trigger: "blur" }]
+      },
       downTempUrl: null, // 下载模板的链接
       token: store.getters.token,
       fileURL: process.env.BASE_API,
@@ -554,6 +571,9 @@ export default {
     },
     // 创建新功能
     create() {
+      if (!this.validateForm()) {
+        return
+      }
       this.temp.goodIdList = this.hasSorted(this.addedGoodList)
       addCoupon(this.temp).then(res => {
         if (res.code === ERR_OK) {
@@ -565,6 +585,9 @@ export default {
     },
     update() {
       // 确认编辑此条信息
+      if (!this.validateForm()) {
+        return
+      }
       this.temp.goodIdList = this.hasSorted(this.addedGoodList)
       this.temp.startTime = +new Date(this.temp.startTime)
       this.temp.endTime = +new Date(this.temp.endTime)
@@ -573,6 +596,16 @@ export default {
           this.getTableData()
           this.dialogFormVisible = false
           this.$message.success("保存成功")
+        }
+      })
+    },
+    // true可以  false不可以
+    validateForm() {
+      this.$refs["validateForm"].validate(valid => {
+        if (valid) {
+          return true
+        } else {
+          return false
         }
       })
     },

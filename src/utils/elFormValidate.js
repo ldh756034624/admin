@@ -5,14 +5,14 @@
  */
 
 /**
- * 用于校验排序输入框
+ * 用于校验正整数输入框
  */
-var validateSort = (rule, value, callback) => {
+var validateZ1 = (rule, value, callback) => {
   if (!value) {
     callback(new Error("请输入排序数字"))
   } else if (!z1(value)) {
     // 正整数
-    callback(new Error("请输入正确的数字"))
+    callback(new Error("请输入正确的正整数"))
   } else {
     callback()
   }

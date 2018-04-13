@@ -158,14 +158,15 @@
                :visible.sync="dialogFormVisible1"
                size="full">
       <el-form :model="temp1"
-               ref="temp1"
                label-width="100px"
                class="form30">
-        <el-form-item label="开奖金额">
+        <el-form-item label="开奖金额"
+                      class="red-star">
           <el-input v-model="temp1.money"
                     placeholder="元"></el-input>
         </el-form-item>
-        <el-form-item label="添加用户">
+        <el-form-item label="添加用户"
+                      class="red-star">
           <el-input v-model="temp1.phone"></el-input>
         </el-form-item>
       </el-form>
@@ -188,6 +189,7 @@ import {
   enableBigRich,
   addBigRichUser
 } from "@/api/activity.js"
+import { z1 } from "@/utils/validate"
 
 const ERR_OK = 0
 export default {
@@ -282,6 +284,14 @@ export default {
       this.dialogFormVisible1 = true
     },
     handleBigRichUser() {
+      if (!this.temp1.money) {
+        this.$message.error("请输入开奖金额")
+        return
+      }
+      if (!z1(this.temp1.money)) {
+        this.$message.error("请输入正确的开奖金额")
+        return
+      }
       let addUser = function() {
         addBigRichUser(this.temp1).then(res => {
           if (res.code === ERR_OK) {
