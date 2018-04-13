@@ -601,13 +601,15 @@ export default {
     },
     // true可以  false不可以
     validateForm() {
-      this.$refs["validateForm"].validate(valid => {
+      let pass
+      this.$refs.validateForm.validate(valid => {
         if (valid) {
-          return true
+          pass = true
         } else {
-          return false
+          pass = false
         }
       })
+      return pass
     },
     resetTemp() {
       // 重置弹出表格
