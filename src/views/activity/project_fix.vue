@@ -87,6 +87,8 @@
                :visible.sync="dialogFormVisible"
                size="full">
       <el-form :model="temp"
+               :rules="rules"
+               ref="validateForm"
                label-width="100px">
         <el-form-item label="模块图片">
           <el-upload :action="IMGUP_API"
@@ -133,7 +135,7 @@
             <el-table-column align="center"
                              label="排序">
               <template scope="scope">
-                <el-input v-model="scope.row.sort"></el-input>
+                <el-input v-model.number="scope.row.sort"></el-input>
               </template>
             </el-table-column>
             <el-table-column align="center"
@@ -147,9 +149,11 @@
             </el-table-column>
           </el-table>
         </el-form-item>
-        <el-form-item label="排序">
+        <el-form-item label="排序"
+                      prop="sort"
+                      class="red-star">
           <el-input class="w30"
-                    v-model="temp.sort"></el-input>
+                    v-model.number="temp.sort"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer"
@@ -172,7 +176,7 @@
         <el-form inline>
           <el-input type="text"
                     class="w30"
-                    placeholder="请输入商品名或条码"
+                    placeholder="商品名或者ID"
                     v-model="listQuery1.key"></el-input>
           <el-form-item>
             <el-button class="filter-item"
@@ -237,6 +241,8 @@ import {
   delProjectModule
 } from "@/api/activity"
 
+import { z1 } from "@/utils/validate"
+
 const ERR_OK = 0
 export default {
   created() {
@@ -245,7 +251,20 @@ export default {
     this.getTableData()
   },
   data() {
+    var validateSort = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入排序数字"))
+      } else if (!z1(value)) {
+        // 正整数
+        callback(new Error("请输入正确的数字"))
+      } else {
+        callback()
+      }
+    }
     return {
+      rules: {
+        sort: [{ validator: validateSort, trigger: "blur" }]
+      },
       testList: [], // todo test
       name: null, // 专题名称
       tempAddedGoodList: [], // 当前页暂存的添加的商品列表
@@ -363,14 +382,6 @@ export default {
             let datas = res.data
             this.total = datas.total
             this.tableData = datas.data
-
-            // 动态绑定属性
-            // if (this.tableData.length > 0) {
-            //   this.tableData.forEach(element => {
-            //     _this.$set(element, "mySort", element.mySort)
-            //   })
-            // }
-
             this.loading = false
           }
         }
@@ -443,7 +454,7 @@ export default {
       if (arr.length > 0) {
         if (arr.some(hasSort)) {
           this.$message.error("请填写完整的商品排序")
-          return
+          return false
         } else {
           let sortList = arr.sort(sort("sort"))
           sortList.forEach((el, index) => {
@@ -455,7 +466,13 @@ export default {
     },
     // 创建新功能
     create() {
+      if (!this.validateForm()) {
+        return
+      }
       this.temp.ids = this.hasSorted(this.addedGoodList)
+      if (!this.temp.ids) {
+        return
+      }
       addProjectModule(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
@@ -466,12 +483,28 @@ export default {
     },
     update() {
       // 确认编辑此条信息
+      if (!this.validateForm()) {
+        return
+      }
       this.temp.ids = this.hasSorted(this.addedGoodList)
+      if (!this.temp.ids) {
+        return
+      }
       updateProjectModule(this.temp).then(res => {
         if (res.code === ERR_OK) {
           this.getTableData()
           this.dialogFormVisible = false
           this.$message.success("保存成功")
+        }
+      })
+    },
+    // true可以  false不可以
+    validateForm() {
+      this.$refs["validateForm"].validate(valid => {
+        if (valid) {
+          return true
+        } else {
+          return false
         }
       })
     },
