@@ -158,14 +158,18 @@
                :visible.sync="dialogFormVisible1"
                size="full">
       <el-form :model="temp1"
+               ref="validateForm"
+               :rules="rules"
                label-width="100px"
                class="form30">
         <el-form-item label="开奖金额"
+                      prop="z1"
                       class="red-star">
-          <el-input v-model="temp1.money"
+          <el-input v-model.number="temp1.money"
                     placeholder="元"></el-input>
         </el-form-item>
         <el-form-item label="添加用户"
+                      prop="ness"
                       class="red-star">
           <el-input v-model="temp1.phone"></el-input>
         </el-form-item>
@@ -194,7 +198,30 @@ import { z1 } from "@/utils/validate"
 const ERR_OK = 0
 export default {
   data() {
+    var validateZ1 = (rule, value, callback) => {
+      value = this.temp1.money
+      if (!value) {
+        callback(new Error("请输入开奖金额"))
+      } else if (!z1(value)) {
+        // 正整数
+        callback(new Error("请输入正确的金额"))
+      } else {
+        callback()
+      }
+    }
+    var ness = (rule, value, callback) => {
+      value = this.temp1.phone
+      if (!value) {
+        callback(new Error("请输入中奖用户"))
+      } else {
+        callback()
+      }
+    }
     return {
+      rules: {
+        z1: [{ validator: validateZ1, trigger: "blur" }],
+        ness: [{ validator: ness, trigger: "blur" }]
+      },
       loading: false,
       dateRange: null, // 时间范围
       dateTime: null, // 日期时间点
@@ -284,12 +311,7 @@ export default {
       this.dialogFormVisible1 = true
     },
     handleBigRichUser() {
-      if (!this.temp1.money) {
-        this.$message.error("请输入开奖金额")
-        return
-      }
-      if (!z1(this.temp1.money)) {
-        this.$message.error("请输入正确的开奖金额")
+      if (!this.validateForm()) {
         return
       }
       let addUser = function() {
@@ -378,6 +400,18 @@ export default {
           this.$message.success("保存成功")
         }
       })
+    },
+    // true可以  false不可以
+    validateForm() {
+      let pass
+      this.$refs.validateForm.validate(valid => {
+        if (valid) {
+          pass = true
+        } else {
+          pass = false
+        }
+      })
+      return pass
     },
     // 改变每行颜色
     tableRowClassName(row, index) {
