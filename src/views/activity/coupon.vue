@@ -366,6 +366,7 @@ export default {
   },
   data() {
     var validateZ1 = (rule, value, callback) => {
+      value = this.temp.askCount
       if (!value) {
         callback(new Error("请输入制券张数"))
       } else if (!z1(value)) {
