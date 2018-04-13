@@ -163,13 +163,13 @@
                label-width="100px"
                class="form30">
         <el-form-item label="开奖金额"
-                      prop="z1"
+                      prop="money"
                       class="red-star">
           <el-input v-model.number="temp1.money"
                     placeholder="元"></el-input>
         </el-form-item>
         <el-form-item label="添加用户"
-                      prop="ness"
+                      prop="phone"
                       class="red-star">
           <el-input v-model="temp1.phone"></el-input>
         </el-form-item>
@@ -199,7 +199,6 @@ const ERR_OK = 0
 export default {
   data() {
     var validateZ1 = (rule, value, callback) => {
-      value = this.temp1.money
       if (!value) {
         callback(new Error("请输入开奖金额"))
       } else if (!z1(value)) {
@@ -210,7 +209,6 @@ export default {
       }
     }
     var ness = (rule, value, callback) => {
-      value = this.temp1.phone
       if (!value) {
         callback(new Error("请输入中奖用户"))
       } else {
@@ -219,8 +217,8 @@ export default {
     }
     return {
       rules: {
-        z1: [{ validator: validateZ1, trigger: "blur" }],
-        ness: [{ validator: ness, trigger: "blur" }]
+        money: [{ validator: validateZ1, trigger: "blur" }],
+        phone: [{ validator: ness, trigger: "blur" }]
       },
       loading: false,
       dateRange: null, // 时间范围

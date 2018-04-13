@@ -193,7 +193,7 @@
           </el-table>
         </el-form-item>
         <el-form-item label="制券张数"
-                      prop="z1"
+                      prop="askCount"
                       class="red-star">
           <el-input class="w30"
                     v-model.number="temp.askCount"></el-input>
@@ -366,7 +366,7 @@ export default {
   },
   data() {
     var validateZ1 = (rule, value, callback) => {
-      value = this.temp.askCount
+      // value = this.temp.askCount
       if (!value) {
         callback(new Error("请输入制券张数"))
       } else if (!z1(value)) {
@@ -378,7 +378,7 @@ export default {
     }
     return {
       rules: {
-        z1: [{ validator: validateZ1, trigger: "blur" }]
+        askCount: [{ validator: validateZ1, trigger: "blur" }]
       },
       downTempUrl: null, // 下载模板的链接
       token: store.getters.token,
