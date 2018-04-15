@@ -21,7 +21,10 @@ const activityList = _import("activity/activity_list")
 const hongbao = _import("activity/hongbao")
 const hongbaoPeople = _import("activity/hongbao_people")
 const bigRich = _import("activity/bigRich")
+const project = _import("activity/project")
+const projectFix = _import("activity/project_fix")
 const bigRichUserList = _import("activity/bigRichUserList")
+const coupon = _import("activity/coupon")
 
 /*社区管理*/
 const functionAssort = _import("community/function_assort")
@@ -135,7 +138,7 @@ export const asyncRouterMap = [
         path: "bigRich",
         component: bigRich,
         name: "1号大富贵",
-        meta_name: "bigRich",
+        meta_name: "bigRich"
       },
       {
         path: "bigRich/bigRichUserList",
@@ -150,6 +153,25 @@ export const asyncRouterMap = [
         name: "参与列表",
         meta_name: "hongbaoPeople",
         hidden: true
+      },
+      {
+        path: "project",
+        component: project,
+        name: "专题配置",
+        meta_name: "project"
+      },
+      {
+        path: "projectFix",
+        component: projectFix,
+        name: "装修专题",
+        meta_name: "projectFix",
+        hidden: true
+      },
+      {
+        path: "coupon",
+        component: coupon,
+        name: "优惠券管理",
+        meta_name: "coupon"
       }
     ]
   },

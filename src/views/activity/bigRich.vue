@@ -69,7 +69,7 @@
       <el-table-column align="center"
                        label="启用/禁用">
         <template scope="scope">
-          <span>{{scope.row.status}}</span>
+          <span>{{scope.row.statusInt == 0? '禁用' : '启用'}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -89,8 +89,8 @@
           <el-button size="small"
                      type="success"
                      class="btn btn-sm btn-info"
-                     v-if="scope.row.canAddUser "
-                     @click="handleUser(scope.row.id)">添加用户
+                     v-if="scope.row.canAddUser"
+                     @click="handleUser(scope.row.id, scope.row.winnerUser)">添加用户
           </el-button>
         </template>
       </el-table-column>
@@ -112,7 +112,8 @@
                ref="temp"
                label-width="100px"
                class="form30">
-        <el-form-item label="活动区间">
+        <el-form-item label="活动区间"
+                      class="red-star">
           <el-date-picker v-model="dateRange"
                           :disabled="dialogStatus === 'update' ? true : false"
                           @change="dateRangeChange"
@@ -157,13 +158,19 @@
                :visible.sync="dialogFormVisible1"
                size="full">
       <el-form :model="temp1"
-               ref="temp1"
+               ref="validateForm"
+               :rules="rules"
                label-width="100px"
                class="form30">
-        <el-form-item label="开奖金额">
-          <el-input v-model="temp1.money"></el-input>
+        <el-form-item label="开奖金额"
+                      prop="money"
+                      class="red-star">
+          <el-input v-model.number="temp1.money"
+                    placeholder="元"></el-input>
         </el-form-item>
-        <el-form-item label="添加用户">
+        <el-form-item label="添加用户"
+                      prop="phone"
+                      class="red-star">
           <el-input v-model="temp1.phone"></el-input>
         </el-form-item>
       </el-form>
@@ -186,11 +193,33 @@ import {
   enableBigRich,
   addBigRichUser
 } from "@/api/activity.js"
+import { z1 } from "@/utils/validate"
 
 const ERR_OK = 0
 export default {
   data() {
+    var validateZ1 = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入开奖金额"))
+      } else if (!z1(value)) {
+        // 正整数
+        callback(new Error("请输入正确的金额"))
+      } else {
+        callback()
+      }
+    }
+    var ness = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入中奖用户"))
+      } else {
+        callback()
+      }
+    }
     return {
+      rules: {
+        money: [{ validator: validateZ1, trigger: "blur" }],
+        phone: [{ validator: ness, trigger: "blur" }]
+      },
       loading: false,
       dateRange: null, // 时间范围
       dateTime: null, // 日期时间点
@@ -270,7 +299,8 @@ export default {
       })
     },
     // 添加中奖用户
-    handleUser(id) {
+    handleUser(id, winnerUser) {
+      this.winnerUser = winnerUser // 保存中奖用户
       this.temp1 = {
         activityId: id,
         money: null,
@@ -279,13 +309,34 @@ export default {
       this.dialogFormVisible1 = true
     },
     handleBigRichUser() {
-      addBigRichUser(this.temp1).then(res => {
-        if (res.code === ERR_OK) {
-          this.getTableData()
-          this.dialogFormVisible1 = false
-          this.$message.success("添加成功")
-        }
-      })
+      if (!this.validateForm()) {
+        return
+      }
+      let addUser = function() {
+        addBigRichUser(this.temp1).then(res => {
+          if (res.code === ERR_OK) {
+            this.getTableData()
+            this.dialogFormVisible1 = false
+            this.$message.success("添加成功")
+            this.winnerUser = null
+          }
+        })
+      }.bind(this)
+      if (this.winnerUser) {
+        this.$confirm(
+          `要覆盖之前添加的中奖用户数据吗？最终中奖以最后一次添加的用户为准！`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        ).then(() => {
+          addUser()
+        })
+      } else {
+        addUser()
+      }
     },
     dateTimeChange() {
       this.temp.startLotteryTime = +new Date(this.dateTime)
@@ -347,6 +398,18 @@ export default {
           this.$message.success("保存成功")
         }
       })
+    },
+    // true可以  false不可以
+    validateForm() {
+      let pass
+      this.$refs.validateForm.validate(valid => {
+        if (valid) {
+          pass = true
+        } else {
+          pass = false
+        }
+      })
+      return pass
     },
     // 改变每行颜色
     tableRowClassName(row, index) {

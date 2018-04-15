@@ -61,3 +61,66 @@ export function addBigRichUser(data) {    // 添加中奖人
     data
   })
 }
+
+export function addProject(data) {    // 添加专题
+  return fetch({
+    url: '/goodsTopic/type',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateProject(data) {    // 编辑专题
+  return fetch({
+    url: '/goodsTopic/type',
+    method: 'PUT',
+    data
+  })
+}
+
+export function addProjectModule(data) {    // 添加专题模块
+  return fetch({
+    url: '/goodsTopic/module',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateProjectModule(data) {    // 编辑专题模块
+  return fetch({
+    url: '/goodsTopic/module',
+    method: 'PUT',
+    data
+  })
+}
+
+export function delProjectModule(id) {    // 删除专题模块
+  return fetch({
+    url: '/goodsTopic/module/del/' + id,
+    method: 'PUT'
+  })
+}
+
+export function addCoupon(data) {    // 添加优惠券
+  return fetch({
+    url: '/addCoupons',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateCoupon(data, id) {    // 编辑优惠券
+  return fetch({
+    url: `/updateCoupons/${id}`,
+    method: 'POST',
+    data
+  })
+}
+
+export function sendCoupon(params) {    // 赠送优惠券
+  return fetch({
+    url: `/coupons/send`,
+    method: 'POST',
+    params
+  })
+}
