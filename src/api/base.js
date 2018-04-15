@@ -8,6 +8,15 @@ export function getTableData(url, params) {    // 获取table列表,通用
   })
 }
 
+export function postTableData(url, data) {    // 获取table列表,通用
+  return fetch({
+    url,
+    method: 'post',
+    data
+  })
+}
+
+
 export function createParams(data) {    // 创建新的参数
   return fetch({
     url: '/basis/param',
@@ -160,5 +169,42 @@ export function getNickName(params) {    // 获取table列表,通用
     url: '/basis/user/nick_name',
     method: 'get',
     params
+  })
+}
+
+export function changeWxReplyStatus(id) {    // 获取table列表,通用
+  return fetch({
+    url: `/wx/reply/disable/${id}`,
+    method: 'post'
+  })
+}
+
+export function getMediaList() {    // 获取媒体类型
+  return fetch({
+    url: '/wx/reply/replyType',
+    method: 'get',
+  })
+}
+
+export function getRegList() {    // 获取匹配类型
+  return fetch({
+    url: '/wx/reply/ruleType',
+    method: 'get',
+  })
+}
+
+export function addWxreply(data) {    // 添加微信规则
+  return fetch({
+    url: '/wx/reply/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateReply(id, data) {    //更新微信规则
+  return fetch({
+    url: `/wx/reply/update/${id}`,
+    method: 'post',
+    data
   })
 }

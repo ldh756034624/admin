@@ -66,6 +66,16 @@
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="微信支付金额">
+        <template scope="scope">
+          <span>{{scope.row.payMoney4wx || 0.00}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="酒元支付金额">
+        <template scope="scope">
+          <span>{{scope.row.payMoney4balance}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="快递名称">
         <template scope="scope">
           <span>{{scope.row.expressName || '无'}}</span>
@@ -89,6 +99,9 @@
           </el-button> -->
           <el-button size="small" type="info" class="btn btn-sm btn-info" @click="handleUpdate(scope.row.id)">{{scope.row.status == 1 ? '发货' : '查看'}}
           </el-button>
+          <!--todo -->
+          <el-button size="small" v-if="scope.row.canRefund" type="danger" @click="handleRefund(scope.row.id)">退款
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,9 +118,21 @@
     <!-- 弹出编辑和新增窗口 -->
     <el-dialog title="订单详情" :visible.sync="dialogFormVisible" size="full">
       <el-form :model="temp" label-width="100px">
-        <h1 class="title">商品信息</h1>
+        <h1 class="title">基本信息</h1>
         <el-form-item label="订单号">
           <span>{{temp.id}}</span>
+        </el-form-item>
+        <el-form-item label="供应商">
+          <span>{{temp.supplier }}</span>
+        </el-form-item>
+        <el-form-item label="订单状态">
+          <span>{{temp.status }}</span>
+        </el-form-item>
+        <el-form-item label="订单来源">
+          <span>{{temp.orderFrom }}</span>
+        </el-form-item>
+        <el-form-item label="订单创建时间">
+          <span>{{temp.createTime | formatDateTime}}</span>
         </el-form-item>
         <el-form-item label="商品名称">
           <span>{{temp.goods}}</span>
@@ -115,15 +140,29 @@
         <el-form-item label="用户ID">
           <span>{{temp.userId || '无'}}</span>
         </el-form-item>
-        <el-form-item label="下单时间">
-          <span>{{temp.createTime | formatDateTime}}</span>
-        </el-form-item>
+        <h1 class="title">商品信息</h1>
+        <div class="goods-info" v-for="item in temp.goodsList">
+          <img :src="item.goodsImg" class="cover">
+          <div class="name">
+            <p>{{item.goodsName}} <span>x{{item.goodsCount}}</span></p>
+            <p>{{item.goodsPrice}}酒元</p>
+          </div>
+        </div>
         <h1 class="title">支付信息</h1>
+        <el-form-item label="支付金额">
+          <span>{{temp.payMoney}}</span>
+        </el-form-item>
         <el-form-item label="支付方式">
           <span>{{temp.payMethodDesc}}</span>
         </el-form-item>
-        <el-form-item label="支付金额">
-          <span>{{temp.payMoney}}</span>
+        <el-form-item label="微信支付">
+          <span>{{temp.payMoney4wx }}</span>
+        </el-form-item>
+        <el-form-item label="微信流水号">
+          <span>{{temp.wxOrderId }}</span>
+        </el-form-item>
+        <el-form-item label="酒元支付">
+          <span>{{temp.payMoney4Balance }}</span>
         </el-form-item>
         <el-form-item label="支付状态">
           <span>{{temp.payStatusDesc}}</span>
@@ -162,7 +201,7 @@
 </template>
 
 <script>
-  import {getTableData, updateOrder, orderConfirm} from '@/api/order'
+  import {getTableData, updateOrder, orderConfirm, orderRefund} from '@/api/order'
 
   const ERR_OK = 0
   export default {
@@ -187,7 +226,13 @@
           userAddres: null,
           userId: null,
           userName: null,
-          userPhone: null
+          userPhone: null,
+          supplier: null,
+          orderFrom: null,
+          payMoney4wx: null,
+          wxOrderId: null,
+          payMoney4Balance: null,
+          goodsList: [] // 物品详情
         },
         tableData: null,    // 表格数据
         total: null,        // 数据总数
@@ -259,12 +304,27 @@
           })
         })
       },
+      handleRefund(id) { // 退款
+        this.$confirm(`确定退款?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          orderRefund(id).then((res) => {
+            if (res.code === 0) {
+              this.$message.success('操作成功')
+              this.getTableData()
+            }
+          })
+        })
+      },
       handleUpdate(id) {   // 点击编辑功能按钮
         this.resetTemp()
         getTableData(`/order/${id}`).then(res => {
           if (res.code === 0) {
             console.log(res.data)
             this.temp = Object.assign(this.temp, res.data)   // 赋值
+            console.log(this.temp)
             this.dialogStatus = 'update'
             this.dialogFormVisible = true
           }
@@ -288,7 +348,13 @@
           userAddres: null,
           userId: null,
           userName: null,
-          userPhone: null
+          userPhone: null,
+          supplier: null,
+          orderFrom: null,
+          payMoney4wx: null,
+          wxOrderId: null,
+          payMoney4Balance: null,
+          goodsList: [] // 物品详情
         }
       },
       update() {  // 确认编辑此条信息
@@ -314,5 +380,15 @@
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
     font-size: 20px;
+  }
+  .goods-info{
+    display: flex;
+    font-size: 14px;
+    color: #666;
+    .cover{
+      height: 50px;
+      width: 50px;
+      margin-right: 15px;
+    }
   }
 </style>
